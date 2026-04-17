@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Control Plane — PATH</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--teal:#00C8C8;--bg:#07090F;--bg2:#0D1117;--border:rgba(255,255,255,0.10);--text:#F0F4FA;--text-dim:#B0BFCF;--mono:'IBM Plex Mono';--sans:'IBM Plex Sans'}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);padding:28px 40px}
+.topnav{position:sticky;top:0;z-index:1000;display:flex;justify-content:space-between;background:rgba(13,17,23,.96);padding:12px;border:1px solid var(--border)}
+.topnav a{color:var(--text-dim);text-decoration:none;font-family:var(--mono);font-size:10px;border:1px solid var(--border);padding:6px 10px}
+.topnav a.active{color:var(--teal);border-color:var(--teal)}
+.breadcrumb{font-family:var(--mono);font-size:10px;color:#6A7D90;opacity:.6;margin:16px 0}
+.section{margin-top:30px}
+.card{border:1px solid var(--border);background:var(--bg2);padding:16px;margin-bottom:16px}
+</style>
+</head>
+<body>
+<div class="topnav">
+<div>Navigation</div>
+<div>
+<a href="index.html">Overview</a>
+<a href="path-architecture.html">PATH</a>
+<a class="active" href="control-plane.html">Control Plane</a>
+</div>
+</div>
+<div class="breadcrumb">Overview > Control Plane</div>
+<h1>PATH Control Plane</h1>
+
+<div class="section">
+<div class="card">
+<strong>API Management (Gatekeeper)</strong>
+<p>Central routing for all AI calls, enforcing policy, rate limits, and audit logging.</p>
+</div>
+<div class="card">
+<strong>Audit Logging</strong>
+<p>Captures prompt, response, tokens, identity, and policy version for compliance.</p>
+</div>
+<div class="card">
+<strong>CI/CD Governance Gates</strong>
+<p>Security, Privacy, EA, and Data Science approvals required before production deployment.</p>
+</div>
+<div class="card">
+<strong>Identity & Access</strong>
+<p>Microsoft Entra ID, RBAC, and PIM enforce least privilege and traceability.</p>
+</div>
+<div class="card">
+<strong>Data Controls</strong>
+<p>Purview classification, regional enforcement, and Protected B controls applied.</p>
+</div>
+</div>
+
+</body>
+</html>
