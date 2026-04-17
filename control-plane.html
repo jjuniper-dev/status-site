@@ -7,20 +7,10 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --teal:#00C8C8;
-  --red:#E8192E;
-  --gold:#F9D030;
-  --blue:#5FA8E8;
-  --bg:#07090F;
-  --bg2:#0D1117;
-  --bg3:#131920;
-  --border:rgba(255,255,255,0.10);
-  --text:#F0F4FA;
-  --text-dim:#B0BFCF;
-  --text-faint:#6A7D90;
-  --mono:'IBM Plex Mono', monospace;
-  --sans:'IBM Plex Sans', sans-serif;
-  --cond:'IBM Plex Sans Condensed', sans-serif;
+  --teal:#00C8C8; --red:#E8192E; --gold:#F9D030; --blue:#5FA8E8;
+  --bg:#07090F; --bg2:#0D1117; --bg3:#131920; --border:rgba(255,255,255,0.10);
+  --text:#F0F4FA; --text-dim:#B0BFCF; --text-faint:#6A7D90;
+  --mono:'IBM Plex Mono', monospace; --sans:'IBM Plex Sans', sans-serif; --cond:'IBM Plex Sans Condensed', sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.55;width:1100px;margin:0 auto;padding:28px 40px 64px}
@@ -36,33 +26,22 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14
 .header-title{font-family:var(--cond);font-size:42px;font-weight:700;line-height:1;color:#fff}
 .header-sub{font-size:14px;color:var(--text-dim);margin-top:10px;line-height:1.6}
 .badge{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.12em;padding:5px 11px;border:1px solid;text-transform:uppercase;margin-bottom:6px}
-.badge-teal{border-color:var(--teal);color:var(--teal)}
-.badge-gold{border-color:var(--gold);color:var(--gold)}
-.badge-red{border-color:var(--red);color:var(--red)}
+.badge-teal{border-color:var(--teal);color:var(--teal)} .badge-gold{border-color:var(--gold);color:var(--gold)} .badge-red{border-color:var(--red);color:var(--red)}
 .positioning{background:linear-gradient(135deg,#0f1d2e 0%,#0d1520 100%);border-left:3px solid var(--teal);padding:20px 26px;margin-bottom:36px;display:flex;align-items:center;gap:22px}
 .positioning-label{font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:.15em;text-transform:uppercase;white-space:nowrap;writing-mode:vertical-rl;transform:rotate(180deg)}
 .positioning-text{font-family:var(--cond);font-size:22px;font-weight:700;line-height:1.35;color:#fff}
 .positioning-text em{color:var(--teal);font-style:normal}
-.section-label{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-faint);margin-bottom:14px;display:flex;align-items:center;gap:12px}
-.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.section-label{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-faint);margin-bottom:14px;display:flex;align-items:center;gap:12px}.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:36px}
 .card{border:1px solid var(--border);background:linear-gradient(160deg,var(--bg2),var(--bg3));padding:18px 20px}
 .card-title{font-family:var(--cond);font-size:22px;color:#fff;margin-bottom:10px}
 .card-sub{font-size:13px;color:var(--text-dim);line-height:1.6;margin-bottom:14px}
-.card-list{list-style:none}
-.card-list li{font-size:13px;color:var(--text-dim);padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:8px}
-.card-list li::before{content:'→';color:var(--teal);flex-shrink:0}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.chip{font-size:12px;padding:6px 10px;border:1px solid var(--border);color:var(--text-dim);background:rgba(255,255,255,.04)}
-.stack{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:36px}
-.stack-item{border:1px solid var(--border);background:var(--bg2);padding:16px}
-.stack-item h3{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:8px}
-.stack-item p{font-size:13px;color:var(--text-dim);line-height:1.6}
-.stack-item ul{list-style:none;margin-top:10px}
-.stack-item li{font-size:13px;color:var(--text-dim);padding:5px 0;display:flex;gap:8px}
-.stack-item li::before{content:'•';color:var(--gold);flex-shrink:0}
-.footer{display:flex;justify-content:space-between;align-items:center;padding-top:22px;border-top:1px solid var(--border)}
-.footer-left,.footer-right{font-family:var(--mono);font-size:10px;color:var(--text-faint);line-height:1.8}.footer-right{text-align:right}
+.card-list{list-style:none}.card-list li{font-size:13px;color:var(--text-dim);padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:8px}.card-list li::before{content:'→';color:var(--teal);flex-shrink:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.chip{font-size:12px;padding:6px 10px;border:1px solid var(--border);color:var(--text-dim);background:rgba(255,255,255,.04)}
+.stack{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:36px}.stack-item{border:1px solid var(--border);background:var(--bg2);padding:16px}.stack-item h3{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:8px}.stack-item p{font-size:13px;color:var(--text-dim);line-height:1.6}.stack-item ul{list-style:none;margin-top:10px}.stack-item li{font-size:13px;color:var(--text-dim);padding:5px 0;display:flex;gap:8px}.stack-item li::before{content:'•';color:var(--gold);flex-shrink:0}
+.agent-flow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}.flow-step{border:1px solid var(--border);background:rgba(255,255,255,.03);padding:12px}.flow-step-title{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);margin-bottom:6px}.flow-step p{font-size:12px;color:var(--text-dim);line-height:1.5}
+.callout{border-left:3px solid var(--gold);background:rgba(249,208,48,.06);padding:14px 16px;margin-bottom:36px}.callout strong{color:#fff}.callout p{color:var(--text-dim);margin-top:6px}
+.footer{display:flex;justify-content:space-between;align-items:center;padding-top:22px;border-top:1px solid var(--border)}.footer-left,.footer-right{font-family:var(--mono);font-size:10px;color:var(--text-faint);line-height:1.8}.footer-right{text-align:right}
 </style>
 </head>
 <body>
@@ -72,19 +51,15 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14
     <a href="index.html">Overview</a>
     <a href="path-architecture.html">PATH</a>
     <a class="active" href="control-plane.html">Control Plane</a>
+    <a href="pptx-builder.html">PPTX Builder</a>
   </div>
 </div>
-
 <div class="breadcrumb">Overview &gt; Control Plane</div>
-
 <div class="header">
   <div>
     <div class="header-eyebrow">Enterprise AI — Runtime Governance and Enforcement</div>
     <div class="header-title">PATH Control Plane</div>
-    <div class="header-sub">
-      Health Canada (HC) · Runtime control model for governed AI delivery<br>
-      API gatekeeping, auditability, approvals, and production promotion logic
-    </div>
+    <div class="header-sub">Health Canada (HC) · Runtime control model for governed AI delivery<br>API gatekeeping, auditability, approvals, agentic controls, and production promotion logic</div>
   </div>
   <div>
     <div><span class="badge badge-teal">Runtime Enforcement</span></div>
@@ -92,156 +67,78 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14
     <div><span class="badge badge-red">Protected B Target</span></div>
   </div>
 </div>
-
-<div class="positioning">
-  <div class="positioning-label">Core Position</div>
-  <div class="positioning-text">
-    The control plane is where <em>enterprise governance becomes runtime enforcement</em>.
-  </div>
-</div>
+<div class="positioning"><div class="positioning-label">Core Position</div><div class="positioning-text">The control plane is where <em>enterprise governance becomes runtime enforcement</em>, including how agentic patterns are constrained, reviewed, and escalated.</div></div>
 
 <div class="section-label">01 · Core Enforcement Components</div>
 <div class="grid-2">
-  <div class="card">
-    <div class="card-title">API Management Gatekeeper</div>
-    <div class="card-sub">All AI requests should traverse a governed gateway rather than calling models directly.</div>
-    <ul class="card-list">
-      <li>Single control point for routing AI traffic</li>
-      <li>Rate limiting and project-level throttling</li>
-      <li>Authentication and token validation</li>
-      <li>Standardized audit and telemetry capture</li>
-    </ul>
-  </div>
-  <div class="card">
-    <div class="card-title">Audit and Traceability Layer</div>
-    <div class="card-sub">Runtime events must support defensibility, review, and post-incident analysis.</div>
-    <ul class="card-list">
-      <li>Prompt and response capture</li>
-      <li>User identity and project attribution</li>
-      <li>Model version and policy version logging</li>
-      <li>Token metering and usage evidence</li>
-    </ul>
-  </div>
+  <div class="card"><div class="card-title">API Management Gatekeeper</div><div class="card-sub">All AI requests should traverse a governed gateway rather than calling models directly.</div><ul class="card-list"><li>Single control point for routing AI traffic</li><li>Rate limiting and project-level throttling</li><li>Authentication and token validation</li><li>Standardized audit and telemetry capture</li></ul></div>
+  <div class="card"><div class="card-title">Audit and Traceability Layer</div><div class="card-sub">Runtime events must support defensibility, review, and post-incident analysis.</div><ul class="card-list"><li>Prompt and response capture</li><li>User identity and project attribution</li><li>Model version and policy version logging</li><li>Token metering and usage evidence</li></ul></div>
 </div>
 
 <div class="section-label">02 · Token Metering / FinOps</div>
 <div class="stack">
-  <div class="stack-item">
-    <h3>Usage Metering</h3>
-    <p>Token consumption should be measured at the project level so costs can be attributed, monitored, and constrained before scaling creates enterprise ambiguity.</p>
-    <ul>
-      <li>Track input and output tokens per request</li>
-      <li>Associate usage with project ID, branch, and cost centre</li>
-      <li>Support chargeback or showback reporting</li>
-      <li>Surface budget alerts before consumption breaches planning assumptions</li>
-    </ul>
-  </div>
-  <div class="stack-item">
-    <h3>FinOps Controls</h3>
-    <p>FinOps is not a reporting afterthought; it is a scaling control. Shared AI services become unmanageable when billing ownership is vague.</p>
-    <ul>
-      <li>Per-client or per-project isolation where required for clean attribution</li>
-      <li>Consumption dashboards for platform and client owners</li>
-      <li>Threshold alerts for abnormal growth or runaway inference patterns</li>
-      <li>Evidence base for shared versus isolated architecture decisions</li>
-    </ul>
-  </div>
+  <div class="stack-item"><h3>Usage Metering</h3><p>Token consumption should be measured at the project level so costs can be attributed, monitored, and constrained before scaling creates enterprise ambiguity.</p><ul><li>Track input and output tokens per request</li><li>Associate usage with project ID, branch, and cost centre</li><li>Support chargeback or showback reporting</li><li>Surface budget alerts before consumption breaches planning assumptions</li></ul></div>
+  <div class="stack-item"><h3>FinOps Controls</h3><p>FinOps is not a reporting afterthought; it is a scaling control. Shared AI services become unmanageable when billing ownership is vague.</p><ul><li>Per-client or per-project isolation where required for clean attribution</li><li>Consumption dashboards for platform and client owners</li><li>Threshold alerts for abnormal growth or runaway inference patterns</li><li>Evidence base for shared versus isolated architecture decisions</li></ul></div>
 </div>
 
 <div class="section-label">03 · Model Catalog and Approval</div>
 <div class="grid-2">
-  <div class="card">
-    <div class="card-title">Approved Model Catalog</div>
-    <div class="card-sub">The platform should expose an allow-list of approved models rather than permitting uncontrolled selection by default.</div>
-    <div class="chips">
-      <span class="chip">Approved models only</span>
-      <span class="chip">Version visibility</span>
-      <span class="chip">Risk-tier tagging</span>
-      <span class="chip">Use-case alignment</span>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-title">Model Approval Logic</div>
-    <div class="card-sub">Model selection should reflect policy, data sensitivity, and operational suitability — not just convenience or novelty.</div>
-    <ul class="card-list">
-      <li>Approval criteria tied to classification and policy posture</li>
-      <li>Documented rationale for new model admission</li>
-      <li>Fallback and retirement process for deprecated models</li>
-      <li>Visibility into where each model is currently in use</li>
-    </ul>
-  </div>
+  <div class="card"><div class="card-title">Approved Model Catalog</div><div class="card-sub">The platform should expose an allow-list of approved models rather than permitting uncontrolled selection by default.</div><div class="chips"><span class="chip">Approved models only</span><span class="chip">Version visibility</span><span class="chip">Risk-tier tagging</span><span class="chip">Use-case alignment</span></div></div>
+  <div class="card"><div class="card-title">Model Approval Logic</div><div class="card-sub">Model selection should reflect policy, data sensitivity, and operational suitability — not just convenience or novelty.</div><ul class="card-list"><li>Approval criteria tied to classification and policy posture</li><li>Documented rationale for new model admission</li><li>Fallback and retirement process for deprecated models</li><li>Visibility into where each model is currently in use</li></ul></div>
 </div>
 
 <div class="section-label">04 · RAG Pipeline Controls</div>
 <div class="stack">
-  <div class="stack-item">
-    <h3>Knowledge Ingestion Controls</h3>
-    <p>Retrieval quality depends on disciplined ingestion, classification filtering, and source governance. The RAG layer cannot be trusted if the knowledge layer is not controlled.</p>
-    <ul>
-      <li>Restrict ingestion by classification and approved source</li>
-      <li>Maintain source traceability and refresh cadence</li>
-      <li>Prevent hidden mixing of trusted and untrusted corpora</li>
-      <li>Retain evidence of what source grounded an answer</li>
-    </ul>
-  </div>
-  <div class="stack-item">
-    <h3>Retrieval and Response Controls</h3>
-    <p>The runtime should enforce consistent retrieval behavior so responses remain explainable, reviewable, and operationally defensible.</p>
-    <ul>
-      <li>Approved indexes and embedding patterns only</li>
-      <li>Prompt templates that preserve citation and grounding structure</li>
-      <li>Output logging for grounded versus ungrounded responses</li>
-      <li>Human review escalation for high-risk or ambiguous results</li>
-    </ul>
-  </div>
+  <div class="stack-item"><h3>Knowledge Ingestion Controls</h3><p>Retrieval quality depends on disciplined ingestion, classification filtering, and source governance. The RAG layer cannot be trusted if the knowledge layer is not controlled.</p><ul><li>Restrict ingestion by classification and approved source</li><li>Maintain source traceability and refresh cadence</li><li>Prevent hidden mixing of trusted and untrusted corpora</li><li>Retain evidence of what source grounded an answer</li></ul></div>
+  <div class="stack-item"><h3>Retrieval and Response Controls</h3><p>The runtime should enforce consistent retrieval behavior so responses remain explainable, reviewable, and operationally defensible.</p><ul><li>Approved indexes and embedding patterns only</li><li>Prompt templates that preserve citation and grounding structure</li><li>Output logging for grounded versus ungrounded responses</li><li>Human review escalation for high-risk or ambiguous results</li></ul></div>
 </div>
 
-<div class="section-label">05 · Environment Promotion (Dev → Test → Prod)</div>
-<div class="grid-2">
-  <div class="card">
-    <div class="card-title">Promotion Gates</div>
-    <div class="card-sub">Advancement between environments should be conditional, recorded, and reviewable — especially for AI workloads with policy implications.</div>
-    <ul class="card-list">
-      <li>Development for experimentation and pattern validation</li>
-      <li>Test for structured control verification and pre-production review</li>
-      <li>Production only after explicit cross-functional approval</li>
-      <li>No silent promotion path around governance checkpoints</li>
-    </ul>
-  </div>
-  <div class="card">
-    <div class="card-title">Approval Workflow</div>
-    <div class="card-sub">Production movement should reflect enterprise accountability, not just technical readiness.</div>
-    <div class="chips">
-      <span class="chip">Security review</span>
-      <span class="chip">Privacy review</span>
-      <span class="chip">EA review</span>
-      <span class="chip">Data science review</span>
-      <span class="chip">Recorded sign-off</span>
+<div class="section-label">05 · GREP-ExP Agentic Pattern Integration</div>
+<div class="callout"><strong>Reference Pattern:</strong><p>GREP-ExP provides a concrete PHAC example of an agentic disagreement workflow that should be governed through the control plane rather than treated as a special-case research artifact.</p></div>
+<div class="stack">
+  <div class="stack-item">
+    <h3>Agentic Pattern</h3>
+    <p>Global Repository of Epidemiological Parameters – Extraction of Parameters uses a disagreement-based multi-agent approach in place of simple LLM self-confidence scoring. This makes it a useful reference for how the control plane should govern higher-autonomy AI patterns.</p>
+    <div class="agent-flow">
+      <div class="flow-step"><div class="flow-step-title">Screening Agent</div><p>Performs primary literature screening and parameter extraction.</p></div>
+      <div class="flow-step"><div class="flow-step-title">Critical Agent</div><p>Performs an independent parallel review without answer sharing.</p></div>
+      <div class="flow-step"><div class="flow-step-title">Disagreement Gate</div><p>Uses inter-agent divergence as the uncertainty signal.</p></div>
+      <div class="flow-step"><div class="flow-step-title">Ensemble Agent</div><p>Attempts arbitration on borderline cases through additional passes.</p></div>
+      <div class="flow-step"><div class="flow-step-title">Human Adjudication</div><p>Escalates unresolved cases into human-in-the-loop review and feedback.</p></div>
     </div>
   </div>
-</div>
-
-<div class="section-label">06 · Control Plane Summary</div>
-<div class="card">
-  <div class="card-title">Why This Matters</div>
-  <div class="card-sub">Without the control plane, AI delivery becomes fragmented: inconsistent models, weak cost visibility, unclear approvals, and limited defensibility. With the control plane, governance becomes repeatable and scalable.</div>
-  <div class="chips">
-    <span class="chip">Gatekeeper routing</span>
-    <span class="chip">Auditability</span>
-    <span class="chip">FinOps discipline</span>
-    <span class="chip">RAG governance</span>
-    <span class="chip">Controlled promotion</span>
+  <div class="stack-item">
+    <h3>Control Plane Implications</h3>
+    <p>This pattern implies that the control plane must govern not just a single model call, but a coordinated sequence of model-mediated decisions, escalation logic, and review evidence.</p>
+    <ul>
+      <li>Log each agent stage separately with project attribution and policy version</li>
+      <li>Record disagreement events as explicit review triggers</li>
+      <li>Capture ensemble arbitration outputs distinctly from primary outputs</li>
+      <li>Preserve human adjudication decisions as part of the audit trail</li>
+      <li>Support prompt/routing updates without losing historical reproducibility</li>
+    </ul>
+  </div>
+  <div class="stack-item">
+    <h3>Why It Matters for Governance</h3>
+    <p>GREP-ExP shows that autonomy is not binary. The runtime must distinguish between single-pass inference and multi-agent adjudication pipelines because the latter carry different operational, audit, and escalation requirements.</p>
+    <ul>
+      <li>Useful L3/L4 operational AI capability example for EA mapping</li>
+      <li>Demonstrates peer-reviewed multi-agent + HITL workflow in practice</li>
+      <li>Supports stronger policy framing for human oversight and defensibility</li>
+      <li>Provides a live PHAC reference case for ARB and production readiness discussions</li>
+    </ul>
   </div>
 </div>
 
-<div class="footer">
-  <div class="footer-left">
-    Health Canada · Digital Transformation Branch<br>
-    EA / TPO / ARB Context — Internal Use Only
-  </div>
-  <div class="footer-right">
-    Version 1.3 · April 2026
-  </div>
+<div class="section-label">06 · Environment Promotion (Dev → Test → Prod)</div>
+<div class="grid-2">
+  <div class="card"><div class="card-title">Promotion Gates</div><div class="card-sub">Advancement between environments should be conditional, recorded, and reviewable — especially for AI workloads with policy implications.</div><ul class="card-list"><li>Development for experimentation and pattern validation</li><li>Test for structured control verification and pre-production review</li><li>Production only after explicit cross-functional approval</li><li>No silent promotion path around governance checkpoints</li></ul></div>
+  <div class="card"><div class="card-title">Approval Workflow</div><div class="card-sub">Production movement should reflect enterprise accountability, not just technical readiness.</div><div class="chips"><span class="chip">Security review</span><span class="chip">Privacy review</span><span class="chip">EA review</span><span class="chip">Data science review</span><span class="chip">Recorded sign-off</span></div></div>
 </div>
+
+<div class="section-label">07 · Control Plane Summary</div>
+<div class="card"><div class="card-title">Why This Matters</div><div class="card-sub">Without the control plane, AI delivery becomes fragmented: inconsistent models, weak cost visibility, unclear approvals, limited defensibility, and no reliable way to govern agentic disagreement workflows. With the control plane, governance becomes repeatable and scalable.</div><div class="chips"><span class="chip">Gatekeeper routing</span><span class="chip">Auditability</span><span class="chip">FinOps discipline</span><span class="chip">RAG governance</span><span class="chip">Agentic controls</span><span class="chip">Controlled promotion</span></div></div>
+
+<div class="footer"><div class="footer-left">Health Canada · Digital Transformation Branch<br>EA / TPO / ARB Context — Internal Use Only</div><div class="footer-right">Version 1.4 · April 2026</div></div>
 </body>
 </html>
