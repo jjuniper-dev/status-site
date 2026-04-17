@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PPTX Builder — PATH Status Site</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#00C8C8;--red:#E8192E;--gold:#F9D030;--blue:#5FA8E8;
+  --bg:#07090F;--bg2:#0D1117;--bg3:#131920;--surface:#1A2230;
+  --border:rgba(255,255,255,.10);--text:#F0F4FA;--text-dim:#B0BFCF;--text-faint:#6A7D90;
+  --mono:'IBM Plex Mono', monospace;--sans:'IBM Plex Sans', sans-serif;--cond:'IBM Plex Sans Condensed', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.55;width:1100px;margin:0 auto;padding:28px 40px 64px}
+.topnav{position:sticky;top:0;z-index:1000;display:flex;justify-content:space-between;align-items:center;gap:16px;background:rgba(13,17,23,.96);padding:12px 16px;border:1px solid var(--border);backdrop-filter:blur(6px);margin-bottom:10px}
+.topnav-label{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-faint)}
+.topnav-links{display:flex;gap:10px;flex-wrap:wrap}
+.topnav a{color:var(--text-dim);text-decoration:none;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--border);padding:6px 10px;background:rgba(255,255,255,.04)}
+.topnav a.active{color:var(--teal);border-color:var(--teal)}
+.topnav a:hover{color:#fff;border-color:var(--teal)}
+.breadcrumb{font-family:var(--mono);font-size:10px;color:var(--text-faint);opacity:.6;margin:16px 0 22px}
+.header{display:grid;grid-template-columns:1fr auto;align-items:start;border-bottom:2px solid var(--blue);padding-bottom:24px;margin-bottom:36px;gap:24px}
+.header-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--blue);text-transform:uppercase;margin-bottom:8px}
+.header-title{font-family:var(--cond);font-size:42px;font-weight:700;line-height:1;color:#fff}
+.header-sub{font-size:14px;color:var(--text-dim);margin-top:10px;line-height:1.6}
+.badge{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.12em;padding:5px 11px;border:1px solid;text-transform:uppercase;margin-bottom:6px}
+.badge-blue{border-color:var(--blue);color:var(--blue)} .badge-gold{border-color:var(--gold);color:var(--gold)} .badge-teal{border-color:var(--teal);color:var(--teal)}
+.section-label{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-faint);margin:26px 0 14px;display:flex;align-items:center;gap:12px}.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+.card{border:1px solid var(--border);background:linear-gradient(160deg,var(--bg2),var(--bg3));padding:18px 20px}
+.card h2{font-family:var(--cond);font-size:22px;margin-bottom:8px}.card p,.card li,label{color:var(--text-dim)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}.field.full{grid-column:1 / -1}
+label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+input,select,textarea{background:#0a1018;color:var(--text);border:1px solid var(--border);padding:10px 12px;font:inherit;border-radius:0}
+textarea{min-height:96px;resize:vertical}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+button{background:rgba(255,255,255,.04);color:var(--text);border:1px solid var(--border);padding:10px 12px;font-family:var(--mono);font-size:11px;cursor:pointer}
+button.primary{border-color:var(--teal);color:var(--teal)}
+pre{white-space:pre-wrap;word-break:break-word;background:#0a1018;border:1px solid var(--border);padding:14px;color:var(--text-dim);min-height:280px}
+.page-section{margin-top:18px}
+.preview-sheet{background:#fff;color:#111;border:1px solid #ccc;padding:.6in;min-height:8in}
+.preview-sheet h1,.preview-sheet h2,.preview-sheet h3{color:#111}
+.preview-sheet p,.preview-sheet li{color:#222}
+.note{font-size:12px;color:var(--text-faint);margin-top:8px}
+@media print{
+  body{background:#fff !important;color:#111 !important;width:auto;margin:0;padding:.5in !important}
+  .topnav,.actions,.no-print{display:none !important}
+  .breadcrumb{opacity:1;color:#444 !important}
+  .card, .preview-sheet{background:#fff !important;color:#111 !important;border:1px solid #ccc !important;box-shadow:none !important}
+  input,select,textarea,pre{border:1px solid #ccc !important;color:#111 !important;background:#fff !important}
+  .page-section{break-before:page;page-break-before:always}
+  .grid{display:block}
+}
+</style>
+</head>
+<body>
+<div class="topnav">
+  <div class="topnav-label">Status Site Navigation</div>
+  <div class="topnav-links">
+    <a href="index.html">Overview</a>
+    <a href="path-architecture.html">PATH</a>
+    <a href="control-plane.html">Control Plane</a>
+    <a class="active" href="pptx-builder.html">PPTX Builder</a>
+  </div>
+</div>
+<div class="breadcrumb">Overview &gt; PPTX Builder</div>
+<div class="header">
+  <div>
+    <div class="header-eyebrow">Presentation Automation — MCP Integration Scaffold</div>
+    <div class="header-title">PPTX Builder</div>
+    <div class="header-sub">Create a deck spec, preview in light page mode, export JSON, and send a request to a local MCP-backed PPTX service.</div>
+  </div>
+  <div>
+    <div><span class="badge badge-blue">Builder UI</span></div>
+    <div><span class="badge badge-gold">Print / PDF Ready</span></div>
+    <div><span class="badge badge-teal">MCP Scaffold</span></div>
+  </div>
+</div>
+<div class="grid">
+  <div>
+    <div class="card">
+      <h2>Deck Definition</h2>
+      <div class="form-grid">
+        <div class="field"><label for="deckTitle">Deck Title</label><input id="deckTitle" value="HC/PHAC AI Control Plane"></div>
+        <div class="field"><label for="audience">Audience</label><input id="audience" value="ARB / EA / TPO"></div>
+        <div class="field"><label for="purpose">Purpose</label><input id="purpose" value="Decision briefing"></div>
+        <div class="field"><label for="theme">Theme</label><select id="theme"><option value="dtb-option-a-light">DTB Option A Light</option><option value="dark-web">Dark Web</option></select></div>
+        <div class="field full"><label for="slide1">Slide 1</label><textarea id="slide1">Executive Position
+PATH is the control plane for governed AI delivery.</textarea></div>
+        <div class="field full"><label for="slide2">Slide 2</label><textarea id="slide2">Architecture Model
+Governance above the runtime. Enforcement inside it.</textarea></div>
+        <div class="field full"><label for="slide3">Slide 3</label><textarea id="slide3">Control Plane
+APIM, audit logging, model approval, RAG controls, promotion gates.</textarea></div>
+      </div>
+      <div class="actions no-print">
+        <button class="primary" id="buildJson">Build Deck Spec JSON</button>
+        <button id="previewBtn">Refresh Preview</button>
+        <button id="downloadJson">Download JSON</button>
+        <button id="printBtn">Print / Save PDF</button>
+        <button id="sendMcp">Send to MCP Service</button>
+      </div>
+      <div class="note no-print">The MCP action targets a local bridge endpoint. Update the endpoint in the script to match your environment.</div>
+    </div>
+
+    <div class="section-label">Deck Spec JSON</div>
+    <div class="card"><pre id="jsonOut"></pre></div>
+  </div>
+
+  <div>
+    <div class="section-label">Light Page Preview</div>
+    <div class="card page-section">
+      <div id="preview" class="preview-sheet"></div>
+    </div>
+  </div>
+</div>
+<script>
+function buildSpec(){
+  const slides = [document.getElementById('slide1').value, document.getElementById('slide2').value, document.getElementById('slide3').value]
+    .filter(Boolean)
+    .map((raw, i) => {
+      const lines = raw.split('\n').map(s => s.trim()).filter(Boolean);
+      return { title: lines[0] || `Slide ${i+1}`, layout: 'title-body', body: lines.slice(1), notes: '' };
+    });
+  return {
+    deck_title: document.getElementById('deckTitle').value,
+    audience: document.getElementById('audience').value,
+    purpose: document.getElementById('purpose').value,
+    theme: document.getElementById('theme').value,
+    output_format: 'pptx',
+    slides
+  };
+}
+function render(){
+  const spec = buildSpec();
+  document.getElementById('jsonOut').textContent = JSON.stringify(spec, null, 2);
+  const preview = document.getElementById('preview');
+  preview.innerHTML = `<h1>${spec.deck_title}</h1><p><strong>Audience:</strong> ${spec.audience}<br><strong>Purpose:</strong> ${spec.purpose}</p>` +
+    spec.slides.map((s, i) => `<div class="page-section"><h2>${i+1}. ${s.title}</h2>${s.body.map(b => `<p>${b}</p>`).join('')}</div>`).join('');
+}
+function downloadJson(){
+  const blob = new Blob([JSON.stringify(buildSpec(), null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'deck-spec.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+async function sendToMcp(){
+  const endpoint = 'http://localhost:8787/pptx';
+  const payload = buildSpec();
+  try {
+    const res = await fetch(endpoint, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+    const text = await res.text();
+    alert(`MCP response: ${text}`);
+  } catch (e) {
+    alert('Could not reach local MCP bridge at http://localhost:8787/pptx');
+  }
+}
+document.getElementById('buildJson').addEventListener('click', render);
+document.getElementById('previewBtn').addEventListener('click', render);
+document.getElementById('downloadJson').addEventListener('click', downloadJson);
+document.getElementById('printBtn').addEventListener('click', () => window.print());
+document.getElementById('sendMcp').addEventListener('click', sendToMcp);
+render();
+</script>
+</body>
+</html>
