@@ -35,7 +35,55 @@
     line-height: 1.55;
     width: 1100px;
     margin: 0 auto;
-    padding: 48px 40px 64px;
+    padding: 28px 40px 64px;
+  }
+
+  .topnav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding: 12px 16px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+  }
+
+  .topnav-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .topnav-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .topnav-link {
+    display: inline-block;
+    text-decoration: none;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    background: rgba(255,255,255,0.04);
+  }
+
+  .topnav-link:hover {
+    border-color: var(--teal);
+    color: #fff;
+  }
+
+  .topnav-link.active {
+    border-color: var(--teal);
+    color: var(--teal);
   }
 
   /* ── HEADER ── */
@@ -90,7 +138,6 @@
   .badge-teal { border-color: var(--teal); color: var(--teal); }
   .badge-gold { border-color: var(--gold); color: var(--gold); }
 
-  /* ── POSITIONING STATEMENT ── */
   .positioning {
     background: linear-gradient(135deg, #0f1d2e 0%, #0d1520 100%);
     border-left: 3px solid var(--teal);
@@ -122,7 +169,6 @@
 
   .positioning-text em { color: var(--teal); font-style: normal; }
 
-  /* ── SECTION LABEL ── */
   .section-label {
     font-family: var(--mono);
     font-size: 11px;
@@ -142,7 +188,6 @@
     background: var(--border);
   }
 
-  /* ── CONVERGENCE TABLE ── */
   .convergence-grid {
     display: grid;
     grid-template-columns: 1fr 200px 1fr;
@@ -221,7 +266,6 @@
     line-height: 1.5;
   }
 
-  /* ── LAYER TABLE ── */
   .layer-table {
     margin-bottom: 36px;
     border: 1px solid var(--border);
@@ -284,9 +328,7 @@
   .dot-emerging { background: var(--gold); }
   .dot-conditional { background: var(--blue-light); }
 
-  /* ── CAPABILITY STACK ── */
   .cap-stack { margin-bottom: 36px; }
-
   .cap-layers { display: flex; flex-direction: column; gap: 4px; }
 
   .cap-layer {
@@ -340,24 +382,19 @@
   .l1 { border-left: 3px solid #9B59B6; }
   .l1 .cap-layer-label { background: rgba(155,89,182,0.08); }
   .l1 .cap-chip { border-color: rgba(155,89,182,0.35); }
-
   .l2 { border-left: 3px solid var(--red); }
   .l2 .cap-layer-label { background: rgba(232,25,46,0.08); }
   .l2 .cap-chip { border-color: rgba(232,25,46,0.35); }
-
   .l3 { border-left: 3px solid var(--blue-light); }
   .l3 .cap-layer-label { background: rgba(95,168,232,0.08); }
   .l3 .cap-chip { border-color: rgba(95,168,232,0.35); }
-
   .l4 { border-left: 3px solid var(--gold); }
   .l4 .cap-layer-label { background: rgba(249,208,48,0.07); }
   .l4 .cap-chip { border-color: rgba(249,208,48,0.35); }
-
   .l5 { border-left: 3px solid var(--teal); }
   .l5 .cap-layer-label { background: rgba(0,200,200,0.10); }
   .l5 .cap-layer-name { color: var(--teal); }
   .l5 .cap-chip { border-color: rgba(0,200,200,0.45); color: #fff; }
-
   .l6 { border-left: 3px solid #2ecc71; }
   .l6 .cap-layer-label { background: rgba(46,204,113,0.07); }
   .l6 .cap-chip { border-color: rgba(46,204,113,0.35); }
@@ -382,7 +419,6 @@
     padding: 0 7px;
   }
 
-  /* ── GAPS ── */
   .gaps-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -429,7 +465,6 @@
     line-height: 1.5;
   }
 
-  /* ── OUTCOMES ── */
   .outcomes {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -446,10 +481,8 @@
   }
 
   .outcome-icon { font-size: 24px; margin-bottom: 10px; display: block; }
-
   .outcome-text { font-size: 13px; color: var(--text-dim); line-height: 1.45; }
 
-  /* ── FOOTER ── */
   .footer {
     display: flex;
     justify-content: space-between;
@@ -470,7 +503,14 @@
 </head>
 <body>
 
-<!-- HEADER -->
+<div class="topnav">
+  <div class="topnav-label">Status Site Navigation</div>
+  <div class="topnav-links">
+    <a class="topnav-link active" href="index.html">Overview</a>
+    <a class="topnav-link" href="path-architecture.html">PATH Architecture</a>
+  </div>
+</div>
+
 <div class="header">
   <div>
     <div class="header-eyebrow">Enterprise AI — Business Scenario &amp; Capability Architecture</div>
@@ -487,7 +527,6 @@
   </div>
 </div>
 
-<!-- POSITIONING STATEMENT -->
 <div class="positioning">
   <div class="positioning-label">Core Position</div>
   <div class="positioning-text">
@@ -496,7 +535,6 @@
   </div>
 </div>
 
-<!-- CONVERGENCE -->
 <div class="section-label">01 · Organizational Convergence</div>
 <div class="convergence-grid">
   <div class="conv-col conv-col-hc">
@@ -532,7 +570,6 @@
   </div>
 </div>
 
-<!-- SERVICE CATALOG -->
 <div class="section-label">02 · PATH Service Catalog</div>
 <div class="layer-table">
   <div class="layer-table-header">
@@ -573,7 +610,6 @@
   </div>
 </div>
 
-<!-- CAPABILITY STACK -->
 <div class="section-label">03 · Enterprise AI Capability Stack</div>
 <div class="cap-stack">
   <div class="cap-layers">
@@ -660,61 +696,25 @@
   </div>
 </div>
 
-<!-- GAPS -->
 <div class="section-label">04 · Key Gaps &amp; Risks</div>
 <div class="gaps-grid">
-  <div class="gap-card">
-    <div class="gap-title">ATO Pending</div>
-    <div class="gap-impact">Blocks production deployment. No confirmed timeline. Highest delivery risk.</div>
-  </div>
-  <div class="gap-card">
-    <div class="gap-title">FinOps Model Undefined</div>
-    <div class="gap-impact">Per-client billing model limits scaling. Cost recovery model not established.</div>
-  </div>
-  <div class="gap-card">
-    <div class="gap-title">AI-Ops Ownership</div>
-    <div class="gap-impact">No confirmed operational owner for platform post-pilot. Delivery continuity risk.</div>
-  </div>
-  <div class="gap-card">
-    <div class="gap-title">Governance Model</div>
-    <div class="gap-impact">No formal Responsible AI Committee. Decisions inconsistent across initiatives.</div>
-  </div>
-  <div class="gap-card">
-    <div class="gap-title">Purview Not Operational</div>
-    <div class="gap-impact">Data governance tooling deployed but not operationalized. Classification risk.</div>
-  </div>
-  <div class="gap-card">
-    <div class="gap-title">PATH Definition</div>
-    <div class="gap-impact">Organizational confusion about scope. Platform vs. service distinction unclear.</div>
-  </div>
+  <div class="gap-card"><div class="gap-title">ATO Pending</div><div class="gap-impact">Blocks production deployment. No confirmed timeline. Highest delivery risk.</div></div>
+  <div class="gap-card"><div class="gap-title">FinOps Model Undefined</div><div class="gap-impact">Per-client billing model limits scaling. Cost recovery model not established.</div></div>
+  <div class="gap-card"><div class="gap-title">AI-Ops Ownership</div><div class="gap-impact">No confirmed operational owner for platform post-pilot. Delivery continuity risk.</div></div>
+  <div class="gap-card"><div class="gap-title">Governance Model</div><div class="gap-impact">No formal Responsible AI Committee. Decisions inconsistent across initiatives.</div></div>
+  <div class="gap-card"><div class="gap-title">Purview Not Operational</div><div class="gap-impact">Data governance tooling deployed but not operationalized. Classification risk.</div></div>
+  <div class="gap-card"><div class="gap-title">PATH Definition</div><div class="gap-impact">Organizational confusion about scope. Platform vs. service distinction unclear.</div></div>
 </div>
 
-<!-- OUTCOMES -->
 <div class="section-label">05 · Target Outcomes — PATH + HAIL Convergence</div>
 <div class="outcomes">
-  <div class="outcome-card">
-    <span class="outcome-icon">🏛️</span>
-    <div class="outcome-text">Enterprise AI onboarding model</div>
-  </div>
-  <div class="outcome-card">
-    <span class="outcome-icon">🔒</span>
-    <div class="outcome-text">Governed AI execution environment</div>
-  </div>
-  <div class="outcome-card">
-    <span class="outcome-icon">📡</span>
-    <div class="outcome-text">Scalable analytics + AI ecosystem</div>
-  </div>
-  <div class="outcome-card">
-    <span class="outcome-icon">⚖️</span>
-    <div class="outcome-text">Defensible regulatory decisions</div>
-  </div>
-  <div class="outcome-card">
-    <span class="outcome-icon">🩺</span>
-    <div class="outcome-text">Real-time public health intelligence</div>
-  </div>
+  <div class="outcome-card"><span class="outcome-icon">🏛️</span><div class="outcome-text">Enterprise AI onboarding model</div></div>
+  <div class="outcome-card"><span class="outcome-icon">🔒</span><div class="outcome-text">Governed AI execution environment</div></div>
+  <div class="outcome-card"><span class="outcome-icon">📡</span><div class="outcome-text">Scalable analytics + AI ecosystem</div></div>
+  <div class="outcome-card"><span class="outcome-icon">⚖️</span><div class="outcome-text">Defensible regulatory decisions</div></div>
+  <div class="outcome-card"><span class="outcome-icon">🩺</span><div class="outcome-text">Real-time public health intelligence</div></div>
 </div>
 
-<!-- FOOTER -->
 <div class="footer">
   <div class="footer-left">
     Health Canada · Public Health Agency of Canada<br>
