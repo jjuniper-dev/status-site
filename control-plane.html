@@ -4,53 +4,244 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Control Plane — PATH</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
 <style>
-:root{--teal:#00C8C8;--bg:#07090F;--bg2:#0D1117;--border:rgba(255,255,255,0.10);--text:#F0F4FA;--text-dim:#B0BFCF;--mono:'IBM Plex Mono';--sans:'IBM Plex Sans'}
+:root{
+  --teal:#00C8C8;
+  --red:#E8192E;
+  --gold:#F9D030;
+  --blue:#5FA8E8;
+  --bg:#07090F;
+  --bg2:#0D1117;
+  --bg3:#131920;
+  --border:rgba(255,255,255,0.10);
+  --text:#F0F4FA;
+  --text-dim:#B0BFCF;
+  --text-faint:#6A7D90;
+  --mono:'IBM Plex Mono', monospace;
+  --sans:'IBM Plex Sans', sans-serif;
+  --cond:'IBM Plex Sans Condensed', sans-serif;
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);padding:28px 40px}
-.topnav{position:sticky;top:0;z-index:1000;display:flex;justify-content:space-between;background:rgba(13,17,23,.96);padding:12px;border:1px solid var(--border)}
-.topnav a{color:var(--text-dim);text-decoration:none;font-family:var(--mono);font-size:10px;border:1px solid var(--border);padding:6px 10px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.55;width:1100px;margin:0 auto;padding:28px 40px 64px}
+.topnav{position:sticky;top:0;z-index:1000;display:flex;justify-content:space-between;align-items:center;gap:16px;background:rgba(13,17,23,.96);padding:12px 16px;border:1px solid var(--border);backdrop-filter:blur(6px);margin-bottom:10px}
+.topnav-label{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-faint)}
+.topnav-links{display:flex;gap:10px;flex-wrap:wrap}
+.topnav a{color:var(--text-dim);text-decoration:none;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--border);padding:6px 10px;background:rgba(255,255,255,.04)}
 .topnav a.active{color:var(--teal);border-color:var(--teal)}
-.breadcrumb{font-family:var(--mono);font-size:10px;color:#6A7D90;opacity:.6;margin:16px 0}
-.section{margin-top:30px}
-.card{border:1px solid var(--border);background:var(--bg2);padding:16px;margin-bottom:16px}
+.topnav a:hover{color:#fff;border-color:var(--teal)}
+.breadcrumb{font-family:var(--mono);font-size:10px;color:var(--text-faint);opacity:.6;margin:16px 0 22px}
+.header{display:grid;grid-template-columns:1fr auto;align-items:start;border-bottom:2px solid var(--teal);padding-bottom:24px;margin-bottom:36px;gap:24px}
+.header-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--teal);text-transform:uppercase;margin-bottom:8px}
+.header-title{font-family:var(--cond);font-size:42px;font-weight:700;line-height:1;color:#fff}
+.header-sub{font-size:14px;color:var(--text-dim);margin-top:10px;line-height:1.6}
+.badge{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.12em;padding:5px 11px;border:1px solid;text-transform:uppercase;margin-bottom:6px}
+.badge-teal{border-color:var(--teal);color:var(--teal)}
+.badge-gold{border-color:var(--gold);color:var(--gold)}
+.badge-red{border-color:var(--red);color:var(--red)}
+.positioning{background:linear-gradient(135deg,#0f1d2e 0%,#0d1520 100%);border-left:3px solid var(--teal);padding:20px 26px;margin-bottom:36px;display:flex;align-items:center;gap:22px}
+.positioning-label{font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:.15em;text-transform:uppercase;white-space:nowrap;writing-mode:vertical-rl;transform:rotate(180deg)}
+.positioning-text{font-family:var(--cond);font-size:22px;font-weight:700;line-height:1.35;color:#fff}
+.positioning-text em{color:var(--teal);font-style:normal}
+.section-label{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-faint);margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:36px}
+.card{border:1px solid var(--border);background:linear-gradient(160deg,var(--bg2),var(--bg3));padding:18px 20px}
+.card-title{font-family:var(--cond);font-size:22px;color:#fff;margin-bottom:10px}
+.card-sub{font-size:13px;color:var(--text-dim);line-height:1.6;margin-bottom:14px}
+.card-list{list-style:none}
+.card-list li{font-size:13px;color:var(--text-dim);padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:8px}
+.card-list li::before{content:'→';color:var(--teal);flex-shrink:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{font-size:12px;padding:6px 10px;border:1px solid var(--border);color:var(--text-dim);background:rgba(255,255,255,.04)}
+.stack{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:36px}
+.stack-item{border:1px solid var(--border);background:var(--bg2);padding:16px}
+.stack-item h3{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:8px}
+.stack-item p{font-size:13px;color:var(--text-dim);line-height:1.6}
+.stack-item ul{list-style:none;margin-top:10px}
+.stack-item li{font-size:13px;color:var(--text-dim);padding:5px 0;display:flex;gap:8px}
+.stack-item li::before{content:'•';color:var(--gold);flex-shrink:0}
+.footer{display:flex;justify-content:space-between;align-items:center;padding-top:22px;border-top:1px solid var(--border)}
+.footer-left,.footer-right{font-family:var(--mono);font-size:10px;color:var(--text-faint);line-height:1.8}.footer-right{text-align:right}
 </style>
 </head>
 <body>
 <div class="topnav">
-<div>Navigation</div>
-<div>
-<a href="index.html">Overview</a>
-<a href="path-architecture.html">PATH</a>
-<a class="active" href="control-plane.html">Control Plane</a>
-</div>
-</div>
-<div class="breadcrumb">Overview > Control Plane</div>
-<h1>PATH Control Plane</h1>
-
-<div class="section">
-<div class="card">
-<strong>API Management (Gatekeeper)</strong>
-<p>Central routing for all AI calls, enforcing policy, rate limits, and audit logging.</p>
-</div>
-<div class="card">
-<strong>Audit Logging</strong>
-<p>Captures prompt, response, tokens, identity, and policy version for compliance.</p>
-</div>
-<div class="card">
-<strong>CI/CD Governance Gates</strong>
-<p>Security, Privacy, EA, and Data Science approvals required before production deployment.</p>
-</div>
-<div class="card">
-<strong>Identity & Access</strong>
-<p>Microsoft Entra ID, RBAC, and PIM enforce least privilege and traceability.</p>
-</div>
-<div class="card">
-<strong>Data Controls</strong>
-<p>Purview classification, regional enforcement, and Protected B controls applied.</p>
-</div>
+  <div class="topnav-label">Status Site Navigation</div>
+  <div class="topnav-links">
+    <a href="index.html">Overview</a>
+    <a href="path-architecture.html">PATH</a>
+    <a class="active" href="control-plane.html">Control Plane</a>
+  </div>
 </div>
 
+<div class="breadcrumb">Overview &gt; Control Plane</div>
+
+<div class="header">
+  <div>
+    <div class="header-eyebrow">Enterprise AI — Runtime Governance and Enforcement</div>
+    <div class="header-title">PATH Control Plane</div>
+    <div class="header-sub">
+      Health Canada (HC) · Runtime control model for governed AI delivery<br>
+      API gatekeeping, auditability, approvals, and production promotion logic
+    </div>
+  </div>
+  <div>
+    <div><span class="badge badge-teal">Runtime Enforcement</span></div>
+    <div><span class="badge badge-gold">Control Plane</span></div>
+    <div><span class="badge badge-red">Protected B Target</span></div>
+  </div>
+</div>
+
+<div class="positioning">
+  <div class="positioning-label">Core Position</div>
+  <div class="positioning-text">
+    The control plane is where <em>enterprise governance becomes runtime enforcement</em>.
+  </div>
+</div>
+
+<div class="section-label">01 · Core Enforcement Components</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">API Management Gatekeeper</div>
+    <div class="card-sub">All AI requests should traverse a governed gateway rather than calling models directly.</div>
+    <ul class="card-list">
+      <li>Single control point for routing AI traffic</li>
+      <li>Rate limiting and project-level throttling</li>
+      <li>Authentication and token validation</li>
+      <li>Standardized audit and telemetry capture</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="card-title">Audit and Traceability Layer</div>
+    <div class="card-sub">Runtime events must support defensibility, review, and post-incident analysis.</div>
+    <ul class="card-list">
+      <li>Prompt and response capture</li>
+      <li>User identity and project attribution</li>
+      <li>Model version and policy version logging</li>
+      <li>Token metering and usage evidence</li>
+    </ul>
+  </div>
+</div>
+
+<div class="section-label">02 · Token Metering / FinOps</div>
+<div class="stack">
+  <div class="stack-item">
+    <h3>Usage Metering</h3>
+    <p>Token consumption should be measured at the project level so costs can be attributed, monitored, and constrained before scaling creates enterprise ambiguity.</p>
+    <ul>
+      <li>Track input and output tokens per request</li>
+      <li>Associate usage with project ID, branch, and cost centre</li>
+      <li>Support chargeback or showback reporting</li>
+      <li>Surface budget alerts before consumption breaches planning assumptions</li>
+    </ul>
+  </div>
+  <div class="stack-item">
+    <h3>FinOps Controls</h3>
+    <p>FinOps is not a reporting afterthought; it is a scaling control. Shared AI services become unmanageable when billing ownership is vague.</p>
+    <ul>
+      <li>Per-client or per-project isolation where required for clean attribution</li>
+      <li>Consumption dashboards for platform and client owners</li>
+      <li>Threshold alerts for abnormal growth or runaway inference patterns</li>
+      <li>Evidence base for shared versus isolated architecture decisions</li>
+    </ul>
+  </div>
+</div>
+
+<div class="section-label">03 · Model Catalog and Approval</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">Approved Model Catalog</div>
+    <div class="card-sub">The platform should expose an allow-list of approved models rather than permitting uncontrolled selection by default.</div>
+    <div class="chips">
+      <span class="chip">Approved models only</span>
+      <span class="chip">Version visibility</span>
+      <span class="chip">Risk-tier tagging</span>
+      <span class="chip">Use-case alignment</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Model Approval Logic</div>
+    <div class="card-sub">Model selection should reflect policy, data sensitivity, and operational suitability — not just convenience or novelty.</div>
+    <ul class="card-list">
+      <li>Approval criteria tied to classification and policy posture</li>
+      <li>Documented rationale for new model admission</li>
+      <li>Fallback and retirement process for deprecated models</li>
+      <li>Visibility into where each model is currently in use</li>
+    </ul>
+  </div>
+</div>
+
+<div class="section-label">04 · RAG Pipeline Controls</div>
+<div class="stack">
+  <div class="stack-item">
+    <h3>Knowledge Ingestion Controls</h3>
+    <p>Retrieval quality depends on disciplined ingestion, classification filtering, and source governance. The RAG layer cannot be trusted if the knowledge layer is not controlled.</p>
+    <ul>
+      <li>Restrict ingestion by classification and approved source</li>
+      <li>Maintain source traceability and refresh cadence</li>
+      <li>Prevent hidden mixing of trusted and untrusted corpora</li>
+      <li>Retain evidence of what source grounded an answer</li>
+    </ul>
+  </div>
+  <div class="stack-item">
+    <h3>Retrieval and Response Controls</h3>
+    <p>The runtime should enforce consistent retrieval behavior so responses remain explainable, reviewable, and operationally defensible.</p>
+    <ul>
+      <li>Approved indexes and embedding patterns only</li>
+      <li>Prompt templates that preserve citation and grounding structure</li>
+      <li>Output logging for grounded versus ungrounded responses</li>
+      <li>Human review escalation for high-risk or ambiguous results</li>
+    </ul>
+  </div>
+</div>
+
+<div class="section-label">05 · Environment Promotion (Dev → Test → Prod)</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">Promotion Gates</div>
+    <div class="card-sub">Advancement between environments should be conditional, recorded, and reviewable — especially for AI workloads with policy implications.</div>
+    <ul class="card-list">
+      <li>Development for experimentation and pattern validation</li>
+      <li>Test for structured control verification and pre-production review</li>
+      <li>Production only after explicit cross-functional approval</li>
+      <li>No silent promotion path around governance checkpoints</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="card-title">Approval Workflow</div>
+    <div class="card-sub">Production movement should reflect enterprise accountability, not just technical readiness.</div>
+    <div class="chips">
+      <span class="chip">Security review</span>
+      <span class="chip">Privacy review</span>
+      <span class="chip">EA review</span>
+      <span class="chip">Data science review</span>
+      <span class="chip">Recorded sign-off</span>
+    </div>
+  </div>
+</div>
+
+<div class="section-label">06 · Control Plane Summary</div>
+<div class="card">
+  <div class="card-title">Why This Matters</div>
+  <div class="card-sub">Without the control plane, AI delivery becomes fragmented: inconsistent models, weak cost visibility, unclear approvals, and limited defensibility. With the control plane, governance becomes repeatable and scalable.</div>
+  <div class="chips">
+    <span class="chip">Gatekeeper routing</span>
+    <span class="chip">Auditability</span>
+    <span class="chip">FinOps discipline</span>
+    <span class="chip">RAG governance</span>
+    <span class="chip">Controlled promotion</span>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-left">
+    Health Canada · Digital Transformation Branch<br>
+    EA / TPO / ARB Context — Internal Use Only
+  </div>
+  <div class="footer-right">
+    Version 1.3 · April 2026
+  </div>
+</div>
 </body>
 </html>
