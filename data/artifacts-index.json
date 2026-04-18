@@ -62,5 +62,31 @@
     "related": [
       "Enterprise Architecture"
     ]
+  },
+  {
+    "id": "ea-artifact-003",
+    "title": "Agentic Workflow Framework V1",
+    "date": "2026-04-18",
+    "artifact_type": "diagram",
+    "domain": [
+      "Enterprise Architecture",
+      "AI"
+    ],
+    "topics": [
+      "Agents"
+    ],
+    "summary": "Auto-ingested artifact generated from uploaded file: agentic-workflow-framework-v1.jpeg. Review and refine metadata as needed.",
+    "keywords": [
+      "agentic-workflow-framework-v1",
+      "agents",
+      "artifact",
+      "ea"
+    ],
+    "source_file": "artifacts/images/agentic-workflow-framework-v1.jpeg",
+    "detail_page": "artifact-agentic-workflow-framework-v1.html",
+    "status": "draft",
+    "related": [
+      "Enterprise Architecture"
+    ]
   }
 ]
