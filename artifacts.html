@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EA Artifacts</title>
+<style>
+body{background:#07090F;color:#F0F4FA;font-family:Arial;padding:30px}
+input{padding:10px;width:100%;margin-bottom:20px}
+.card{border:1px solid #333;padding:15px;margin-bottom:10px}
+a{color:#00C8C8;text-decoration:none}
+</style>
+</head>
+<body>
+<h1>EA Artifacts</h1>
+<input id="search" placeholder="Search artifacts..." onkeyup="filter()">
+<div id="list"></div>
+<script>
+let data=[];
+fetch('data/artifacts-index.json').then(r=>r.json()).then(d=>{data=d;render(d)});
+function render(items){
+  document.getElementById('list').innerHTML = items.map(i=>
+    `<div class='card'><a href='${i.detail_page}'><b>${i.title}</b></a><br>${i.summary}</div>`
+  ).join('');
+}
+function filter(){
+  let q=document.getElementById('search').value.toLowerCase();
+  render(data.filter(i=>JSON.stringify(i).toLowerCase().includes(q)));
+}
+</script>
+</body>
+</html>
