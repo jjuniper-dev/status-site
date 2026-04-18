@@ -6,26 +6,318 @@
 <title>PATH — Reference Architecture</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
 <style>
-:root{--teal:#00C8C8;--bg:#07090F;--bg2:#0D1117;--border:rgba(255,255,255,0.10);--text:#F0F4FA;--text-dim:#B0BFCF;--text-faint:#6A7D90;--mono:'IBM Plex Mono';--sans:'IBM Plex Sans'}
+:root{
+  --teal:#00C8C8;
+  --bg:#07090F;
+  --bg2:#0D1117;
+  --bg3:#111827;
+  --card:#0F1520;
+  --border:rgba(255,255,255,0.10);
+  --border-strong:rgba(0,200,200,0.30);
+  --text:#F0F4FA;
+  --text-dim:#B0BFCF;
+  --text-faint:#6A7D90;
+  --green:#7CFFB2;
+  --amber:#F5C26B;
+  --mono:'IBM Plex Mono', monospace;
+  --sans:'IBM Plex Sans', sans-serif;
+  --condensed:'IBM Plex Sans Condensed', sans-serif;
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);padding:28px 40px}
-.topnav{position:sticky;top:0;z-index:1000;display:flex;justify-content:space-between;background:rgba(13,17,23,.96);padding:12px;border:1px solid var(--border)}
-.topnav a{color:var(--text-dim);text-decoration:none;font-family:var(--mono);font-size:10px;border:1px solid var(--border);padding:6px 10px}
-.topnav a.active{color:var(--teal);border-color:var(--teal)}
-.breadcrumb{font-family:var(--mono);font-size:10px;color:var(--text-faint);opacity:.6;margin:16px 0}
+html{scroll-behavior:smooth}
+body{background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--text);font-family:var(--sans);padding:28px 40px 60px;line-height:1.55}
+a{color:var(--teal);text-decoration:none}
+a:hover{text-decoration:underline}
+.topnav{position:sticky;top:0;z-index:1000;display:flex;justify-content:space-between;align-items:center;gap:16px;background:rgba(13,17,23,.96);backdrop-filter:blur(6px);padding:12px 14px;border:1px solid var(--border);margin-bottom:16px}
+.topnav .brand{font-family:var(--mono);font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.08em}
+.topnav .links{display:flex;gap:8px;flex-wrap:wrap}
+.topnav a{color:var(--text-dim);text-decoration:none;font-family:var(--mono);font-size:10px;border:1px solid var(--border);padding:6px 10px;background:rgba(255,255,255,0.01)}
+.topnav a.active{color:var(--teal);border-color:var(--teal);box-shadow:0 0 0 1px rgba(0,200,200,.12) inset}
+.breadcrumb{font-family:var(--mono);font-size:10px;color:var(--text-faint);opacity:.75;margin:10px 0 18px}
+.hero{display:grid;grid-template-columns:1.5fr .9fr;gap:22px;align-items:start;margin-bottom:26px}
+.hero-card,.card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px solid var(--border);padding:22px}
+.eyebrow{font-family:var(--mono);font-size:11px;color:var(--teal);text-transform:uppercase;letter-spacing:.14em;margin-bottom:10px}
+h1{font-family:var(--condensed);font-size:42px;line-height:1.05;letter-spacing:.01em;margin-bottom:12px}
+.hero p.lead{font-size:17px;color:var(--text-dim);max-width:900px}
+.kpi-stack{display:grid;gap:12px}
+.kpi{border:1px solid var(--border);background:rgba(255,255,255,.015);padding:14px}
+.kpi .label{font-family:var(--mono);font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.kpi .value{font-size:16px;font-weight:600;color:var(--text)}
+.section{margin-top:28px}
+.section h2{font-family:var(--condensed);font-size:28px;line-height:1.1;margin-bottom:14px}
+.section-intro{color:var(--text-dim);max-width:1000px;margin-bottom:16px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.subcard{background:var(--card);border:1px solid var(--border);padding:18px}
+.subcard h3{font-size:17px;margin-bottom:10px}
+.subcard p{color:var(--text-dim);font-size:14px}
+.tag{display:inline-block;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);border:1px solid var(--border-strong);padding:4px 8px;margin-bottom:10px}
+.diagram{display:grid;gap:14px}
+.layer{border:1px solid var(--border);background:linear-gradient(180deg,rgba(0,200,200,.04),rgba(255,255,255,.015));padding:16px}
+.layer h3{font-size:18px;margin-bottom:8px}
+.layer p{color:var(--text-dim);margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-family:var(--mono);font-size:11px;color:var(--text-dim);border:1px solid var(--border);padding:6px 9px;background:rgba(255,255,255,.02)}
+.callout{border-left:3px solid var(--teal);padding:14px 16px;background:rgba(0,200,200,.06);color:var(--text-dim)}
+.list{display:grid;gap:10px}
+.list-item{padding:12px 14px;border:1px solid var(--border);background:rgba(255,255,255,.015)}
+.list-item strong{color:var(--text)}
+.compare{width:100%;border-collapse:collapse;margin-top:8px}
+.compare th,.compare td{border:1px solid var(--border);padding:12px 12px;text-align:left;vertical-align:top}
+.compare th{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-faint);background:rgba(255,255,255,.02)}
+.compare td{color:var(--text-dim)}
+.footer-note{margin-top:30px;font-family:var(--mono);font-size:11px;color:var(--text-faint)}
+@media (max-width: 980px){
+  body{padding:20px}
+  .hero,.grid-2,.grid-3{grid-template-columns:1fr}
+  h1{font-size:34px}
+}
 </style>
 </head>
 <body>
-<div class="topnav">
-<div>Navigation</div>
-<div>
-<a href="index.html">Overview</a>
-<a class="active" href="path-architecture.html">PATH</a>
-<a href="control-plane.html">Control Plane</a>
-</div>
-</div>
-<div class="breadcrumb">Overview > PATH Architecture</div>
-<h1>PATH Architecture</h1>
-<p>Detailed control plane context and runtime enforcement model.</p>
+  <div class="topnav">
+    <div class="brand">status-site / enterprise architecture</div>
+    <div class="links">
+      <a href="index.html">Overview</a>
+      <a class="active" href="path-architecture.html">PATH</a>
+      <a href="control-plane.html">Control Plane</a>
+    </div>
+  </div>
+
+  <div class="breadcrumb">Overview &gt; PATH Architecture</div>
+
+  <section class="hero">
+    <div class="hero-card">
+      <div class="eyebrow">Protected AI Technology Hub</div>
+      <h1>PATH is the enterprise AI control plane for HC/PHAC</h1>
+      <p class="lead">PATH is not a single app, a data platform, or a lab. It is the governed operating layer that makes repeatable AI delivery possible across the enterprise through policy-enforced access, standardized deployment patterns, end-to-end auditability, and cost-attributed execution.</p>
+    </div>
+    <div class="kpi-stack">
+      <div class="kpi">
+        <div class="label">Primary role</div>
+        <div class="value">Governed AI execution and control inheritance</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Architectural stance</div>
+        <div class="value">Control plane above multiple runtime implementations</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Key boundary</div>
+        <div class="value">Enterprise controls shared centrally, project execution isolated logically and financially</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Why PATH exists</h2>
+    <p class="section-intro">The problem is not that teams lack access to models. The problem is that AI patterns remain partial, cross-team dependent, difficult to operationalize end-to-end, and inconsistent in how they handle identity, ingress, audit, and cost management. PATH exists to convert fragmented experimentation into a repeatable enterprise capability.</p>
+    <div class="grid-3">
+      <div class="subcard">
+        <span class="tag">Current-state issue</span>
+        <h3>Partial delivery patterns</h3>
+        <p>AI components may exist, but they do not arrive as a complete, deployable, inherited enterprise pattern. Teams assemble too much by hand.</p>
+      </div>
+      <div class="subcard">
+        <span class="tag">Current-state issue</span>
+        <h3>Unclear runtime governance</h3>
+        <p>Model access, prompt logging, approvals, network controls, and telemetry can vary by initiative, creating review friction and weak defensibility.</p>
+      </div>
+      <div class="subcard">
+        <span class="tag">Current-state issue</span>
+        <h3>Cost and accountability gaps</h3>
+        <p>Without a shared control model, AI consumption is harder to attribute, meter, budget, and govern at a project or branch level.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Core architecture model</h2>
+    <p class="section-intro">PATH should be read as a layered operating model. The enterprise defines and enforces controls once, then projects inherit those controls through a standardized runtime pattern.</p>
+    <div class="diagram">
+      <div class="layer">
+        <h3>1. Enterprise control plane</h3>
+        <p>Central governance, policy, gateway, observability, identity, and approval services. This is the layer that normalizes AI across the organization.</p>
+        <div class="chips">
+          <span class="chip">Microsoft Entra ID</span>
+          <span class="chip">Azure API Management</span>
+          <span class="chip">Azure Policy</span>
+          <span class="chip">Microsoft Purview</span>
+          <span class="chip">Azure Monitor / Log Analytics</span>
+          <span class="chip">Microsoft Defender for Cloud</span>
+          <span class="chip">Azure Cost Management</span>
+        </div>
+      </div>
+      <div class="layer">
+        <h3>2. Project runtime plane</h3>
+        <p>Dedicated or logically isolated project execution environments that consume enterprise controls rather than recreating them. Projects deploy AI capabilities here, but do so within inherited guardrails.</p>
+        <div class="chips">
+          <span class="chip">AI Foundry workspace / project</span>
+          <span class="chip">Azure OpenAI access via APIM</span>
+          <span class="chip">Azure AI Search for RAG</span>
+          <span class="chip">Functions / Logic Apps / App Services</span>
+          <span class="chip">ADLS Gen2 / project data stores</span>
+          <span class="chip">Private endpoints / VNET integration</span>
+        </div>
+      </div>
+      <div class="layer">
+        <h3>3. Reuse and platform services</h3>
+        <p>Shared accelerators, templates, approved patterns, and reusable enterprise services that reduce duplication and improve consistency.</p>
+        <div class="chips">
+          <span class="chip">Shared model allow-list</span>
+          <span class="chip">Prompt / policy templates</span>
+          <span class="chip">Shared RAG patterns</span>
+          <span class="chip">FinOps dashboards</span>
+          <span class="chip">Approval workflows</span>
+          <span class="chip">Reference architectures</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="callout">
+      <strong>Key principle:</strong> PATH is the control plane, not the only runtime. It governs and standardizes how AI runs. Different runtime implementations can exist beneath it, provided they inherit and comply with the enterprise control model.
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Control responsibilities</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3 style="margin-bottom:12px">What PATH centrally enforces</h3>
+        <div class="list">
+          <div class="list-item"><strong>Identity and access:</strong> enterprise authentication, role boundaries, privileged access discipline, and traceable user or service identity.</div>
+          <div class="list-item"><strong>Model gateway control:</strong> all model traffic routed through a governed enterprise gatekeeper to enforce policy, rate limits, token metering, and audit capture.</div>
+          <div class="list-item"><strong>Telemetry and audit:</strong> standardized logging of prompts, responses, model IDs, timestamps, project IDs, policy version, and operational traces.</div>
+          <div class="list-item"><strong>Compliance inheritance:</strong> reusable control baselines for privacy, security, architecture review, records defensibility, and location constraints.</div>
+          <div class="list-item"><strong>FinOps:</strong> project-level cost attribution, budgeting, and consumption visibility.</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom:12px">What projects remain responsible for</h3>
+        <div class="list">
+          <div class="list-item"><strong>Business purpose:</strong> clear use case scope, expected outcomes, human oversight design, and operational ownership.</div>
+          <div class="list-item"><strong>Data readiness:</strong> lawful and appropriate data sourcing, curation, quality controls, and workload-specific access design.</div>
+          <div class="list-item"><strong>Application logic:</strong> prompts, orchestration, retrieval patterns, user experience, workflow integration, and fallback paths.</div>
+          <div class="list-item"><strong>Risk handling:</strong> workload-specific mitigations, testing, exception handling, and escalation design where decisions are sensitive.</div>
+          <div class="list-item"><strong>Operational delivery:</strong> service support model, release discipline, backlog, and product lifecycle management.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Why the gateway matters</h2>
+    <p class="section-intro">Azure API Management is the architectural choke point that gives PATH real control-plane authority. Without a single enterprise gateway, logging, rate control, policy enforcement, and model governance fragment quickly.</p>
+    <div class="grid-3">
+      <div class="subcard">
+        <span class="tag">Gateway function</span>
+        <h3>Policy enforcement</h3>
+        <p>Central point to enforce approved model lists, request constraints, routing rules, and environment-specific controls.</p>
+      </div>
+      <div class="subcard">
+        <span class="tag">Gateway function</span>
+        <h3>Audit source of truth</h3>
+        <p>Consistent prompt and response capture, token counts, and project attribution create a defensible audit trail across workloads.</p>
+      </div>
+      <div class="subcard">
+        <span class="tag">Gateway function</span>
+        <h3>Operational control</h3>
+        <p>Shared throttling, key abstraction, usage quotas, and route management reduce duplication and simplify governance.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Isolation and cost attribution</h2>
+    <p class="section-intro">PATH aims for shared enterprise controls with project-level execution separation. In practice, this means using logical or subscription-level isolation where needed to preserve security boundaries, operational clarity, and hard FinOps attribution.</p>
+    <table class="compare">
+      <thead>
+        <tr>
+          <th>Architectural concern</th>
+          <th>Shared centrally</th>
+          <th>Isolated per project / program</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Identity and baseline policy</td>
+          <td>Enterprise RBAC model, policy sets, approved patterns</td>
+          <td>Workload-specific access assignments and approvals</td>
+        </tr>
+        <tr>
+          <td>Model governance</td>
+          <td>Gateway rules, allow-listing, logging schema, enterprise routing logic</td>
+          <td>Prompt design, orchestration flow, use-case-specific toolchains</td>
+        </tr>
+        <tr>
+          <td>Cost management</td>
+          <td>Common dashboarding, tagging standards, budget policy</td>
+          <td>Project budget ownership, token usage accountability, chargeback visibility</td>
+        </tr>
+        <tr>
+          <td>Runtime components</td>
+          <td>Reference patterns and reusable templates</td>
+          <td>Search indexes, functions, apps, storage, and data products tied to the workload</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <h2>Relationship to HAIL</h2>
+    <p class="section-intro">HAIL and PATH are related, but they are not the same thing. HAIL is best understood as an operational runtime environment or landing zone pattern. PATH is the broader enterprise control model that should govern and standardize how such runtimes operate.</p>
+    <div class="grid-2">
+      <div class="card">
+        <h3 style="margin-bottom:12px">HAIL</h3>
+        <div class="list">
+          <div class="list-item"><strong>Nature:</strong> operational platform / landing zone implementation.</div>
+          <div class="list-item"><strong>Focus:</strong> enabling teams to build and run workloads.</div>
+          <div class="list-item"><strong>Strength:</strong> tangible runtime delivery and experimentation support.</div>
+          <div class="list-item"><strong>Risk if left alone:</strong> runtime capability without full enterprise control-plane convergence can remain local rather than institutionalized.</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom:12px">PATH</h3>
+        <div class="list">
+          <div class="list-item"><strong>Nature:</strong> enterprise AI control plane and operating model.</div>
+          <div class="list-item"><strong>Focus:</strong> shared governance, standardization, inheritance, and defensibility.</div>
+          <div class="list-item"><strong>Strength:</strong> creates reusable enterprise conditions for safe scaling.</div>
+          <div class="list-item"><strong>Target posture:</strong> multiple runtimes can align beneath PATH so the enterprise converges instead of fragmenting.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Decision-grade interpretation</h2>
+    <div class="grid-3">
+      <div class="subcard">
+        <span class="tag">Decision point</span>
+        <h3>Do not define PATH as a tool bundle</h3>
+        <p>That framing weakens architecture discipline. PATH must be positioned as the enterprise operating layer for governed AI.</p>
+      </div>
+      <div class="subcard">
+        <span class="tag">Decision point</span>
+        <h3>Keep the gateway central</h3>
+        <p>If model access bypasses the enterprise gateway, PATH loses its ability to enforce controls consistently.</p>
+      </div>
+      <div class="subcard">
+        <span class="tag">Decision point</span>
+        <h3>Converge runtimes under one model</h3>
+        <p>The enterprise should avoid parallel AI environments drifting into separate governance and operational regimes.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Bottom line</h2>
+    <div class="card">
+      <p style="font-size:18px;color:var(--text)"><strong>PATH is the operating system for enterprise AI at HC/PHAC.</strong></p>
+      <p style="margin-top:10px;color:var(--text-dim)">It turns scattered AI capability into a governed enterprise service by separating shared control responsibilities from project execution, enforcing model access through a central gatekeeper, and making security, auditability, and cost attribution inheritable rather than repeatedly rebuilt.</p>
+    </div>
+  </section>
+
+  <div class="footer-note">Status: working reference architecture page for status-site. Update this page as the control-plane / runtime convergence model evolves.</div>
 </body>
 </html>
