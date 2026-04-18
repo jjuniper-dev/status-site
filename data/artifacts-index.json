@@ -4,13 +4,63 @@
     "title": "Enterprise Automation Model — Agents, BPA, RPA, and Human Oversight",
     "date": "2026-04-18",
     "artifact_type": "diagram",
-    "domain": ["Enterprise Architecture", "Automation", "AI"],
-    "topics": ["Agents", "BPA", "RPA", "Human-in-the-Loop", "Governance"],
+    "domain": [
+      "Enterprise Architecture",
+      "Automation",
+      "AI"
+    ],
+    "topics": [
+      "Agents",
+      "BPA",
+      "RPA",
+      "Human-in-the-Loop",
+      "Governance"
+    ],
     "summary": "Conceptual enterprise automation model showing the relationship between AI agents, business process automation, robotic process automation, governance, logging, and human-in-the-loop oversight.",
-    "keywords": ["agents", "BPA", "RPA", "automation", "human oversight", "governance", "workflow orchestration", "logging", "policy"],
+    "keywords": [
+      "agents",
+      "BPA",
+      "RPA",
+      "automation",
+      "human oversight",
+      "governance",
+      "workflow orchestration",
+      "logging",
+      "policy"
+    ],
     "source_file": "artifacts/images/enterprise-automation-model-agents-bpa-rpa-hitl.jpeg",
     "detail_page": "artifact-enterprise-automation-model-agents-bpa-rpa-hitl.html",
     "status": "draft",
-    "related": ["PATH", "Control Plane", "Agentic Tooling"]
+    "related": [
+      "PATH",
+      "Control Plane",
+      "Agentic Tooling"
+    ]
+  },
+  {
+    "id": "ea-artifact-002",
+    "title": "Readme",
+    "date": "2026-04-18",
+    "artifact_type": "document",
+    "domain": [
+      "Enterprise Architecture",
+      "AI"
+    ],
+    "topics": [
+      "Enterprise Architecture"
+    ],
+    "summary": "Auto-ingested artifact generated from uploaded file: README.md. Review and refine metadata as needed.",
+    "keywords": [
+      "artifact",
+      "ea",
+      "enterprise architecture",
+      "readme"
+    ],
+    "source_file": "artifacts/inbox/README.md",
+    "detail_page": "artifact-readme.html",
+    "status": "draft",
+    "related": [
+      "Enterprise Architecture"
+    ]
   }
 ]
