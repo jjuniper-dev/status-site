@@ -38,211 +38,251 @@
     ]
   },
   {
-    "id": "ea-artifact-002",
-    "title": "Readme",
-    "date": "2026-04-18",
-    "artifact_type": "document",
-    "domain": [
-      "Enterprise Architecture",
-      "AI"
-    ],
-    "topics": [
-      "Enterprise Architecture"
-    ],
-    "summary": "Auto-ingested artifact generated from uploaded file: README.md. Review and refine metadata as needed.",
-    "keywords": [
-      "artifact",
-      "ea",
-      "enterprise architecture",
-      "readme"
-    ],
-    "source_file": "artifacts/inbox/README.md",
-    "detail_page": "artifact-readme.html",
-    "status": "draft",
-    "related": [
-      "Enterprise Architecture"
-    ]
-  },
-  {
     "id": "ea-artifact-003",
-    "title": "Agentic Workflow Framework V1",
+    "title": "Agentic Workflow Framework v1.0",
     "date": "2026-04-18",
     "artifact_type": "diagram",
     "domain": [
       "Enterprise Architecture",
-      "AI"
+      "AI",
+      "Agentic Tooling"
     ],
     "topics": [
-      "Agents"
+      "Agents",
+      "Decision Routing",
+      "Execution Pathways",
+      "MCP",
+      "Human-in-the-Loop"
     ],
-    "summary": "Auto-ingested artifact generated from uploaded file: agentic-workflow-framework-v1.jpeg. Review and refine metadata as needed.",
+    "summary": "Decision routing and handoff model showing conversational versus execution pathways, gateway-based routing, integration through MCP, and human-in-the-loop control.",
     "keywords": [
-      "agentic-workflow-framework-v1",
+      "agentic workflow",
       "agents",
-      "artifact",
-      "ea"
+      "decision routing",
+      "handoff",
+      "chatgpt",
+      "claude",
+      "codex",
+      "replit",
+      "mcp"
     ],
     "source_file": "artifacts/images/agentic-workflow-framework-v1.jpeg",
     "detail_page": "artifact-agentic-workflow-framework-v1.html",
     "status": "draft",
     "related": [
+      "Agentic Tooling",
+      "Control Plane",
       "Enterprise Architecture"
     ]
   },
   {
     "id": "ea-artifact-004",
-    "title": "0C5Aeb5A 5Ee3 4Dbd 97D5 20E64D9D3Fa9",
+    "title": "Agentic Screening Pattern — Disagreement-Driven Decision Assurance",
     "date": "2026-04-18",
     "artifact_type": "diagram",
     "domain": [
       "Enterprise Architecture",
-      "AI"
+      "AI",
+      "Responsible AI"
     ],
     "topics": [
-      "Enterprise Architecture"
+      "Agents",
+      "Screening",
+      "Disagreement-Based Escalation",
+      "Human Review",
+      "Auditability"
     ],
-    "summary": "Auto-ingested artifact generated from uploaded file: 0C5AEB5A-5EE3-4DBD-97D5-20E64D9D3FA9.png. Review and refine metadata as needed.",
+    "summary": "Screening architecture using independent agent review, agreement and disagreement gating, ensemble arbitration, human adjudication, and prompt augmentation to improve future screening decisions.",
     "keywords": [
-      "0c5aeb5a-5ee3-4dbd-97d5-20e64d9d3fa9",
-      "artifact",
-      "ea",
-      "enterprise architecture"
+      "screening agent",
+      "critical agent",
+      "agent disagreement",
+      "ensemble arbitration",
+      "human review",
+      "decision assurance"
     ],
     "source_file": "artifacts/images/0c5aeb5a-5ee3-4dbd-97d5-20e64d9d3fa9.png",
     "detail_page": "artifact-0c5aeb5a-5ee3-4dbd-97d5-20e64d9d3fa9.html",
     "status": "draft",
     "related": [
-      "Enterprise Architecture"
+      "Responsible AI",
+      "Control Plane",
+      "Agentic Tooling"
     ]
   },
   {
     "id": "ea-artifact-005",
-    "title": "579Cf831 016B 4F3A Aeb6 3154A3D41Cc2",
+    "title": "Emerging Digital & Regulatory Capabilities at HC/PHAC",
     "date": "2026-04-18",
     "artifact_type": "diagram",
     "domain": [
       "Enterprise Architecture",
-      "AI"
+      "HC/PHAC",
+      "Capability Modeling"
     ],
     "topics": [
-      "Enterprise Architecture"
+      "Regulatory Intake",
+      "Data Management",
+      "Scientific Computing",
+      "Enterprise Service Platforms",
+      "AI-Enabled Capabilities"
     ],
-    "summary": "Auto-ingested artifact generated from uploaded file: 579CF831-016B-4F3A-AEB6-3154A3D41CC2.png. Review and refine metadata as needed.",
+    "summary": "Capability model showing four emerging HC/PHAC domains across the IT plan portfolio: regulatory intake, data management, scientific computing, and enterprise service platforms, with supporting AI-enabled capabilities.",
     "keywords": [
-      "579cf831-016b-4f3a-aeb6-3154a3d41cc2",
-      "artifact",
-      "ea",
-      "enterprise architecture"
+      "hc phac",
+      "capabilities",
+      "regulatory intake",
+      "data management",
+      "scientific computing",
+      "enterprise service platforms"
     ],
     "source_file": "artifacts/images/579cf831-016b-4f3a-aeb6-3154a3d41cc2.png",
     "detail_page": "artifact-579cf831-016b-4f3a-aeb6-3154a3d41cc2.html",
     "status": "draft",
     "related": [
-      "Enterprise Architecture"
+      "Enterprise Architecture",
+      "HC/PHAC",
+      "AI Capability Mapping"
     ]
   },
   {
     "id": "ea-artifact-006",
-    "title": "6808A533 6F95 493D Bfcc 0Cfd050B9Fab",
+    "title": "PATH — Reference Architecture",
     "date": "2026-04-18",
     "artifact_type": "diagram",
     "domain": [
       "Enterprise Architecture",
-      "AI"
+      "HC/PHAC",
+      "AI Platform"
     ],
     "topics": [
-      "Enterprise Architecture"
+      "PATH",
+      "Reference Architecture",
+      "Control Gateway",
+      "Execution Patterns",
+      "Runtime Enforcement"
     ],
-    "summary": "Auto-ingested artifact generated from uploaded file: 6808A533-6F95-493D-BFCC-0CFD050B9FAB.png. Review and refine metadata as needed.",
+    "summary": "EA-grade directional architecture for PATH showing enterprise governance, control gateway, classification bands, approved execution patterns, runtime enforcement controls, and current-state constraints.",
     "keywords": [
-      "6808a533-6f95-493d-bfcc-0cfd050b9fab",
-      "artifact",
-      "ea",
-      "enterprise architecture"
+      "path",
+      "reference architecture",
+      "control gateway",
+      "runtime enforcement",
+      "execution patterns",
+      "hc phac"
     ],
     "source_file": "artifacts/images/6808a533-6f95-493d-bfcc-0cfd050b9fab.png",
     "detail_page": "artifact-6808a533-6f95-493d-bfcc-0cfd050b9fab.html",
     "status": "draft",
     "related": [
-      "Enterprise Architecture"
+      "PATH",
+      "Control Plane",
+      "HC/PHAC"
     ]
   },
   {
     "id": "ea-artifact-007",
-    "title": "7D543Cfc 31D0 48D3 A769 3A523F40Ee1C",
+    "title": "Responsible AI Systems Compliance Model for Health Canada / PHAC",
     "date": "2026-04-18",
     "artifact_type": "diagram",
     "domain": [
       "Enterprise Architecture",
-      "AI"
+      "Responsible AI",
+      "HC/PHAC"
     ],
     "topics": [
-      "Enterprise Architecture"
+      "Trusted Enterprise AI",
+      "Values and Ethics",
+      "Privacy and Security",
+      "Audit Logging",
+      "Reporting and Accountability"
     ],
-    "summary": "Auto-ingested artifact generated from uploaded file: 7D543CFC-31D0-48D3-A769-3A523F40EE1C.png. Review and refine metadata as needed.",
+    "summary": "Compliance-oriented operating model linking trusted enterprise AI, prevention of shadow AI, values and ethics, audit logging, enterprise use cases, and reporting accountability across HC/PHAC.",
     "keywords": [
-      "7d543cfc-31d0-48d3-a769-3a523f40ee1c",
-      "artifact",
-      "ea",
-      "enterprise architecture"
+      "responsible ai",
+      "compliance model",
+      "shadow ai",
+      "audit logging",
+      "values and ethics",
+      "hc phac"
     ],
     "source_file": "artifacts/images/7d543cfc-31d0-48d3-a769-3a523f40ee1c.png",
     "detail_page": "artifact-7d543cfc-31d0-48d3-a769-3a523f40ee1c.html",
     "status": "draft",
     "related": [
-      "Enterprise Architecture"
+      "Responsible AI",
+      "PATH",
+      "HC/PHAC"
     ]
   },
   {
     "id": "ea-artifact-008",
-    "title": "E66035Fd 08Fb 48Dc Ad3D 638Cdc88D5D7",
+    "title": "Hype Cycle for Agentic AI",
     "date": "2026-04-18",
     "artifact_type": "diagram",
     "domain": [
+      "AI Strategy",
       "Enterprise Architecture",
-      "AI"
+      "Market Intelligence"
     ],
     "topics": [
-      "Enterprise Architecture"
+      "Agentic AI",
+      "Hype Cycle",
+      "Multagent Systems",
+      "AI Coding Agents",
+      "Model Context Protocol"
     ],
-    "summary": "Auto-ingested artifact generated from uploaded file: E66035FD-08FB-48DC-AD3D-638CDC88D5D7.png. Review and refine metadata as needed.",
+    "summary": "Gartner-style hype cycle view of agentic AI trends highlighting timing horizons for multagent systems, agentic analytics, coding agents, model context protocol, and related capabilities.",
     "keywords": [
-      "artifact",
-      "e66035fd-08fb-48dc-ad3d-638cdc88d5d7",
-      "ea",
-      "enterprise architecture"
+      "hype cycle",
+      "agentic ai",
+      "coding agents",
+      "mcp",
+      "gartner",
+      "market intelligence"
     ],
     "source_file": "artifacts/images/e66035fd-08fb-48dc-ad3d-638cdc88d5d7.png",
     "detail_page": "artifact-e66035fd-08fb-48dc-ad3d-638cdc88d5d7.html",
     "status": "draft",
     "related": [
-      "Enterprise Architecture"
+      "AI Strategy",
+      "Agentic Tooling",
+      "Market Intelligence"
     ]
   },
   {
     "id": "ea-artifact-009",
-    "title": "Img 1554",
+    "title": "Responsible AI Systems Compliance Model for Health Canada / PHAC",
     "date": "2026-04-18",
     "artifact_type": "diagram",
     "domain": [
       "Enterprise Architecture",
-      "AI"
+      "Responsible AI",
+      "HC/PHAC"
     ],
     "topics": [
-      "Enterprise Architecture"
+      "Trusted Enterprise AI",
+      "Values and Ethics",
+      "Privacy and Security",
+      "Audit Logging",
+      "Reporting and Accountability"
     ],
-    "summary": "Auto-ingested artifact generated from uploaded file: IMG_1554.jpeg. Review and refine metadata as needed.",
+    "summary": "Compliance-oriented operating model linking trusted enterprise AI, prevention of shadow AI, values and ethics, audit logging, enterprise use cases, and reporting accountability across HC/PHAC.",
     "keywords": [
-      "artifact",
-      "ea",
-      "enterprise architecture",
-      "img-1554"
+      "responsible ai",
+      "compliance model",
+      "shadow ai",
+      "audit logging",
+      "values and ethics",
+      "hc phac"
     ],
     "source_file": "artifacts/images/img-1554.jpeg",
     "detail_page": "artifact-img-1554.html",
     "status": "draft",
     "related": [
-      "Enterprise Architecture"
+      "Responsible AI",
+      "PATH",
+      "HC/PHAC"
     ]
   }
 ]
