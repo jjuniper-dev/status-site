@@ -1,0 +1,16 @@
+[
+  {
+    "id": "ea-artifact-001",
+    "title": "Enterprise Automation Model — Agents, BPA, RPA, and Human Oversight",
+    "date": "2026-04-18",
+    "artifact_type": "diagram",
+    "domain": ["Enterprise Architecture", "Automation", "AI"],
+    "topics": ["Agents", "BPA", "RPA", "Human-in-the-Loop", "Governance"],
+    "summary": "Conceptual enterprise automation model showing the relationship between AI agents, business process automation, robotic process automation, governance, logging, and human-in-the-loop oversight.",
+    "keywords": ["agents", "BPA", "RPA", "automation", "human oversight", "governance", "workflow orchestration", "logging", "policy"],
+    "source_file": "artifacts/images/enterprise-automation-model-agents-bpa-rpa-hitl.jpeg",
+    "detail_page": "artifact-enterprise-automation-model-agents-bpa-rpa-hitl.html",
+    "status": "draft",
+    "related": ["PATH", "Control Plane", "Agentic Tooling"]
+  }
+]
