@@ -88,5 +88,161 @@
     "related": [
       "Enterprise Architecture"
     ]
+  },
+  {
+    "id": "ea-artifact-004",
+    "title": "0C5Aeb5A 5Ee3 4Dbd 97D5 20E64D9D3Fa9",
+    "date": "2026-04-18",
+    "artifact_type": "diagram",
+    "domain": [
+      "Enterprise Architecture",
+      "AI"
+    ],
+    "topics": [
+      "Enterprise Architecture"
+    ],
+    "summary": "Auto-ingested artifact generated from uploaded file: 0C5AEB5A-5EE3-4DBD-97D5-20E64D9D3FA9.png. Review and refine metadata as needed.",
+    "keywords": [
+      "0c5aeb5a-5ee3-4dbd-97d5-20e64d9d3fa9",
+      "artifact",
+      "ea",
+      "enterprise architecture"
+    ],
+    "source_file": "artifacts/images/0c5aeb5a-5ee3-4dbd-97d5-20e64d9d3fa9.png",
+    "detail_page": "artifact-0c5aeb5a-5ee3-4dbd-97d5-20e64d9d3fa9.html",
+    "status": "draft",
+    "related": [
+      "Enterprise Architecture"
+    ]
+  },
+  {
+    "id": "ea-artifact-005",
+    "title": "579Cf831 016B 4F3A Aeb6 3154A3D41Cc2",
+    "date": "2026-04-18",
+    "artifact_type": "diagram",
+    "domain": [
+      "Enterprise Architecture",
+      "AI"
+    ],
+    "topics": [
+      "Enterprise Architecture"
+    ],
+    "summary": "Auto-ingested artifact generated from uploaded file: 579CF831-016B-4F3A-AEB6-3154A3D41CC2.png. Review and refine metadata as needed.",
+    "keywords": [
+      "579cf831-016b-4f3a-aeb6-3154a3d41cc2",
+      "artifact",
+      "ea",
+      "enterprise architecture"
+    ],
+    "source_file": "artifacts/images/579cf831-016b-4f3a-aeb6-3154a3d41cc2.png",
+    "detail_page": "artifact-579cf831-016b-4f3a-aeb6-3154a3d41cc2.html",
+    "status": "draft",
+    "related": [
+      "Enterprise Architecture"
+    ]
+  },
+  {
+    "id": "ea-artifact-006",
+    "title": "6808A533 6F95 493D Bfcc 0Cfd050B9Fab",
+    "date": "2026-04-18",
+    "artifact_type": "diagram",
+    "domain": [
+      "Enterprise Architecture",
+      "AI"
+    ],
+    "topics": [
+      "Enterprise Architecture"
+    ],
+    "summary": "Auto-ingested artifact generated from uploaded file: 6808A533-6F95-493D-BFCC-0CFD050B9FAB.png. Review and refine metadata as needed.",
+    "keywords": [
+      "6808a533-6f95-493d-bfcc-0cfd050b9fab",
+      "artifact",
+      "ea",
+      "enterprise architecture"
+    ],
+    "source_file": "artifacts/images/6808a533-6f95-493d-bfcc-0cfd050b9fab.png",
+    "detail_page": "artifact-6808a533-6f95-493d-bfcc-0cfd050b9fab.html",
+    "status": "draft",
+    "related": [
+      "Enterprise Architecture"
+    ]
+  },
+  {
+    "id": "ea-artifact-007",
+    "title": "7D543Cfc 31D0 48D3 A769 3A523F40Ee1C",
+    "date": "2026-04-18",
+    "artifact_type": "diagram",
+    "domain": [
+      "Enterprise Architecture",
+      "AI"
+    ],
+    "topics": [
+      "Enterprise Architecture"
+    ],
+    "summary": "Auto-ingested artifact generated from uploaded file: 7D543CFC-31D0-48D3-A769-3A523F40EE1C.png. Review and refine metadata as needed.",
+    "keywords": [
+      "7d543cfc-31d0-48d3-a769-3a523f40ee1c",
+      "artifact",
+      "ea",
+      "enterprise architecture"
+    ],
+    "source_file": "artifacts/images/7d543cfc-31d0-48d3-a769-3a523f40ee1c.png",
+    "detail_page": "artifact-7d543cfc-31d0-48d3-a769-3a523f40ee1c.html",
+    "status": "draft",
+    "related": [
+      "Enterprise Architecture"
+    ]
+  },
+  {
+    "id": "ea-artifact-008",
+    "title": "E66035Fd 08Fb 48Dc Ad3D 638Cdc88D5D7",
+    "date": "2026-04-18",
+    "artifact_type": "diagram",
+    "domain": [
+      "Enterprise Architecture",
+      "AI"
+    ],
+    "topics": [
+      "Enterprise Architecture"
+    ],
+    "summary": "Auto-ingested artifact generated from uploaded file: E66035FD-08FB-48DC-AD3D-638CDC88D5D7.png. Review and refine metadata as needed.",
+    "keywords": [
+      "artifact",
+      "e66035fd-08fb-48dc-ad3d-638cdc88d5d7",
+      "ea",
+      "enterprise architecture"
+    ],
+    "source_file": "artifacts/images/e66035fd-08fb-48dc-ad3d-638cdc88d5d7.png",
+    "detail_page": "artifact-e66035fd-08fb-48dc-ad3d-638cdc88d5d7.html",
+    "status": "draft",
+    "related": [
+      "Enterprise Architecture"
+    ]
+  },
+  {
+    "id": "ea-artifact-009",
+    "title": "Img 1554",
+    "date": "2026-04-18",
+    "artifact_type": "diagram",
+    "domain": [
+      "Enterprise Architecture",
+      "AI"
+    ],
+    "topics": [
+      "Enterprise Architecture"
+    ],
+    "summary": "Auto-ingested artifact generated from uploaded file: IMG_1554.jpeg. Review and refine metadata as needed.",
+    "keywords": [
+      "artifact",
+      "ea",
+      "enterprise architecture",
+      "img-1554"
+    ],
+    "source_file": "artifacts/images/img-1554.jpeg",
+    "detail_page": "artifact-img-1554.html",
+    "status": "draft",
+    "related": [
+      "Enterprise Architecture"
+    ]
   }
 ]
