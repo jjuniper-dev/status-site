@@ -180,3 +180,69 @@ window.KANBAN_SEED = [
     tags: ["Governance"]
   }
 ];
+
+window.KANBAN_ARTIFACT_CONFIG = {
+  enabled: true,
+  indexPath: 'data/artifacts-index.json',
+  group: 'Artifacts',
+  status: 'this_week',
+  priority: 'medium',
+  limit: 12,
+  tagPrefix: 'artifact:'
+};
+
+window.injectArtifactCards = async function injectArtifactCards() {
+  const cfg = window.KANBAN_ARTIFACT_CONFIG;
+  if (!cfg || !cfg.enabled) return window.KANBAN_SEED;
+
+  try {
+    const res = await fetch(`${cfg.indexPath}?ts=${Date.now()}`, { cache: 'no-store' });
+    if (!res.ok) return window.KANBAN_SEED;
+
+    const items = await res.json();
+    if (!Array.isArray(items) || !items.length) return window.KANBAN_SEED;
+
+    const existingIds = new Set(window.KANBAN_SEED.map(item => item.id));
+    const cards = items
+      .slice()
+      .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')))
+      .slice(0, cfg.limit)
+      .map((item, idx) => {
+        const artifactId = item.id || `artifact-${idx + 1}`;
+        const cardId = `artifact-card-${artifactId}`;
+        if (existingIds.has(cardId)) return null;
+
+        const topics = Array.isArray(item.topics) ? item.topics.slice(0, 4) : [];
+        const detail = item.detail_page || 'artifacts.html';
+
+        return {
+          id: cardId,
+          title: item.title || 'Untitled artifact',
+          group: cfg.group,
+          status: cfg.status,
+          priority: cfg.priority,
+          notes: `${item.summary || 'Artifact indexed.'} [Open artifact](${detail})`,
+          tags: [
+            'Artifacts',
+            ...(item.artifact_type ? [item.artifact_type] : []),
+            ...topics,
+            `${cfg.tagPrefix}${artifactId}`
+          ]
+        };
+      })
+      .filter(Boolean);
+
+    if (cards.length) {
+      window.KANBAN_SEED = [...cards, ...window.KANBAN_SEED];
+      window.dispatchEvent(new CustomEvent('kanban:artifacts-loaded', {
+        detail: { count: cards.length, cards }
+      }));
+    }
+  } catch (err) {
+    console.warn('Artifact card injection failed', err);
+  }
+
+  return window.KANBAN_SEED;
+};
+
+window.injectArtifactCards();
