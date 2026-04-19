@@ -29,10 +29,10 @@
 
   <div class="header">
     <div class="header-eyebrow">Execution Layer — Planning &amp; Flow</div>
-    <div class="header-title">Task <span>/</span> Kanban</div>
-    <div class="header-sub">Single-board task view with browser persistence, grouped by workstream and moved across execution states.</div>
+    <div class="header-title" id="kanban-board-title">Task <span>/</span> Kanban</div>
+    <div class="header-sub" id="kanban-board-subtitle">Single-board task view with browser persistence, grouped by workstream and moved across execution states.</div>
     <div class="badges">
-      <div class="badge badge-teal">dnd-kit</div>
+      <div class="badge badge-teal">Config-Driven</div>
       <div class="badge badge-gold">LocalStorage</div>
       <div class="badge badge-red">Static Site</div>
     </div>
@@ -40,7 +40,7 @@
 
   <div class="positioning">
     <div class="positioning-label">Model</div>
-    <div class="positioning-text">One board. Five columns. Grouped workstreams. Drag, drop, persist, and recover with a clean static-site pattern.</div>
+    <div class="positioning-text">Portable Kanban shell with site-level configuration, artifact injection, and reusable execution-board wiring.</div>
   </div>
 
   <div id="kanban-root"></div>
@@ -49,7 +49,7 @@
     <div class="footer-left">
       Health Canada · Public Health Agency of Canada<br>
       AI Project Dashboard — Internal Use<br>
-      <span id="version">Version 1.0 · Kanban Module</span>
+      <span id="version">Version 1.1 · Kanban Module</span>
     </div>
     <div class="footer-right">
       <span id="last-updated">Last updated: 2026-04-19</span>
@@ -57,7 +57,22 @@
   </div>
 </div>
 
+<script src="kanban-config.js"></script>
 <script src="kanban-data.js"></script>
+<script>
+  (function () {
+    const cfg = window.KANBAN_CONFIG || {};
+    const titleEl = document.getElementById('kanban-board-title');
+    const subtitleEl = document.getElementById('kanban-board-subtitle');
+
+    if (cfg.boardTitle && titleEl) {
+      titleEl.innerHTML = cfg.boardTitle;
+    }
+    if (cfg.boardSubtitle && subtitleEl) {
+      subtitleEl.textContent = cfg.boardSubtitle;
+    }
+  })();
+</script>
 <script type="module" src="kanban.js"></script>
 </body>
 </html>
