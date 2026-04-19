@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intelligence — AI Platform & Architecture</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #E8192E;
+      --teal: #00C8C8;
+      --gold: #F9D030;
+      --blue-light: #5FA8E8;
+      --green: #7CFFB2;
+      --bg: #07090F;
+      --bg2: #0D1117;
+      --bg3: #131920;
+      --surface: #1A2230;
+      --border: rgba(255, 255, 255, 0.10);
+      --border-bright: rgba(255, 255, 255, 0.22);
+      --text: #F0F4FA;
+      --text-dim: #B0BFCF;
+      --text-faint: #6A7D90;
+      --mono: 'IBM Plex Mono', monospace;
+      --sans: 'IBM Plex Sans', sans-serif;
+      --cond: 'IBM Plex Sans Condensed', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 28px 64px;
+    }
+
+    a { color: var(--teal); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .topnav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin: -20px -28px 16px;
+      padding: 12px 28px;
+      background: rgba(13, 17, 23, 0.96);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(6px);
+    }
+
+    .topnav-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+    }
+
+    .topnav-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .topnav-link {
+      display: inline-block;
+      text-decoration: none;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 7px 11px;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      background: rgba(255, 255, 255, 0.03);
+      transition: all 0.15s;
+    }
+
+    .topnav-link:hover {
+      border-color: var(--teal);
+      color: var(--text);
+    }
+
+    .topnav-link.active {
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    .breadcrumb {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      opacity: 0.7;
+      margin-bottom: 20px;
+    }
+
+    .header {
+      border-bottom: 2px solid var(--red);
+      padding-bottom: 20px;
+      margin-bottom: 28px;
+    }
+
+    .header-eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      color: var(--red);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .header-title {
+      font-family: var(--cond);
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .header-title span {
+      color: var(--teal);
+    }
+
+    .header-sub {
+      font-size: 14px;
+      color: var(--text-dim);
+      line-height: 1.65;
+    }
+
+    .badges {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 5px 11px;
+      border: 1px solid;
+      display: inline-block;
+    }
+
+    .badge-red { border-color: var(--red); color: var(--red); }
+    .badge-teal { border-color: var(--teal); color: var(--teal); }
+    .badge-gold { border-color: var(--gold); color: var(--gold); }
+
+    .positioning {
+      background: linear-gradient(135deg, #0f1d2e 0%, #0d1520 100%);
+      border-left: 3px solid var(--teal);
+      padding: 18px 20px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .positioning-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--teal);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+    }
+
+    .positioning-text {
+      font-family: var(--cond);
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--text);
+    }
+
+    .positioning-text em {
+      color: var(--teal);
+      font-style: normal;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin: 24px 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 0;
+      margin-bottom: 28px;
+      border: 1px solid var(--border);
+    }
+
+    .meta-cell {
+      padding: 16px 16px 14px;
+      border-right: 1px solid var(--border);
+      background: linear-gradient(160deg, #0d1117 0%, #111824 100%);
+    }
+
+    .meta-cell:last-child {
+      border-right: none;
+    }
+
+    .meta-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .meta-value {
+      font-family: var(--cond);
+      font-size: 18px;
+      color: var(--text);
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+
+    .meta-sub {
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    .text-block {
+      border: 1px solid var(--border);
+      background: linear-gradient(160deg, #0d1117 0%, #111824 100%);
+      padding: 20px 22px;
+      margin-bottom: 28px;
+    }
+
+    .text-block p {
+      color: var(--text-dim);
+      margin-bottom: 12px;
+    }
+
+    .text-block p:last-child {
+      margin-bottom: 0;
+    }
+
+    .text-block strong {
+      color: var(--text);
+    }
+
+    .table {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-collapse: collapse;
+      margin-bottom: 28px;
+      background: var(--bg2);
+    }
+
+    .table th {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      background: var(--surface);
+      padding: 11px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-bright);
+    }
+
+    .table td {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+
+    .table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .table tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      background: linear-gradient(160deg, var(--bg2), var(--bg3));
+      padding: 18px 20px;
+    }
+
+    .card-title {
+      font-family: var(--cond);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .card-sub {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .card-list {
+      list-style: none;
+    }
+
+    .card-list li {
+      font-size: 13px;
+      color: var(--text-dim);
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+    }
+
+    .card-list li:last-child {
+      border-bottom: none;
+    }
+
+    .card-list li::before {
+      content: '→';
+      color: var(--teal);
+      flex-shrink: 0;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    .dot-active { background: var(--green); }
+    .dot-emerging { background: var(--gold); }
+    .dot-conditional { background: var(--blue-light); }
+    .dot-blocked { background: var(--red); }
+
+    .log-list {
+      border: 1px solid var(--border);
+      background: linear-gradient(160deg, #0d1117 0%, #111824 100%);
+      padding: 0;
+      margin-bottom: 28px;
+    }
+
+    .log-item {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .log-item:last-child {
+      border-bottom: none;
+    }
+
+    .log-date {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .log-text {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+      margin-top: 28px;
+    }
+
+    .footer-left, .footer-right {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-faint);
+      line-height: 1.7;
+    }
+
+    .footer-right {
+      text-align: right;
+    }
+
+    @media (max-width: 768px) {
+      body { padding: 16px 20px 40px; }
+      .topnav { margin: -16px -20px 12px; padding: 12px 20px; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .meta-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="topnav-label">AI Project Dashboard</div>
+  <div class="topnav-links">
+    <a class="topnav-link" href="index.html">Dashboard</a>
+    <a class="topnav-link" href="decisions.html">Decisions</a>
+    <a class="topnav-link" href="scenarios.html">Scenarios</a>
+    <a class="topnav-link active" href="intelligence.html">Intelligence</a>
+    <a class="topnav-link" href="artifacts.html">Artifacts</a>
+    <a class="topnav-link" href="path-architecture.html">Architecture</a>
+    <a class="topnav-link" href="control-plane.html">Control Plane</a>
+  </div>
+</div>
+
+<div class="breadcrumb">Dashboard &gt; Intelligence &gt; Platform & Architecture</div>
+
+<div class="header">
+  <div class="header-eyebrow">Enterprise AI — Working Intelligence & Architecture</div>
+  <div class="header-title">AI Platform <span>Intelligence</span></div>
+  <div class="header-sub">Health Canada · Public Health Agency of Canada<br>EA interpretation and architectural analysis for governance decisions</div>
+  <div class="badges">
+    <div class="badge badge-red">Internal Use</div>
+    <div class="badge badge-teal">Living Document</div>
+    <div class="badge badge-gold">2026-04-19</div>
+  </div>
+</div>
+
+<div class="positioning">
+  <div class="positioning-label">Core Position</div>
+  <div class="positioning-text">HC/PHAC needs a defensible <em>enterprise AI operating model</em> spanning control plane, runtime plane, and data governance — not merely model access.</div>
+</div>
+
+<!-- SECTION 01: DOCUMENT CONTEXT -->
+<div class="section-label">01 · Document Context</div>
+<div class="meta-grid">
+  <div class="meta-cell">
+    <div class="meta-label">Purpose</div>
+    <div class="meta-value">EA Interpretation</div>
+    <div class="meta-sub">Working intelligence on platform landscape and architectural implications for governance.</div>
+  </div>
+  <div class="meta-cell">
+    <div class="meta-label">Audience</div>
+    <div class="meta-value">EA / TPO / ARB</div>
+    <div class="meta-sub">Decision-support reference for architecture and governance discussions.</div>
+  </div>
+  <div class="meta-cell">
+    <div class="meta-label">Status</div>
+    <div class="meta-value">Living Document</div>
+    <div class="meta-sub">Updated as capabilities, governance positions, and operational facts evolve.</div>
+  </div>
+  <div class="meta-cell">
+    <div class="meta-label">Boundary</div>
+    <div class="meta-value">Not Policy</div>
+    <div class="meta-sub">Validate against authoritative sources before using in formal decisions.</div>
+  </div>
+</div>
+
+<!-- SECTION 02: LANDSCAPE SUMMARY -->
+<div class="section-label">02 · Current Capability Landscape</div>
+<div class="text-block">
+  <p>This section records the EA team's interpreted position on the Government of Canada AI platform landscape as it relates to Health Canada and PHAC operations.</p>
+  <p><strong>This is not a summary of official strategy documents.</strong> It is internal EA interpretation intended to help distinguish what exists today, what is approved, what is experimental, and what remains unresolved.</p>
+</div>
+
+<div class="table">
+  <thead>
+    <tr>
+      <th>Capability</th>
+      <th>Current State</th>
+      <th>Architectural Implication</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>PATH</strong></td>
+      <td>Pre-prototype governance control-plane concept. NOT approved to proceed as of April 2026.</td>
+      <td>Must not be conflated with HAIL or overstated as production capability. Convergence architecture unresolved.</td>
+      <td><span class="status-dot dot-blocked"></span>Pre-prototype</td>
+    </tr>
+    <tr>
+      <td><strong>HAIL</strong></td>
+      <td>Operational AI runtime deployed March 2026. Azure Databricks + Unity Catalog. Workloads: IDP, epidemiological pipelines.</td>
+      <td>Deployment does not resolve ATO, telemetry gaps, AI-Ops ownership, or control inheritance.</td>
+      <td><span class="status-dot dot-active"></span>Operational</td>
+    </tr>
+    <tr>
+      <td><strong>Copilot-Class</strong></td>
+      <td>Strategically important for workforce enablement, but not equivalent to enterprise AI architecture.</td>
+      <td>Can accelerate shadow-governance patterns if user convenience outpaces control maturity.</td>
+      <td><span class="status-dot dot-active"></span>Active</td>
+    </tr>
+    <tr>
+      <td><strong>GC-Wide Services</strong></td>
+      <td>May be useful capability sources, but do not automatically satisfy departmental requirements.</td>
+      <td>Assessment must focus on fit to departmental controls, not simple existence of shared service.</td>
+      <td><span class="status-dot dot-conditional"></span>Conditional</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- SECTION 03: PATH ARCHITECTURE -->
+<div class="section-label">03 · PATH: Enterprise Control Plane Architecture</div>
+<div class="text-block">
+  <p>PATH is defined as <strong>the target-state enterprise AI control plane for governed execution, policy enforcement, and defensible scale.</strong> It is distinct from runtime environments like HAIL.</p>
+  <p><strong>Core Principle:</strong> Platforms consume governance; they do not define it. PATH sits above data and compute layers to enforce enterprise controls rather than replace them.</p>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">What PATH Provides</div>
+    <ul class="card-list">
+      <li>Governed AI execution patterns</li>
+      <li>Standardized deployment procedures</li>
+      <li>Auditability and traceability</li>
+      <li>Secure model/data access control</li>
+      <li>Inherited governance baseline</li>
+      <li>Enterprise cost allocation</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="card-title">Current Blockers PATH Addresses</div>
+    <ul class="card-list">
+      <li>Fragmented deployment patterns</li>
+      <li>Missing ingress standards</li>
+      <li>Heavy per-project negotiation</li>
+      <li>Absent unified governance</li>
+      <li>Weak audit trail</li>
+      <li>Uncontrolled shadow AI</li>
+    </ul>
+  </div>
+</div>
+
+<div class="section-label">04 · PATH Three-Plane Architecture</div>
+
+<div class="card" style="margin-bottom: 16px;">
+  <div class="card-title">Control Plane</div>
+  <div class="card-sub">Identity & access management, API gateway enforcement, governance policy, observability, and cost management</div>
+  <ul class="card-list" style="margin-top: 10px;">
+    <li>Azure AD for identity / RBAC</li>
+    <li>API Management for ingress control</li>
+    <li>Policy engine for governance rules</li>
+    <li>Application Insights for telemetry</li>
+    <li>Cost allocation and FinOps</li>
+  </ul>
+</div>
+
+<div class="card" style="margin-bottom: 16px;">
+  <div class="card-title">Runtime Plane</div>
+  <div class="card-sub">Isolated project subscriptions and Foundry workspaces with mandatory gateway routing</div>
+  <ul class="card-list" style="margin-top: 10px;">
+    <li>Project-isolated subscriptions</li>
+    <li>Foundry workspaces for execution</li>
+    <li>Mandatory control plane routing</li>
+    <li>Integrated observability</li>
+    <li>Standardized networking</li>
+  </ul>
+</div>
+
+<div class="card" style="margin-bottom: 28px;">
+  <div class="card-title">Data Integration Layer</div>
+  <div class="card-sub">Governed RAG pipelines, Purview-enforced lineage, and data governance</div>
+  <ul class="card-list" style="margin-top: 10px;">
+    <li>Governed RAG for retrieval</li>
+    <li>Purview-enforced data lineage</li>
+    <li>Classification enforcement</li>
+    <li>Access governance</li>
+    <li>Audit trail integration</li>
+  </ul>
+</div>
+
+<!-- SECTION 05: OPERATING MODEL -->
+<div class="section-label">05 · Operating Model & Onboarding</div>
+<div class="text-block">
+  <p><strong>Onboarding Target:</strong> Complete in under 5 days via standardized gates and automated controls.</p>
+  <p><strong>Production Gates Required:</strong> Security clearance, privacy review, data science validation, EA approval, responsible AI committee sign-off.</p>
+</div>
+
+<!-- SECTION 06: ARCHITECTURAL THEMES -->
+<div class="section-label">06 · Primary Architectural Themes</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">Control Plane vs Runtime</div>
+    <div class="card-sub">Most important distinction: environments that run AI workloads vs. governance fabric that makes them defensible.</div>
+    <ul class="card-list">
+      <li>Runtime enables workloads</li>
+      <li>Control plane governs workloads</li>
+      <li>Both required for enterprise readiness</li>
+      <li>Deployment ≠ governance completeness</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="card-title">Fragmentation Risk (P1 ARB)</div>
+    <div class="card-sub">PATH and HAIL building simultaneously without defined convergence architecture — P1 ARB escalation.</div>
+    <ul class="card-list">
+      <li>Parallel development without integration</li>
+      <li>Independent experimentation streams</li>
+      <li>Weakly aligned governance narratives</li>
+      <li>Duplication and unresolved ownership</li>
+    </ul>
+  </div>
+</div>
+
+<!-- SECTION 07: SHADOW AI -->
+<div class="section-label">07 · Shadow AI Governance Exposure</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">Active Shadow Vectors</div>
+    <div class="card-sub">Specific vectors creating governance exposure across HC/PHAC AI activity</div>
+    <ul class="card-list">
+      <li><strong>CANChat</strong> — Scope creep risk beyond approved boundaries</li>
+      <li><strong>Copilot (M365)</strong> — ATO gap unresolved</li>
+      <li><strong>RADIA</strong> — Deprecated; references persist</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="card-title">Governance Exposure Patterns</div>
+    <div class="card-sub">Shadow AI creates invisible control gaps that compound over time</div>
+    <ul class="card-list">
+      <li>Workloads deployed without ATO/ARB</li>
+      <li>Deprecated tools referenced as current</li>
+      <li>Classification boundaries crossed</li>
+      <li>Audit traceability absent</li>
+    </ul>
+  </div>
+</div>
+
+<!-- SECTION 08: ENTERPRISE IMPLICATIONS -->
+<div class="section-label">08 · Enterprise Implications for HC / PHAC</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">ARB Focus Areas</div>
+    <div class="card-sub">ARB value highest where it clarifies enterprise boundaries and readiness</div>
+    <ul class="card-list">
+      <li>What is enterprise vs. project-specific</li>
+      <li>What is approved vs. experimental</li>
+      <li>What is production-ready vs. not defensible</li>
+      <li>What dependencies block scale</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="card-title">Data Governance as AI Control</div>
+    <div class="card-sub">AI readiness depends on whether data can be governed, classified, traced, and justified</div>
+    <ul class="card-list">
+      <li>Classification consistency</li>
+      <li>Lineage and traceability</li>
+      <li>Protection and access governance</li>
+      <li>Defensibility for AI use cases</li>
+    </ul>
+  </div>
+</div>
+
+<!-- SECTION 09: OPEN QUESTIONS -->
+<div class="section-label">09 · Open Questions & Governance Gaps</div>
+
+<div class="table">
+  <thead>
+    <tr>
+      <th>Question</th>
+      <th>Why It Matters</th>
+      <th>Owner</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>HAIL / PATH Convergence</strong></td>
+      <td>Building simultaneously without convergence model. P1 ARB item.</td>
+      <td>ARB / OCDO / CIO</td>
+      <td><span class="status-dot dot-blocked"></span>Escalated</td>
+    </tr>
+    <tr>
+      <td><strong>Fabric vs. Databricks</strong></td>
+      <td>Fabric position explicitly unresolved; HAIL confirmed on Databricks + UC.</td>
+      <td>ARB / CIO</td>
+      <td><span class="status-dot dot-blocked"></span>Open</td>
+    </tr>
+    <tr>
+      <td><strong>Application Insights Gap</strong></td>
+      <td>Foundry telemetry insufficient for audit without App Insights. Active EA flag.</td>
+      <td>ARB / Security / Audit</td>
+      <td><span class="status-dot dot-blocked"></span>Open</td>
+    </tr>
+    <tr>
+      <td><strong>AI-Ops Ownership</strong></td>
+      <td>No defined ownership, support tier, or cost model. Blocks sustainability.</td>
+      <td>CDO / CIO / DTB</td>
+      <td><span class="status-dot dot-blocked"></span>Open</td>
+    </tr>
+    <tr>
+      <td><strong>Inherited Control Baseline</strong></td>
+      <td>Scale requires minimum controls rather than repeated project negotiation.</td>
+      <td>ARB / Security / CDO</td>
+      <td><span class="status-dot dot-conditional"></span>Open</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- SECTION 10: UPDATE LOG -->
+<div class="section-label">10 · Document Update Log</div>
+
+<div class="log-list">
+  <div class="log-item">
+    <div class="log-date">2026-04-19</div>
+    <div class="log-text"><strong>Consolidated Intelligence (v1.0):</strong> Merged platform landscape analysis with PATH architecture documentation. Added: three-plane system detail (Control, Runtime, Data Integration), operating model with 5-day onboarding target, enterprise positioning vs. HAIL, strategic maturity assessment. Consolidated shadow AI vectors (CANChat scope creep, Copilot ATO gap, RADIA deprecated references) and fragmentation named as P1 ARB item with specific PATH/HAIL convergence framing.</div>
+  </div>
+  <div class="log-item">
+    <div class="log-date">2026-04-17</div>
+    <div class="log-text"><strong>Initial Intelligence Page:</strong> Established interpretation boundary, positioned PATH as target-state control-plane direction, positioned HAIL as runtime-significant but not equivalent to full governance resolution, and identified fragmentation and operating model clarity as main architectural concerns.</div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-left">
+    Health Canada · Public Health Agency of Canada<br>
+    EA / TPO / ARB / OCDO — Internal Use Only<br>
+    <span id="last-updated">Last updated: 2026-04-19</span>
+  </div>
+  <div class="footer-right">
+    Intelligence Page · Version 1.0<br>
+    Merged from current + architectural analysis
+  </div>
+</div>
+
+<script>
+  // Auto-set active nav link
+  document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('.topnav-link').forEach(link => {
+      if (link.getAttribute('href') === currentPage) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
