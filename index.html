@@ -9,7 +9,6 @@
 </head>
 <body>
 <div class="layout">
-  <!-- TOP NAVIGATION -->
   <div class="topnav">
     <div class="topnav-label">AI Project Dashboard</div>
     <div class="topnav-links">
@@ -24,9 +23,7 @@
     </div>
   </div>
 
-  <!-- MAIN DASHBOARD LAYOUT -->
   <div class="dashboard">
-    <!-- LEFT RAIL -->
     <div class="left-rail">
       <div class="status-orb">
         <div class="status-dot"></div>
@@ -41,7 +38,6 @@
       </div>
     </div>
 
-    <!-- MAIN CONTENT -->
     <div class="main-content">
       <div class="breadcrumb">Dashboard &gt; PATH / HAIL Status</div>
 
@@ -61,7 +57,6 @@
         <div class="positioning-text">PATH is the <em>control plane</em> for enterprise AI governance. HAIL is the active delivery environment facing a production decision.</div>
       </div>
 
-      <!-- SECTION: STATUS SNAPSHOT -->
       <div id="overview">
         <div class="section-label">Status Snapshot</div>
         <table class="table">
@@ -93,11 +88,15 @@
               <td>230 MS hours, cloud credits, governance flagged</td>
               <td><span class="status-badge"><span class="status-dot dot-conditional"></span>Conditional</span></td>
             </tr>
+            <tr>
+              <td><strong>DTB WFA Impact</strong></td>
+              <td>Governance documentation and cloud support partially on hold</td>
+              <td><span class="status-badge"><span class="status-dot dot-conditional"></span>Conditional</span></td>
+            </tr>
           </tbody>
         </table>
       </div>
 
-      <!-- SECTION: KEY INSIGHTS -->
       <div id="decisions">
         <div class="section-label">Key Insights</div>
         <div class="grid-2">
@@ -120,9 +119,29 @@
             </ul>
           </div>
         </div>
+
+        <div class="grid-2" style="margin-top: 16px;">
+          <div class="card">
+            <div class="card-title">Operational Reality</div>
+            <div class="card-sub">HAIL is operational now, but production readiness still depends on governance action rather than delivery effort alone.</div>
+            <ul class="card-list">
+              <li>Deployment complete does not equal production approval</li>
+              <li>Governance path is the gating factor</li>
+              <li>Boundary with PATH still unresolved</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-title">Architecture Signal</div>
+            <div class="card-sub">PATH remains directional and should not be presented as a current alternate landing zone for HAIL.</div>
+            <ul class="card-list">
+              <li>Pre-prototype control-plane concept</li>
+              <li>Useful for target-state framing</li>
+              <li>Not yet operational substitute capability</li>
+            </ul>
+          </div>
+        </div>
       </div>
 
-      <!-- SECTION: SCENARIOS -->
       <div id="scenarios">
         <div class="section-label">Featured Scenarios</div>
         <div class="grid-2">
@@ -139,7 +158,6 @@
         </div>
       </div>
 
-      <!-- SECTION: TIMELINE PREVIEW -->
       <div id="timeline">
         <div class="section-label">FY26-27 Timeline</div>
         <div class="grid-2">
@@ -147,7 +165,7 @@
             <div class="card-title">April 2026 (Now)</div>
             <ul class="card-list">
               <li>HAIL deployment complete</li>
-              <li>GREP-ExP onboarded</li>
+              <li>GREP-ExP onboarded and stabilized</li>
               <li>ATO decision pending</li>
             </ul>
           </div>
@@ -162,14 +180,12 @@
         </div>
       </div>
 
-      <!-- SECTION: CALL TO ACTION -->
       <div class="positioning" style="margin-top: 20px;">
         <div class="positioning-label">Next</div>
         <div class="positioning-text">Review <em>Decisions</em> log to track governance status, or explore <em>Scenarios</em> for use case context.</div>
       </div>
     </div>
 
-    <!-- RIGHT PANEL -->
     <div class="right-panel">
       <div class="panel-card">
         <div class="panel-title">Active Decisions</div>
@@ -186,6 +202,7 @@
           <li>ATO conversation not initiated</li>
           <li>Production path unconfirmed</li>
           <li>FY26-27 budget undefined</li>
+          <li>DTB WFA slows governance documentation</li>
         </ul>
       </div>
 
@@ -211,12 +228,11 @@
     </div>
   </div>
 
-  <!-- FOOTER -->
   <div class="footer">
     <div class="footer-left">
       Health Canada · Public Health Agency of Canada<br>
       AI Project Dashboard — Internal Use<br>
-      <span id="version">Version 1.0 · April 2026</span>
+      <span id="version">Version 1.1 · April 2026</span>
     </div>
     <div class="footer-right">
       <span id="last-updated">Last updated: 2026-04-19</span>
@@ -225,7 +241,6 @@
 </div>
 
 <script>
-  // Auto-set active nav link based on current page
   document.addEventListener('DOMContentLoaded', function() {
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
     document.querySelectorAll('.topnav-link').forEach(link => {
