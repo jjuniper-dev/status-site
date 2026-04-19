@@ -735,6 +735,9 @@ body {
   .topnav-links {
     width: 100%;
     order: 3;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
   }
 
   .dashboard {
@@ -792,12 +795,14 @@ body {
 
   .topnav-links {
     width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
   }
 
   .topnav-link {
     font-size: 9px;
-    padding: 6px 9px;
-    flex: 1;
+    padding: 8px 6px;
     text-align: center;
   }
 
