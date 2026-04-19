@@ -7,6 +7,7 @@ Behavior:
 - For each artifact missing issue_number, creates a GitHub issue
 - Writes the new issue_number back into the artifact index
 - Safe to re-run (idempotent for artifacts already linked)
+- Automatically derives GitHub labels from artifact metadata
 
 Requires:
 - GITHUB_TOKEN
@@ -20,6 +21,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 import urllib.error
 import urllib.request
@@ -32,6 +34,9 @@ GITHUB_API = "https://api.github.com"
 REPOSITORY = os.environ.get("GITHUB_REPOSITORY", "jjuniper-dev/status-site")
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 DRY_RUN = os.environ.get("DRY_RUN", "").strip().lower() in {"1", "true", "yes"}
+
+
+LABEL_LIMIT = 20
 
 
 def load_artifacts() -> list[dict[str, Any]]:
@@ -57,6 +62,62 @@ def as_csv(value: Any) -> str:
     if value is None:
         return "None"
     return str(value)
+
+
+def slug_label(value: str) -> str:
+    text = value.strip().lower()
+    text = text.replace("&", " and ")
+    text = re.sub(r"[^a-z0-9]+", "-", text)
+    text = re.sub(r"-+", "-", text).strip("-")
+    return text[:50] if text else ""
+
+
+def dedupe_keep_order(values: list[str]) -> list[str]:
+    seen: set[str] = set()
+    result: list[str] = []
+    for value in values:
+        if not value or value in seen:
+            continue
+        seen.add(value)
+        result.append(value)
+    return result
+
+
+def build_labels(artifact: dict[str, Any]) -> list[str]:
+    labels: list[str] = ["artifact"]
+
+    artifact_type = slug_label(str(artifact.get("artifact_type", "artifact")))
+    if artifact_type:
+        labels.append(artifact_type)
+
+    status = slug_label(str(artifact.get("status", "draft")))
+    if status:
+        labels.append(f"status-{status}")
+
+    if artifact.get("demo_ready") is True:
+        labels.append("demo-ready")
+
+    for topic in artifact.get("topics", []) or []:
+        topic_slug = slug_label(str(topic))
+        if topic_slug:
+            labels.append(topic_slug)
+
+    for related in artifact.get("related", []) or []:
+        related_slug = slug_label(str(related))
+        if related_slug:
+            labels.append(related_slug)
+
+    for decision in artifact.get("decisions", []) or []:
+        decision_slug = slug_label(str(decision))
+        if decision_slug:
+            labels.append(f"decision-{decision_slug}")
+
+    for scenario in artifact.get("scenarios", []) or []:
+        scenario_slug = slug_label(str(scenario))
+        if scenario_slug:
+            labels.append(f"scenario-{scenario_slug}")
+
+    return dedupe_keep_order(labels)[:LABEL_LIMIT]
 
 
 def build_issue_body(artifact: dict[str, Any]) -> str:
@@ -135,15 +196,17 @@ def github_request(method: str, url: str, payload: dict[str, Any] | None = None)
 def create_issue(artifact: dict[str, Any]) -> int:
     title = build_issue_title(artifact)
     body = build_issue_body(artifact)
+    labels = build_labels(artifact)
 
     if DRY_RUN:
         print(f"[DRY RUN] Would create issue: {title}")
+        print(f"[DRY RUN] Labels: {labels}")
         return -1
 
     payload = {
         "title": title,
         "body": body,
-        "labels": ["artifact"],
+        "labels": labels,
     }
     url = f"{GITHUB_API}/repos/{REPOSITORY}/issues"
     response = github_request("POST", url, payload)
