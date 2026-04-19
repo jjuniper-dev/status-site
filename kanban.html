@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Project Dashboard — Kanban</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="kanban.css">
+</head>
+<body>
+<div class="layout">
+  <div class="topnav">
+    <div class="topnav-label">AI Project Dashboard</div>
+    <div class="topnav-links">
+      <a class="topnav-link" href="index.html">Dashboard</a>
+      <a class="topnav-link" href="decisions.html">Decisions</a>
+      <a class="topnav-link" href="scenarios.html">Scenarios</a>
+      <a class="topnav-link" href="intelligence.html">Intelligence</a>
+      <a class="topnav-link" href="artifacts.html">Artifacts</a>
+      <a class="topnav-link" href="path-architecture.html">Architecture</a>
+      <a class="topnav-link" href="control-plane.html">Control Plane</a>
+      <a class="topnav-link" href="pptx-builder.html">PPTX</a>
+      <a class="topnav-link active" href="kanban.html">Kanban</a>
+    </div>
+  </div>
+
+  <div class="breadcrumb">Dashboard &gt; Execution Board</div>
+
+  <div class="header">
+    <div class="header-eyebrow">Execution Layer — Planning &amp; Flow</div>
+    <div class="header-title">Task <span>/</span> Kanban</div>
+    <div class="header-sub">Single-board task view with browser persistence, grouped by workstream and moved across execution states.</div>
+    <div class="badges">
+      <div class="badge badge-teal">dnd-kit</div>
+      <div class="badge badge-gold">LocalStorage</div>
+      <div class="badge badge-red">Static Site</div>
+    </div>
+  </div>
+
+  <div class="positioning">
+    <div class="positioning-label">Model</div>
+    <div class="positioning-text">One board. Five columns. Grouped workstreams. Drag, drop, persist, and recover with a clean static-site pattern.</div>
+  </div>
+
+  <div id="kanban-root"></div>
+
+  <div class="footer">
+    <div class="footer-left">
+      Health Canada · Public Health Agency of Canada<br>
+      AI Project Dashboard — Internal Use<br>
+      <span id="version">Version 1.0 · Kanban Module</span>
+    </div>
+    <div class="footer-right">
+      <span id="last-updated">Last updated: 2026-04-19</span>
+    </div>
+  </div>
+</div>
+
+<script src="kanban-data.js"></script>
+<script type="module" src="kanban.js"></script>
+</body>
+</html>
