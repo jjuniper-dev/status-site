@@ -1,0 +1,130 @@
+{
+  "scenarios": [
+    {
+      "id": "hail-production-move",
+      "name": "HAIL Production Move",
+      "description": "Path to moving HAIL from pilot to production environment. Requires ATO approval, governance alignment, and resource confirmation for FY26-27.",
+      "objectives": [
+        "Secure ATO approval from CIO",
+        "Resolve governance gaps",
+        "Confirm FY26-27 budget and resources",
+        "Establish production support model"
+      ],
+      "decisions": [
+        "DEC-001",
+        "DEC-002",
+        "DEC-004"
+      ],
+      "artifacts": [
+        "artifact-006",
+        "artifact-007",
+        "artifact-008",
+        "artifact-010"
+      ],
+      "priority": "critical",
+      "status": "in-progress",
+      "timeline": "may-august-2026",
+      "owner": "CDO / CIO / DTB",
+      "key_dependencies": [
+        "ATO decision",
+        "Resource confirmation",
+        "PATH/HAIL boundary resolution"
+      ],
+      "risk_level": "high",
+      "last_updated": "2026-04-19"
+    },
+    {
+      "id": "path-governance",
+      "name": "PATH Governance & Control Plane",
+      "description": "Establish PATH as target-state enterprise AI control plane with unified governance, policy enforcement, and defensible scale across HC/PHAC.",
+      "objectives": [
+        "Define PATH control plane architecture",
+        "Establish governance framework",
+        "Design onboarding model (< 5 days)",
+        "Resolve HC-PATH / HAIL convergence"
+      ],
+      "decisions": [
+        "DEC-002",
+        "DEC-003",
+        "DEC-006"
+      ],
+      "artifacts": [
+        "artifact-006",
+        "artifact-007",
+        "artifact-009"
+      ],
+      "priority": "critical",
+      "status": "emerging",
+      "timeline": "q2-q3-2026",
+      "owner": "EA / TPO / ARB",
+      "key_dependencies": [
+        "Architecture resolution",
+        "Governance alignment",
+        "HAIL production move"
+      ],
+      "risk_level": "high",
+      "last_updated": "2026-04-19"
+    },
+    {
+      "id": "agentic-ai-capability",
+      "name": "Agentic AI Capability Mapping",
+      "description": "Use GREP-ExP as concrete L3/L4 agentic AI reference case to support ARB capability mapping and AI autonomy assessment across HC/PHAC.",
+      "objectives": [
+        "Document GREP-ExP pattern and governance",
+        "Use as ARB reference case",
+        "Support capability maturity mapping",
+        "Inform RAISE-aligned AI governance"
+      ],
+      "decisions": [
+        "DEC-005"
+      ],
+      "artifacts": [
+        "artifact-003",
+        "artifact-004",
+        "artifact-005"
+      ],
+      "priority": "medium",
+      "status": "active",
+      "timeline": "q2-2026",
+      "owner": "EA / ARB / AI-Ops",
+      "key_dependencies": [
+        "GREP-ExP documentation",
+        "ARB engagement",
+        "RAISE alignment"
+      ],
+      "risk_level": "low",
+      "last_updated": "2026-04-15"
+    },
+    {
+      "id": "hcphac-capability-mapping",
+      "name": "HC/PHAC Capability Mapping & Data Governance",
+      "description": "Map emerging digital and regulatory capabilities across HC/PHAC with focus on data governance as foundational AI control. Establish inherited control baseline for enterprise scale.",
+      "objectives": [
+        "Map regulatory intake capabilities",
+        "Assess data management maturity",
+        "Define scientific computing support",
+        "Establish inherited controls model"
+      ],
+      "decisions": [
+        "DEC-003",
+        "DEC-006"
+      ],
+      "artifacts": [
+        "artifact-005",
+        "artifact-007",
+        "artifact-009"
+      ],
+      "priority": "high",
+      "status": "emerging",
+      "timeline": "q2-q4-2026",
+      "owner": "CDO / CDO-Data / EA",
+      "key_dependencies": [
+        "Data governance framework",
+        "Security/Privacy alignment",
+        "Enterprise capability model"
+      ],
+      "risk_level": "medium",
+      "last_updated": "2026-04-14"
+    }
+  ]
+}

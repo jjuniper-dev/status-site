@@ -1,0 +1,170 @@
+{
+  "decisions": [
+    {
+      "id": "DEC-001",
+      "date": "2026-04-19",
+      "type": "governance",
+      "title": "HAIL Production ATO Gap",
+      "category": "Governance",
+      "status": "active",
+      "priority": "critical",
+      "owner": "CDO / CIO",
+      "rationale": "HAIL deployment is complete and operational, but no ATO conversation has been initiated with CIO. This blocks production path for FY26-27.",
+      "next_steps": [
+        "Escalate to governance queue",
+        "Draft HAIL-to-production ADR",
+        "Schedule CIO briefing",
+        "Confirm ATO timeline"
+      ],
+      "related_artifacts": [
+        "artifact-006",
+        "artifact-007",
+        "artifact-010"
+      ],
+      "related_scenarios": [
+        "hail-production-move"
+      ],
+      "impact": "high",
+      "timeline_gate": "may-2026",
+      "last_updated": "2026-04-19"
+    },
+    {
+      "id": "DEC-002",
+      "date": "2026-04-18",
+      "type": "architecture",
+      "title": "PATH / HAIL Boundary Resolution",
+      "category": "Architecture",
+      "status": "pending",
+      "priority": "critical",
+      "owner": "EA / TPO / ARB",
+      "rationale": "PATH and HAIL are building simultaneously without a defined convergence architecture. P1 ARB item requiring escalation to resolve control plane / runtime separation.",
+      "next_steps": [
+        "Schedule ARB convergence discussion",
+        "Draft PATH/HAIL integration model",
+        "Clarify governance ownership",
+        "Document operating model"
+      ],
+      "related_artifacts": [
+        "artifact-006",
+        "artifact-008",
+        "artifact-009"
+      ],
+      "related_scenarios": [
+        "path-governance",
+        "hail-production-move"
+      ],
+      "impact": "high",
+      "timeline_gate": "may-2026",
+      "last_updated": "2026-04-19"
+    },
+    {
+      "id": "DEC-003",
+      "date": "2026-04-17",
+      "type": "architecture",
+      "title": "HC-PATH Pre-Prototype Status",
+      "category": "Architecture",
+      "status": "emerging",
+      "priority": "high",
+      "owner": "DTB / HC-CDO",
+      "rationale": "HC-PATH remains in pre-prototype phase and is not a viable alternate landing zone today. Boundary with HAIL unresolved.",
+      "next_steps": [
+        "Define PATH pre-prototype scope",
+        "Establish convergence timeline with HAIL",
+        "Resolve HC/PHAC boundary",
+        "Confirm future governance model"
+      ],
+      "related_artifacts": [
+        "artifact-006",
+        "artifact-007"
+      ],
+      "related_scenarios": [
+        "path-governance"
+      ],
+      "impact": "medium",
+      "timeline_gate": "q3-2026",
+      "last_updated": "2026-04-17"
+    },
+    {
+      "id": "DEC-004",
+      "date": "2026-04-16",
+      "type": "resource",
+      "title": "FY26-27 Resourcing Confirmation",
+      "category": "Resource",
+      "status": "conditional",
+      "priority": "high",
+      "owner": "DSAID / CDO",
+      "rationale": "230 MS hours, cloud credits, AI-Ops team, and governance documentation flagged but unconfirmed. Budget and operating ownership unclear.",
+      "next_steps": [
+        "Finalize FY26-27 budget allocation",
+        "Confirm AI-Ops team assignment",
+        "Document support model",
+        "Lock resource commitments"
+      ],
+      "related_artifacts": [
+        "artifact-001",
+        "artifact-006"
+      ],
+      "related_scenarios": [
+        "hail-production-move"
+      ],
+      "impact": "high",
+      "timeline_gate": "may-2026",
+      "last_updated": "2026-04-16"
+    },
+    {
+      "id": "DEC-005",
+      "date": "2026-04-15",
+      "type": "governance",
+      "title": "GREP-ExP as Agentic AI Reference Case",
+      "category": "Capability",
+      "status": "active",
+      "priority": "medium",
+      "owner": "EA / ARB",
+      "rationale": "GREP-ExP demonstrates L3/L4 agentic AI in a governed public health context. Multi-agent disagreement pattern with human-in-the-loop provides concrete reference for ARB capability mapping.",
+      "next_steps": [
+        "Document GREP-ExP pattern",
+        "Use as ARB reference case",
+        "Include in capability mapping",
+        "Support RAISE-aligned assessment"
+      ],
+      "related_artifacts": [
+        "artifact-003",
+        "artifact-004",
+        "artifact-005"
+      ],
+      "related_scenarios": [
+        "agentic-ai-capability"
+      ],
+      "impact": "medium",
+      "timeline_gate": "q2-2026",
+      "last_updated": "2026-04-15"
+    },
+    {
+      "id": "DEC-006",
+      "date": "2026-04-14",
+      "type": "governance",
+      "title": "Shadow AI Governance Exposure",
+      "category": "Governance",
+      "status": "active",
+      "priority": "high",
+      "owner": "CDO / Security",
+      "rationale": "Active shadow AI vectors (CANChat scope creep, Copilot ATO gap, RADIA deprecated references) create governance exposure and control gaps that compound over time.",
+      "next_steps": [
+        "Audit shadow AI vectors",
+        "Classify untracked workloads",
+        "Establish ingress controls",
+        "Implement governance baseline"
+      ],
+      "related_artifacts": [
+        "artifact-007",
+        "artifact-009"
+      ],
+      "related_scenarios": [
+        "path-governance"
+      ],
+      "impact": "high",
+      "timeline_gate": "immediate",
+      "last_updated": "2026-04-14"
+    }
+  ]
+}
