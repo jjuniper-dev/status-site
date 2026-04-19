@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scenarios — AI Status Site</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="topnav">
+    <div class="topnav-label">AI Project Dashboard</div>
+    <div class="topnav-links">
+      <a class="topnav-link" href="index.html">Dashboard</a>
+      <a class="topnav-link" href="decisions.html">Decisions</a>
+      <a class="topnav-link active" href="scenarios.html">Scenarios</a>
+      <a class="topnav-link" href="intelligence.html">Intelligence</a>
+      <a class="topnav-link" href="artifacts.html">Artifacts</a>
+      <a class="topnav-link" href="path-architecture.html">Architecture</a>
+      <a class="topnav-link" href="control-plane.html">Control Plane</a>
+    </div>
+  </div>
+
+  <div class="main-container">
+    <div class="left-rail">
+      <div class="sidebar-section">
+        <div class="section-label">Filters</div>
+        <div style="margin-top: 12px;">
+          <label style="display: block; margin-bottom: 8px; font-size: 13px;">
+            <input type="checkbox" id="filter-critical" checked> Critical
+          </label>
+          <label style="display: block; margin-bottom: 8px; font-size: 13px;">
+            <input type="checkbox" id="filter-high" checked> High
+          </label>
+          <label style="display: block; margin-bottom: 8px; font-size: 13px;">
+            <input type="checkbox" id="filter-medium" checked> Medium
+          </label>
+          <label style="display: block; margin-bottom: 8px; font-size: 13px;">
+            <input type="checkbox" id="filter-low" checked> Low
+          </label>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="section-label">Status</div>
+        <div style="margin-top: 12px;">
+          <label style="display: block; margin-bottom: 8px; font-size: 13px;">
+            <input type="checkbox" id="filter-in-progress" checked> In Progress
+          </label>
+          <label style="display: block; margin-bottom: 8px; font-size: 13px;">
+            <input type="checkbox" id="filter-active" checked> Active
+          </label>
+          <label style="display: block; margin-bottom: 8px; font-size: 13px;">
+            <input type="checkbox" id="filter-emerging" checked> Emerging
+          </label>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="section-label">Risk Level</div>
+        <div style="margin-top: 12px;">
+          <label style="display: block; margin-bottom: 8px; font-size: 13px;">
+            <input type="checkbox" id="filter-risk-high" checked> High
+          </label>
+          <label style="display: block; margin-bottom: 8px; font-size: 13px;">
+            <input type="checkbox" id="filter-risk-medium" checked> Medium
+          </label>
+          <label style="display: block; margin-bottom: 8px; font-size: 13px;">
+            <input type="checkbox" id="filter-risk-low" checked> Low
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="header">
+        <h1>Scenarios</h1>
+        <p style="color: var(--text-secondary); font-size: 14px;">Strategic scenarios describing major initiatives, their objectives, decision gates, and resource requirements.</p>
+      </div>
+
+      <div id="scenarios-list" style="margin-top: 24px;"></div>
+    </div>
+
+    <div class="right-panel">
+      <div class="panel-card">
+        <div class="section-label">Quick Stats</div>
+        <div style="margin-top: 12px; font-size: 13px;">
+          <div style="margin-bottom: 8px;">
+            <span style="color: var(--text-secondary);">Total Scenarios:</span>
+            <span style="font-weight: 600;" id="stat-total">0</span>
+          </div>
+          <div style="margin-bottom: 8px;">
+            <span style="color: var(--text-secondary);">Critical:</span>
+            <span style="font-weight: 600; color: var(--color-red);" id="stat-critical">0</span>
+          </div>
+          <div style="margin-bottom: 8px;">
+            <span style="color: var(--text-secondary);">Active:</span>
+            <span style="font-weight: 600; color: var(--color-teal);" id="stat-active">0</span>
+          </div>
+          <div>
+            <span style="color: var(--text-secondary);">High Risk:</span>
+            <span style="font-weight: 600; color: var(--color-red);" id="stat-high-risk">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="section-label">Related Pages</div>
+        <div style="margin-top: 12px; font-size: 13px;">
+          <a href="index.html" style="display: block; margin-bottom: 8px; color: var(--color-teal); text-decoration: none;">Dashboard</a>
+          <a href="decisions.html" style="display: block; margin-bottom: 8px; color: var(--color-teal); text-decoration: none;">Decisions</a>
+          <a href="artifacts.html" style="display: block; color: var(--color-teal); text-decoration: none;">Artifacts</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let allScenarios = [];
+
+    // Load scenarios data
+    async function loadScenarios() {
+      try {
+        const response = await fetch('data/scenarios.json');
+        const data = await response.json();
+        allScenarios = data.scenarios;
+        renderScenarios();
+        updateStats();
+      } catch (error) {
+        console.error('Error loading scenarios:', error);
+        document.getElementById('scenarios-list').innerHTML = '<p style="color: var(--text-secondary);">Unable to load scenarios.</p>';
+      }
+    }
+
+    function getFilterState() {
+      return {
+        priorities: {
+          critical: document.getElementById('filter-critical').checked,
+          high: document.getElementById('filter-high').checked,
+          medium: document.getElementById('filter-medium').checked,
+          low: document.getElementById('filter-low').checked
+        },
+        statuses: {
+          'in-progress': document.getElementById('filter-in-progress').checked,
+          active: document.getElementById('filter-active').checked,
+          emerging: document.getElementById('filter-emerging').checked
+        },
+        risks: {
+          high: document.getElementById('filter-risk-high').checked,
+          medium: document.getElementById('filter-risk-medium').checked,
+          low: document.getElementById('filter-risk-low').checked
+        }
+      };
+    }
+
+    function renderScenarios() {
+      const filters = getFilterState();
+      const filtered = allScenarios.filter(scenario => {
+        const priorityKey = scenario.priority.toLowerCase();
+        const statusKey = scenario.status.toLowerCase();
+        const riskKey = scenario.risk_level.toLowerCase();
+
+        return filters.priorities[priorityKey] &&
+               filters.statuses[statusKey] &&
+               filters.risks[riskKey];
+      });
+
+      const container = document.getElementById('scenarios-list');
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-secondary);">No scenarios match the selected filters.</p>';
+        return;
+      }
+
+      container.innerHTML = filtered.map(scenario => `
+        <div class="card" style="margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+            <div>
+              <h3 style="margin: 0; font-size: 15px; font-weight: 600;">${scenario.name}</h3>
+              <p style="margin: 4px 0 0 0; font-size: 12px; color: var(--text-secondary);">ID: ${scenario.id}</p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <span style="font-size: 11px; padding: 4px 8px; background: ${scenario.priority === 'critical' ? 'rgba(232, 25, 46, 0.1)' : 'rgba(0, 200, 200, 0.1)'}; border-radius: 3px; color: ${scenario.priority === 'critical' ? 'var(--color-red)' : 'var(--color-teal)'};">${scenario.priority}</span>
+              <span style="font-size: 11px; padding: 4px 8px; background: var(--bg-secondary); border-radius: 3px; color: var(--text-secondary);">${scenario.status}</span>
+            </div>
+          </div>
+
+          <p style="margin: 0 0 12px 0; font-size: 13px; color: var(--text-secondary);">${scenario.description}</p>
+
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Owner: <span style="color: var(--text-default);">${scenario.owner}</span></div>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Timeline: <span style="color: var(--text-default);">${scenario.timeline}</span></div>
+            <div style="font-size: 12px; color: var(--text-secondary);">Risk Level: <span style="color: var(--text-default);">${scenario.risk_level}</span></div>
+          </div>
+
+          ${scenario.objectives.length > 0 ? `
+            <div style="margin-bottom: 12px;">
+              <div style="font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-secondary);">Objectives</div>
+              <ul style="margin: 0; padding-left: 20px; font-size: 12px;">
+                ${scenario.objectives.map(obj => `<li style="margin-bottom: 4px;">${obj}</li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+
+          ${scenario.key_dependencies.length > 0 ? `
+            <div style="margin-bottom: 12px;">
+              <div style="font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-secondary);">Key Dependencies</div>
+              <ul style="margin: 0; padding-left: 20px; font-size: 12px;">
+                ${scenario.key_dependencies.map(dep => `<li style="margin-bottom: 4px;">${dep}</li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+
+          ${scenario.decisions.length > 0 ? `
+            <div style="margin-bottom: 12px;">
+              <div style="font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-secondary);">Decisions</div>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                ${scenario.decisions.map(decId => `
+                  <a href="decisions.html" style="font-size: 11px; padding: 4px 8px; background: var(--bg-secondary); border-radius: 3px; color: var(--color-teal); text-decoration: none;">${decId}</a>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          ${scenario.artifacts.length > 0 ? `
+            <div>
+              <div style="font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-secondary);">Artifacts</div>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                ${scenario.artifacts.map(artId => `
+                  <a href="artifacts.html" style="font-size: 11px; padding: 4px 8px; background: var(--bg-secondary); border-radius: 3px; color: var(--color-teal); text-decoration: none;">${artId}</a>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+
+    function updateStats() {
+      const critical = allScenarios.filter(s => s.priority === 'critical').length;
+      const active = allScenarios.filter(s => s.status === 'active' || s.status === 'in-progress').length;
+      const highRisk = allScenarios.filter(s => s.risk_level === 'high').length;
+
+      document.getElementById('stat-total').textContent = allScenarios.length;
+      document.getElementById('stat-critical').textContent = critical;
+      document.getElementById('stat-active').textContent = active;
+      document.getElementById('stat-high-risk').textContent = highRisk;
+    }
+
+    // Add filter event listeners
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+      checkbox.addEventListener('change', renderScenarios);
+    });
+
+    // Load on page load
+    loadScenarios();
+  </script>
+</body>
+</html>
