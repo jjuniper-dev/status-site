@@ -1,0 +1,17 @@
+
+.kanban-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.kanban-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+  justify-content: space-between;
+  border: 1px solid var(--border);
+  background: linear-gradient(160deg, var(--bg2), var(--bg3));
+  padding: 16px 18px;
+}
