@@ -1,5 +1,5 @@
 // Intelligence Page Editor — self-contained markdown editor with AI review & GitHub publishing
-// No external CDN dependencies, no file imports — pure editing workflow
+// File import via native browser APIs (text, markdown, images) — no CDN dependencies
 
 class IntelligenceEditor {
   constructor() {
@@ -12,7 +12,9 @@ class IntelligenceEditor {
       lastSaved: null,
       draftContent: '',
       reviewFeedback: null,
-      confirmCallback: null
+      confirmCallback: null,
+      pendingImportText: '',
+      pendingImportMeta: null
     };
 
     this.init();
@@ -35,6 +37,7 @@ class IntelligenceEditor {
         <div class="editor-header">
           <div class="editor-header-title">Intelligence Page Editor</div>
           <div class="editor-header-buttons">
+            <button class="editor-btn" id="btn-import-content" title="Import file">Import File</button>
             <button class="editor-btn" id="close-editor" title="Close editor">Close</button>
           </div>
         </div>
@@ -42,6 +45,21 @@ class IntelligenceEditor {
         <div id="editor-mode-draft" class="editor-mode active">
           <div class="editor-section">
             <label class="editor-label">Markdown Content</label>
+
+            <div id="editor-dropzone" class="editor-dropzone">
+              <div class="editor-dropzone-title">Drop files here or use Import File</div>
+              <div class="editor-dropzone-sub">
+                Supported: .txt, .md, .jpg, .jpeg, .png, .gif
+              </div>
+            </div>
+
+            <input
+              id="editor-file-input"
+              type="file"
+              accept=".txt,.md,.jpg,.jpeg,.png,.gif"
+              style="display:none"
+            >
+
             <textarea
               id="editor-textarea"
               class="editor-textarea"
@@ -107,6 +125,21 @@ class IntelligenceEditor {
           </div>
         </div>
       </div>
+
+      <div id="modal-import-choice" class="editor-modal">
+        <div class="editor-modal-content">
+          <div class="editor-modal-title">Import Content</div>
+          <div class="editor-modal-text" id="modal-import-text">
+            How would you like to use this content?
+          </div>
+          <div class="editor-modal-buttons import-choice-buttons">
+            <button class="editor-btn" id="modal-import-append">Append to Draft</button>
+            <button class="editor-btn" id="modal-import-replace">Replace Draft</button>
+            <button class="editor-btn primary" id="modal-import-analyze">Analyze with AI</button>
+            <button class="editor-btn" id="modal-import-cancel">Cancel</button>
+          </div>
+        </div>
+      </div>
     `;
 
     document.body.insertAdjacentHTML('beforeend', editorHTML);
@@ -135,6 +168,51 @@ class IntelligenceEditor {
 
     document.getElementById('modal-confirm-ok').addEventListener('click', () => this.handleConfirm());
     document.getElementById('modal-confirm-cancel').addEventListener('click', () => this.closeModal('modal-confirm'));
+
+    document.getElementById('btn-import-content').addEventListener('click', () => {
+      document.getElementById('editor-file-input').click();
+    });
+
+    document.getElementById('editor-file-input').addEventListener('change', async (event) => {
+      const file = event.target.files?.[0];
+      if (file) await this.handleFileUpload(file);
+      event.target.value = '';
+    });
+
+    document.getElementById('editor-dropzone').addEventListener('dragover', (e) => {
+      e.preventDefault();
+      document.getElementById('editor-dropzone').classList.add('drag-active');
+    });
+
+    document.getElementById('editor-dropzone').addEventListener('dragleave', () => {
+      document.getElementById('editor-dropzone').classList.remove('drag-active');
+    });
+
+    document.getElementById('editor-dropzone').addEventListener('drop', async (e) => {
+      e.preventDefault();
+      document.getElementById('editor-dropzone').classList.remove('drag-active');
+      const file = e.dataTransfer.files?.[0];
+      if (file) await this.handleFileUpload(file);
+    });
+
+    document.getElementById('modal-import-append').addEventListener('click', async () => {
+      this.closeModal('modal-import-choice');
+      await this.commitImportedContent('append');
+    });
+
+    document.getElementById('modal-import-replace').addEventListener('click', async () => {
+      this.closeModal('modal-import-choice');
+      await this.commitImportedContent('replace');
+    });
+
+    document.getElementById('modal-import-analyze').addEventListener('click', async () => {
+      this.closeModal('modal-import-choice');
+      await this.analyzeImportedContent();
+    });
+
+    document.getElementById('modal-import-cancel').addEventListener('click', () => {
+      this.closeModal('modal-import-choice');
+    });
   }
 
   loadDraft() {
@@ -348,6 +426,181 @@ class IntelligenceEditor {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+  }
+
+  async handleFileUpload(file) {
+    try {
+      const ext = this.getFileExtension(file.name);
+
+      if (!['txt', 'md', 'jpg', 'jpeg', 'png', 'gif'].includes(ext)) {
+        alert('Unsupported file type. Supported: .txt, .md, .jpg, .jpeg, .png, .gif');
+        return;
+      }
+
+      this.setStatus('loading', `Reading ${file.name}...`);
+
+      let content = '';
+      let isImage = false;
+
+      if (['jpg', 'jpeg', 'png', 'gif'].includes(ext)) {
+        // Read image as base64
+        content = await this.readImageAsBase64(file);
+        isImage = true;
+      } else {
+        // Read text file
+        content = await this.readTextFile(file);
+      }
+
+      this.state.pendingImportText = content;
+      this.state.pendingImportMeta = {
+        fileName: file.name,
+        fileType: ext,
+        isImage,
+        importedAt: new Date().toISOString().slice(0, 10)
+      };
+
+      document.getElementById('modal-import-text').textContent = isImage
+        ? `Imported image: ${file.name}. Should this be analyzed for relevance and incorporation?`
+        : `Extracted ${content.length} characters from ${file.name}. How should this content be used?`;
+
+      this.setStatus('ready', 'File imported');
+      this.openModal('modal-import-choice');
+    } catch (error) {
+      this.setStatus('error', `Import failed: ${error.message}`);
+      alert(`Failed to import file: ${error.message}`);
+    }
+  }
+
+  getFileExtension(fileName) {
+    return (fileName.split('.').pop() || '').toLowerCase();
+  }
+
+  readTextFile(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error('Failed to read file'));
+      reader.readAsText(file);
+    });
+  }
+
+  readImageAsBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error('Failed to read image'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async commitImportedContent(mode) {
+    const { isImage } = this.state.pendingImportMeta;
+
+    if (isImage) {
+      // For images, create markdown with image reference
+      const imageMarkdown = `\n![Imported: ${this.state.pendingImportMeta.fileName}](${this.state.pendingImportText})\n`;
+      if (mode === 'replace') {
+        this.state.draftContent = imageMarkdown;
+      } else {
+        this.state.draftContent += imageMarkdown;
+      }
+    } else {
+      // For text, include as code block or plain text
+      const textBlock = `\n## Imported from ${this.state.pendingImportMeta.fileName}\n\n${this.state.pendingImportText}\n`;
+      if (mode === 'replace') {
+        this.state.draftContent = textBlock;
+      } else {
+        this.state.draftContent += textBlock;
+      }
+    }
+
+    document.getElementById('editor-textarea').value = this.state.draftContent;
+    this.updatePreview();
+    this.markDirty();
+    this.setStatus('ready', 'Content imported');
+  }
+
+  async analyzeImportedContent() {
+    if (!this.reviewer.hasApiKey()) {
+      document.getElementById('modal-api-key-input').value = '';
+      this.openModal('modal-api-key');
+      return;
+    }
+
+    this.setStatus('loading', 'AI analyzing imported content...');
+
+    try {
+      const { pendingImportText, pendingImportMeta } = this.state;
+      const prompt = pendingImportMeta.isImage
+        ? `You are analyzing an imported image document for an enterprise AI governance intelligence page.
+           Assess: (1) Is this content relevant to AI governance/architecture? (2) What sections should it inform?
+           (3) What specific insights should be extracted? (4) Should it be incorporated as-is or synthesized?`
+        : `You are analyzing imported document content for an enterprise AI governance intelligence page.
+           Assess: (1) Is this content relevant and accurate? (2) What sections should it inform?
+           (3) What specific insights are valuable? (4) Should it be incorporated directly or synthesized?`;
+
+      const analysis = await this.reviewer.analyzeImportedContent(
+        pendingImportText,
+        prompt,
+        pendingImportMeta
+      );
+
+      this.displayImportAnalysis(analysis);
+      this.setStatus('completed', 'Analysis complete');
+    } catch (error) {
+      this.setStatus('error', `Analysis failed: ${error.message}`);
+      alert(`AI analysis failed: ${error.message}`);
+    }
+  }
+
+  displayImportAnalysis(analysis) {
+    const panel = document.getElementById('ai-review-panel');
+    panel.classList.add('active');
+    this.switchMode('ai-review');
+
+    let html = '<div class="ai-review-section">';
+    html += '<div class="ai-review-section-title">🔍 Import Analysis</div>';
+
+    if (analysis.isRelevant !== false) {
+      html += '<div class="ai-review-recommendation"><strong>✅ Relevant:</strong> ' + this.escapeHtml(analysis.relevance || 'Content is relevant to intelligence page') + '</div>';
+    } else {
+      html += '<div class="ai-review-risk"><strong>⚠️ Relevance:</strong> ' + this.escapeHtml(analysis.relevance || 'Content may not be relevant') + '</div>';
+    }
+
+    if (analysis.suggestedSections) {
+      html += '<div class="ai-review-content"><strong>Suggested Sections:</strong><br>' + this.escapeHtml(analysis.suggestedSections) + '</div>';
+    }
+
+    if (analysis.keyInsights) {
+      html += '<div class="ai-review-content"><strong>Key Insights:</strong><br>' + this.escapeHtml(analysis.keyInsights) + '</div>';
+    }
+
+    if (analysis.incorporationApproach) {
+      html += '<div class="ai-review-recommendation"><strong>How to Incorporate:</strong><br>' + this.escapeHtml(analysis.incorporationApproach) + '</div>';
+    }
+
+    if (analysis.concerns) {
+      html += '<div class="ai-review-risk"><strong>⚠️ Concerns:</strong><br>' + this.escapeHtml(analysis.concerns) + '</div>';
+    }
+
+    html += '</div>';
+    html += '<div style="padding-top: 12px; border-top: 1px solid var(--border); margin-top: 12px;">';
+    html += '<button class="editor-btn" id="btn-append-after-analysis" style="margin-right: 8px;">Append to Draft</button>';
+    html += '<button class="editor-btn primary" id="btn-accept-analysis">Accept & Incorporate</button>';
+    html += '</div>';
+
+    panel.innerHTML = html;
+
+    document.getElementById('btn-append-after-analysis').addEventListener('click', async () => {
+      await this.commitImportedContent('append');
+      this.switchMode('draft');
+    });
+
+    document.getElementById('btn-accept-analysis').addEventListener('click', async () => {
+      await this.commitImportedContent('append');
+      this.switchMode('draft');
+      alert('Content appended to draft. Review and edit as needed before publishing.');
+    });
   }
 
   async publish() {
