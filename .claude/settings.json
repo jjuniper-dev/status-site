@@ -1,0 +1,5 @@
+{
+  "env": {
+    "ANTHROPIC_API_KEY": "$ANTHROPIC_API_KEY_LOCAL"
+  }
+}
