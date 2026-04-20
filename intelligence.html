@@ -33,7 +33,7 @@
   <div class="badges">
     <div class="badge badge-red">Internal Use</div>
     <div class="badge badge-teal">Living Document</div>
-    <div class="badge badge-gold">2026-04-19</div>
+    <div class="badge badge-gold">2026-04-20</div>
   </div>
 </div>
 
@@ -166,6 +166,49 @@
   </div>
 </div>
 
+<div class="section-label">04b · HAIL/PATH Convergence Architecture (Proposed)</div>
+<div class="text-block">
+  <p><strong>Status:</strong> Proposal for ARB consideration (not approved; for governance clarity only)</p>
+  <p><strong>Core Problem:</strong> PATH and HAIL are building in parallel without a defined integration model. This creates architectural debt and forces each new project to negotiate governance boundaries individually.</p>
+</div>
+
+<div class="card" style="margin-bottom: 16px;">
+  <div class="card-title">Proposed Convergence Model (v0.1 - for discussion)</div>
+  <div class="card-sub">Integration pathway showing current fragmentation vs. target converged state</div>
+  <div style="background: var(--bg2); padding: 12px; border-radius: 4px; font-size: 12px; font-family: var(--mono); overflow-x: auto; margin-top: 10px;">
+    <div><strong>Current State (Fragmented):</strong></div>
+    <div style="color: var(--text-dim); margin: 4px 0;">Projects → HAIL Runtime (ungoverned) ↔ PATH Control Plane (not yet operational)</div>
+    <div style="color: var(--text-faint); margin: 8px 0;">↓ (governance gap)</div>
+    <div style="margin-top: 10px;"><strong>Target State (Converged):</strong></div>
+    <div style="color: var(--text-dim); margin: 4px 0;">Projects → HAIL Runtime (Foundry workspaces)</div>
+    <div style="color: var(--text-dim); margin: 4px 0;">↓ (mandatory routing)</div>
+    <div style="color: var(--text-dim); margin: 4px 0;">PATH Control Plane</div>
+    <div style="color: var(--text-dim); margin: 4px 0;">├─ Identity/RBAC (Azure AD)</div>
+    <div style="color: var(--text-dim); margin: 4px 0;">├─ Policy enforcement</div>
+    <div style="color: var(--text-dim); margin: 4px 0;">├─ Cost tracking</div>
+    <div style="color: var(--text-dim); margin: 4px 0;">└─ Audit logging</div>
+    <div style="color: var(--text-dim); margin: 4px 0;">↓ (inherited controls)</div>
+    <div style="color: var(--text-dim); margin: 4px 0;">Data Layer (Purview + RAG governance)</div>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom: 16px;">
+  <div class="card-title">Convergence Dependency Chain</div>
+  <ul class="card-list" style="margin-top: 10px;">
+    <li><span style="color: var(--green);">✓ HAIL deployed</span> (March 2026)</li>
+    <li><span style="color: var(--gold);">⏳ Application Insights integration</span> → Foundry telemetry closure</li>
+    <li><span style="color: var(--gold);">⏳ API Management ingress standard</span> → PATH Control Plane ready</li>
+    <li><span style="color: var(--gold);">⏳ Azure AD/RBAC policy templates</span> → Inherited baseline ready</li>
+    <li><span style="color: var(--gold);">⏳ Purview classification enforcement</span> → Data governance operational</li>
+  </ul>
+  <div style="padding: 10px; background: rgba(232, 25, 46, 0.1); border-left: 3px solid var(--red); border-radius: 2px; margin-top: 10px;">
+    <strong style="color: var(--red);">Timeline Risk:</strong> FY26-27 delivery exposed if ATO path for HAIL not initiated by Q2 FY26.
+  </div>
+  <div style="padding: 10px; background: rgba(124, 255, 178, 0.05); border-left: 3px solid var(--green); border-radius: 2px; margin-top: 8px;">
+    <strong style="color: var(--green);">Decision Required:</strong> ARB approval to formalize this convergence sequence (or propose alternative).
+  </div>
+</div>
+
 <div class="section-label">05 · PATH Three-Plane Architecture</div>
 
 <div class="card" style="margin-bottom: 16px;">
@@ -208,6 +251,55 @@
 <div class="text-block">
   <p><strong>Onboarding Target:</strong> Complete in under 5 days via standardized gates and automated controls.</p>
   <p><strong>Production Gates Required:</strong> Security clearance, privacy review, data science validation, EA approval, responsible AI committee sign-off.</p>
+</div>
+
+<div class="card" style="margin-bottom: 16px;">
+  <div class="card-title">Inherited Control Baseline (Minimum Required)</div>
+  <div class="card-sub">Every HAIL project onboarded through PATH must inherit these controls</div>
+  <div class="table" style="margin-top: 10px;">
+    <thead>
+      <tr>
+        <th style="width: 25%;">Control</th>
+        <th style="width: 40%;">Implementation</th>
+        <th style="width: 35%;">Owner</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Identity & Access</strong></td>
+        <td>Azure AD with MFA; RBAC per Foundry workspace</td>
+        <td>Team Lead + ARB</td>
+      </tr>
+      <tr>
+        <td><strong>Data Classification</strong></td>
+        <td>Input/output data tagged with Purview classification</td>
+        <td>Data Owner</td>
+      </tr>
+      <tr>
+        <td><strong>Audit Logging</strong></td>
+        <td>All model calls logged to Application Insights; 90-day retention</td>
+        <td>PHAC Audit</td>
+      </tr>
+      <tr>
+        <td><strong>Cost Attribution</strong></td>
+        <td>Billable to project cost center; monthly reviews</td>
+        <td>FinOps</td>
+      </tr>
+      <tr>
+        <td><strong>Model Version Control</strong></td>
+        <td>Frozen model versions; traceability to training data/approval</td>
+        <td>Data Science</td>
+      </tr>
+      <tr>
+        <td><strong>Incident Escalation</strong></td>
+        <td>Governance incident triggers ARB notification</td>
+        <td>EA / ARB</td>
+      </tr>
+    </tbody>
+  </div>
+  <div style="padding: 10px; background: var(--surface); border-left: 3px solid var(--teal); border-radius: 2px; margin-top: 10px; font-size: 12px;">
+    <strong>Timeline Impact:</strong> Days 1-2 (Security/Privacy review + classification audit) → Days 3-4 (Technical onboarding) → Day 5 (EA/RAI approval + control inheritance activation). Complex projects (Protected B, new model classes) may exceed 5 days; escalate to ARB.
+  </div>
 </div>
 
 <div class="section-label">07 · Primary Architectural Themes</div>
@@ -256,28 +348,56 @@
   </div>
 </div>
 
-<div class="section-label">08 · Shadow AI Governance Exposure</div>
+<div class="section-label">08 · Shadow AI Governance Exposure (Quantified Assessment)</div>
 
-<div class="grid-2">
-  <div class="card">
-    <div class="card-title">Active Shadow Vectors</div>
-    <div class="card-sub">Specific vectors creating governance exposure across HC/PHAC AI activity</div>
-    <ul class="card-list">
-      <li><strong>CANChat</strong> — Scope creep risk beyond approved boundaries</li>
-      <li><strong>Copilot (M365)</strong> — ATO gap unresolved</li>
-      <li><strong>RADIA</strong> — Deprecated; references persist</li>
-    </ul>
-  </div>
-  <div class="card">
-    <div class="card-title">Governance Exposure Patterns</div>
-    <div class="card-sub">Shadow AI creates invisible control gaps that compound over time</div>
-    <ul class="card-list">
-      <li>Workloads deployed without ATO/ARB</li>
-      <li>Deprecated tools referenced as current</li>
-      <li>Classification boundaries crossed</li>
-      <li>Audit traceability absent</li>
-    </ul>
-  </div>
+<div class="card" style="margin-bottom: 16px;">
+  <div class="card-title">CANChat (Internal Government Service)</div>
+  <div class="card-sub">Workforce enablement tool with scope creep and data handling exposure</div>
+  <ul class="card-list" style="margin-top: 10px;">
+    <li><strong>Scope:</strong> HC/PHAC internal productivity tool</li>
+    <li><strong>Estimated Users:</strong> ~40-60 active users (est. based on Slack adoption patterns)</li>
+    <li><strong>Governance Status:</strong> Deployed without formal ARB review; usage patterns not audited</li>
+    <li><strong>Critical Gap:</strong> Unknown classification levels of prompts; no data residency enforcement</li>
+    <li><strong>Risk:</strong> Scope creep — unclear boundary between approved use cases and experimental workloads</li>
+    <li><strong>Mitigation Path:</strong> Propose CANChat governance workstream with data classification audit</li>
+  </ul>
+</div>
+
+<div class="card" style="margin-bottom: 16px;">
+  <div class="card-title">Copilot (M365 Integration)</div>
+  <div class="card-sub">Productivity suite integration with Protected B data residency risk</div>
+  <ul class="card-list" style="margin-top: 10px;">
+    <li><strong>Scope:</strong> Microsoft 365 (Word, Excel, Teams) AI assistant</li>
+    <li><strong>Estimated Users:</strong> ~200+ (all M365 users eligible; adoption growing)</li>
+    <li><strong>Governance Status:</strong> Pilot phase; no per-user audit trail; T+1 rollout planned</li>
+    <li><strong>Critical Gap:</strong> ATO gap unresolved; M365 Copilot not formally authorized for Protected B</li>
+    <li><strong>Regulatory Risk:</strong> Protected B data processed by US-based LLM (sovereignty/jurisdiction unclear; data residency not HC-controlled)</li>
+    <li><strong>Mitigation Path:</strong> Formal ATO required before rollout; data classification audit; consider data masking for Protected B</li>
+  </ul>
+</div>
+
+<div class="card" style="margin-bottom: 16px;">
+  <div class="card-title">RADIA (Deprecated)</div>
+  <div class="card-sub">Legacy tool with persistent references blocking clean migration</div>
+  <ul class="card-list" style="margin-top: 10px;">
+    <li><strong>Scope:</strong> Legacy Analytics and Decision Intelligence Architecture (deprecated 2025)</li>
+    <li><strong>Current Exposure:</strong> Tool deprecated but references persist in documentation and Foundry workspaces</li>
+    <li><strong>Governance Status:</strong> No sunset migration plan; teams may still rely on cached outputs</li>
+    <li><strong>Impact Scope:</strong> Unknown; requires audit of Foundry artifacts and process documentation</li>
+    <li><strong>Mitigation Path:</strong> Deprecation audit — identify teams still using RADIA outputs; provide Databricks migration path</li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="card-title">Governance Exposure Patterns (Summary)</div>
+  <div class="card-sub">Shadow AI creates invisible control gaps that compound over time</div>
+  <ul class="card-list">
+    <li>Workloads deployed without ATO/ARB review (CANChat, Copilot pilots)</li>
+    <li>Deprecated tools still referenced as current (RADIA)</li>
+    <li>Classification boundaries crossed (Protected B data in US-based LLMs)</li>
+    <li>Audit traceability absent (no per-user model call logging)</li>
+    <li>Data residency assumptions misaligned with regulatory requirements</li>
+  </ul>
 </div>
 
 <div class="section-label">09 · Enterprise Implications for HC / PHAC</div>
@@ -303,6 +423,18 @@
       <li>Defensibility for AI use cases</li>
     </ul>
   </div>
+</div>
+
+<div class="card" style="margin-bottom: 16px;">
+  <div class="card-title">Purview-PATH Integration Roadmap</div>
+  <div class="card-sub">Operational pathway for automated data governance in HAIL workloads</div>
+  <ul class="card-list" style="margin-top: 10px;">
+    <li><strong>Classification Enforcement:</strong> Purview classification tags → Policy engine (PATH) → Foundry access control. All model inputs must have classification tags; outputs tagged automatically.</li>
+    <li><strong>Data Lineage Tracking:</strong> HAIL workload → Purview lineage metadata → audit trail. Query: "Show all Protected B data touched by epidemiological pipelines" = automatic lineage graph.</li>
+    <li><strong>Incident Response:</strong> Governance incident (e.g., unclassified data fed to model) → Purview alert → ARB escalation</li>
+    <li><strong>Current State:</strong> Purview metadata catalog exists (partial coverage); classification standard in draft (Protected A/B/C incomplete); no automated enforcement yet</li>
+    <li><strong>Implementation Timeline:</strong> Target Q3 FY26 (dependent on Purview metadata completeness and PATH readiness)</li>
+  </ul>
 </div>
 
 <div class="section-label">10 · Open Questions & Governance Gaps</div>
@@ -362,9 +494,71 @@
   </tbody>
 </table>
 
-<div class="section-label">11 · Document Update Log</div>
+<div class="section-label">12 · FY26 Governance Milestones & ARB Decision Points</div>
+<div class="text-block">
+  <p><strong>Critical Path Timeline:</strong> Risk exposure increases with each delayed milestone. Monthly ARB steering reviews recommended June-September 2026.</p>
+</div>
+
+<div class="table">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Milestone</th>
+      <th>Decision Required</th>
+      <th>Risk if Missed</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Q1 (Apr-Jun)</strong></td>
+      <td>HAIL/PATH convergence model approved by ARB</td>
+      <td>Proceed with convergence sequence or propose alternative</td>
+      <td><span style="color: var(--red);">Parallel development continues; duplication & rework</span></td>
+    </tr>
+    <tr>
+      <td><strong>Q2 (Jul-Sep)</strong></td>
+      <td>Production ATO path for HAIL initiated</td>
+      <td>Formal ATO workstream started with Security/Privacy</td>
+      <td><span style="color: var(--red);">FY26-27 delivery stalled; workloads remain ungoverned</span></td>
+    </tr>
+    <tr>
+      <td><strong>Q2 (Jul-Sep)</strong></td>
+      <td>CANChat governance audit completed</td>
+      <td>Scope definition & data classification baseline</td>
+      <td><span style="color: var(--red);">CANChat usage accelerates uncontrolled</span></td>
+    </tr>
+    <tr>
+      <td><strong>Q3 (Oct-Dec)</strong></td>
+      <td>Copilot ATO completed; M365 rollout approved</td>
+      <td>Data residency/jurisdiction posture confirmed</td>
+      <td><span style="color: var(--red);">Protected B data exposed to US-based LLM</span></td>
+    </tr>
+    <tr>
+      <td><strong>Q3 (Oct-Dec)</strong></td>
+      <td>Inherited control baseline tested (2-3 pilot projects)</td>
+      <td>Verify 5-day onboarding achievable</td>
+      <td><span style="color: var(--red);">Scaling blocked; per-project negotiation persists</span></td>
+    </tr>
+    <tr>
+      <td><strong>Q4 (Jan-Mar)</strong></td>
+      <td>Purview-PATH integration operational</td>
+      <td>Automated classification enforcement live</td>
+      <td><span style="color: var(--red);">Manual data governance continues; governance debt compounds</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<div style="padding: 12px; background: rgba(232, 25, 46, 0.1); border-left: 3px solid var(--red); border-radius: 2px; margin-top: 16px;">
+  <strong style="color: var(--red);">Escalation Path:</strong> If any Q1/Q2 milestone missed, governance debt compounds. Recommend ARB steering committee monthly reviews June-September 2026.
+</div>
+
+<div class="section-label">13 · Document Update Log</div>
 
 <div class="log-list">
+  <div class="log-item">
+    <div class="log-date">2026-04-20</div>
+    <div class="log-text"><strong>Consolidated Intelligence (v1.2 - Draft for ARB Review):</strong> Added HAIL/PATH convergence model (v0.1) for governance clarity; explicitly noted as proposal pending ARB decision. Quantified shadow AI vectors: CANChat (~40-60 users, data handling unclear), Copilot (~200+ users, Protected B ATO gap critical), RADIA (deprecated but references persist). Defined inherited control baseline for HAIL onboarding (6 controls: identity, classification, audit, cost, versioning, escalation). Extended data governance with Purview-PATH integration roadmap (target Q3 FY26). Added FY26 governance milestones and escalation risk timeline; highlighted Q1-Q2 ARB decision points as critical path.</div>
+  </div>
   <div class="log-item">
     <div class="log-date">2026-04-19</div>
     <div class="log-text"><strong>Consolidated Intelligence (v1.1):</strong> Preserved selected April 17 overview signals inside the intelligence layer rather than the dashboard layer. Added provenance note, operational interpretation that HAIL deployment does not equal production clearance, explicit caution that PATH is not current substitute capacity, GREP-ExP reframed as live architectural evidence, and working-level delivery friction captured as a governance-relevant operating constraint.</div>
@@ -383,11 +577,11 @@
   <div class="footer-left">
     Health Canada · Public Health Agency of Canada<br>
     EA / TPO / ARB / OCDO — Internal Use Only<br>
-    <span id="last-updated">Last updated: 2026-04-19</span>
+    <span id="last-updated">Last updated: 2026-04-20</span>
   </div>
   <div class="footer-right">
-    Intelligence Page · Version 1.1<br>
-    Current structure + harvested April 17 analysis
+    Intelligence Page · Version 1.2<br>
+    Convergence roadmap + risk timeline + quantified governance exposure
   </div>
 </div>
 
