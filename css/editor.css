@@ -466,6 +466,72 @@
   to { transform: rotate(360deg); }
 }
 
+/* ========== FILE IMPORT / DROPZONE ========== */
+.editor-dropzone {
+  border: 1px dashed var(--border-bright);
+  background: var(--bg2);
+  border-radius: 4px;
+  padding: 14px;
+  margin-bottom: 12px;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.editor-dropzone.drag-active {
+  border-color: var(--teal);
+  background: rgba(0, 200, 200, 0.08);
+}
+
+.editor-dropzone-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.editor-dropzone-sub {
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+.editor-import-status {
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--blue-light);
+  background: rgba(95, 168, 232, 0.08);
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+.editor-inline-toast {
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.editor-inline-toast.info {
+  background: rgba(95, 168, 232, 0.08);
+  border-left: 3px solid var(--blue-light);
+  color: var(--text-dim);
+}
+
+.editor-inline-toast.success {
+  background: rgba(124, 255, 178, 0.08);
+  border-left: 3px solid var(--green);
+  color: var(--text-dim);
+}
+
+.editor-inline-toast.error {
+  background: rgba(232, 25, 46, 0.08);
+  border-left: 3px solid var(--red);
+  color: var(--text-dim);
+}
+
+.import-choice-buttons {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
 /* ========== RESPONSIVE ========== */
 @media (max-width: 1024px) {
   #editor-panel.open {

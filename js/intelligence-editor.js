@@ -1,70 +1,93 @@
-// Intelligence Page Editor — Main editor controller for markdown editing + AI review + publishing
-// Manages workflow: Draft → AI-Review → Publish (to intelligence-draft branch)
+// Intelligence Page Editor — enhanced editor controller
+// Adds file import, parsing, OCR/PDF/DOCX extraction, import-to-editor flow,
+// upload analysis, and existing AI review + publish workflow.
 
 class IntelligenceEditor {
   constructor() {
     this.reviewer = new AIContentReviewer();
     this.markdownProcessor = new MarkdownProcessor();
+
     this.state = {
-      mode: 'draft', // 'draft' | 'review' | 'ai-review' | 'publish'
+      mode: 'draft',
       isDraft: false,
       lastSaved: null,
       draftContent: '',
-      reviewFeedback: null
+      reviewFeedback: null,
+      confirmCallback: null,
+      pendingImportText: '',
+      pendingImportMeta: null
     };
+
+    this.supportedExtensions = ['txt', 'md', 'pdf', 'docx', 'jpg', 'jpeg', 'png'];
+    this.toastTimer = null;
     this.init();
   }
 
   init() {
-    // Create editor UI
     this.createEditorUI();
     this.setupEventListeners();
     this.loadDraft();
     this.setupAutoSave();
   }
 
-  // Create editor HTML structure
   createEditorUI() {
     const editorHTML = `
-      <!-- Edit Button -->
       <button id="edit-button" class="edit-button" title="Edit intelligence page">
         <span style="font-size: 14px;">✎</span> Edit
       </button>
 
-      <!-- Editor Panel -->
       <div id="editor-panel" class="editor-panel">
-        <!-- Header -->
         <div class="editor-header">
           <div class="editor-header-title">Intelligence Page Editor</div>
           <div class="editor-header-buttons">
+            <button class="editor-btn" id="btn-import-content" title="Import file content">Import Content</button>
             <button class="editor-btn" id="close-editor" title="Close editor">Close</button>
           </div>
         </div>
 
-        <!-- Draft Mode -->
         <div id="editor-mode-draft" class="editor-mode active">
           <div class="editor-section">
             <label class="editor-label">Markdown Content</label>
-            <textarea id="editor-textarea" class="editor-textarea" placeholder="Enter markdown content for intelligence page..."></textarea>
+
+            <div id="editor-dropzone" class="editor-dropzone">
+              <div class="editor-dropzone-title">Drop files here or use Import Content</div>
+              <div class="editor-dropzone-sub">
+                Supported: .txt, .md, .pdf, .docx, .jpg, .jpeg, .png
+              </div>
+            </div>
+
+            <input
+              id="editor-file-input"
+              type="file"
+              accept=".txt,.md,.pdf,.docx,.jpg,.jpeg,.png"
+              style="display:none"
+            >
+
+            <div id="upload-status" class="editor-import-status" hidden></div>
+            <div id="inline-toast" class="editor-inline-toast" hidden></div>
+
+            <textarea
+              id="editor-textarea"
+              class="editor-textarea"
+              placeholder="Enter markdown content for intelligence page..."
+            ></textarea>
           </div>
+
           <div class="editor-section">
             <label class="editor-label">Live Preview</label>
             <div id="editor-preview" class="editor-preview"></div>
           </div>
         </div>
 
-        <!-- AI Review Mode -->
         <div id="editor-mode-ai-review" class="editor-mode">
           <div id="ai-review-panel" class="ai-review-panel"></div>
         </div>
 
-        <!-- Status Bar -->
         <div class="editor-status">
           <div class="editor-status-dot" id="editor-status-dot"></div>
           <span id="editor-status-text">Ready</span>
         </div>
 
-        <!-- Action Buttons -->
         <div class="editor-buttons">
           <button class="editor-btn" id="btn-ai-review" title="Review with AI">🤖 Review with AI</button>
           <button class="editor-btn primary" id="btn-publish" title="Publish to draft branch">📤 Publish</button>
@@ -72,7 +95,6 @@ class IntelligenceEditor {
         </div>
       </div>
 
-      <!-- API Key Modal -->
       <div id="modal-api-key" class="editor-modal">
         <div class="editor-modal-content">
           <div class="editor-modal-title">Anthropic API Key</div>
@@ -86,7 +108,6 @@ class IntelligenceEditor {
         </div>
       </div>
 
-      <!-- GitHub Token Modal -->
       <div id="modal-github-token" class="editor-modal">
         <div class="editor-modal-content">
           <div class="editor-modal-title">GitHub Personal Access Token</div>
@@ -100,7 +121,6 @@ class IntelligenceEditor {
         </div>
       </div>
 
-      <!-- Confirmation Modal -->
       <div id="modal-confirm" class="editor-modal">
         <div class="editor-modal-content">
           <div class="editor-modal-title" id="modal-confirm-title">Confirm Action</div>
@@ -111,18 +131,30 @@ class IntelligenceEditor {
           </div>
         </div>
       </div>
+
+      <div id="modal-import-choice" class="editor-modal">
+        <div class="editor-modal-content">
+          <div class="editor-modal-title">Import Content</div>
+          <div class="editor-modal-text" id="modal-import-text">
+            Choose how to use the extracted content.
+          </div>
+          <div class="editor-modal-buttons import-choice-buttons">
+            <button class="editor-btn" id="modal-import-append">Append</button>
+            <button class="editor-btn" id="modal-import-replace">Replace</button>
+            <button class="editor-btn primary" id="modal-import-standalone">Analyze Standalone</button>
+            <button class="editor-btn" id="modal-import-cancel">Cancel</button>
+          </div>
+        </div>
+      </div>
     `;
 
     document.body.insertAdjacentHTML('beforeend', editorHTML);
   }
 
-  // Setup event listeners
   setupEventListeners() {
-    // Edit button
     document.getElementById('edit-button').addEventListener('click', () => this.openEditor());
     document.getElementById('close-editor').addEventListener('click', () => this.closeEditor());
 
-    // Editor textarea
     const textarea = document.getElementById('editor-textarea');
     textarea.addEventListener('input', () => {
       this.state.draftContent = textarea.value;
@@ -130,32 +162,86 @@ class IntelligenceEditor {
       this.markDirty();
     });
 
-    // Action buttons
     document.getElementById('btn-ai-review').addEventListener('click', () => this.reviewWithAI());
     document.getElementById('btn-publish').addEventListener('click', () => this.publish());
     document.getElementById('btn-discard').addEventListener('click', () => this.confirmDiscard());
 
-    // API Key Modal
     document.getElementById('modal-api-key-ok').addEventListener('click', () => this.saveApiKey());
     document.getElementById('modal-api-key-cancel').addEventListener('click', () => this.closeModal('modal-api-key'));
 
-    // GitHub Token Modal
     document.getElementById('modal-github-token-ok').addEventListener('click', () => this.saveGithubToken());
     document.getElementById('modal-github-token-cancel').addEventListener('click', () => this.closeModal('modal-github-token'));
 
-    // Confirm Modal
     document.getElementById('modal-confirm-ok').addEventListener('click', () => this.handleConfirm());
     document.getElementById('modal-confirm-cancel').addEventListener('click', () => this.closeModal('modal-confirm'));
+
+    document.getElementById('btn-import-content').addEventListener('click', () => {
+      document.getElementById('editor-file-input').click();
+    });
+
+    document.getElementById('editor-file-input').addEventListener('change', async (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      await this.handleFileUpload(file);
+      event.target.value = '';
+    });
+
+    document.getElementById('modal-import-append').addEventListener('click', async () => {
+      this.closeModal('modal-import-choice');
+      await this.commitImportedContent('append');
+    });
+
+    document.getElementById('modal-import-replace').addEventListener('click', async () => {
+      this.closeModal('modal-import-choice');
+      await this.commitImportedContent('replace');
+    });
+
+    document.getElementById('modal-import-standalone').addEventListener('click', async () => {
+      this.closeModal('modal-import-choice');
+      await this.commitImportedContent('standalone-analysis');
+    });
+
+    document.getElementById('modal-import-cancel').addEventListener('click', () => {
+      this.state.pendingImportText = '';
+      this.state.pendingImportMeta = null;
+      this.closeModal('modal-import-choice');
+    });
+
+    this.setupDropZone();
   }
 
-  // Open editor panel
+  setupDropZone() {
+    const dropZone = document.getElementById('editor-dropzone');
+    if (!dropZone) return;
+
+    ['dragenter', 'dragover'].forEach((eventName) => {
+      dropZone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        dropZone.classList.add('drag-active');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach((eventName) => {
+      dropZone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        dropZone.classList.remove('drag-active');
+      });
+    });
+
+    dropZone.addEventListener('drop', async (event) => {
+      const file = event.dataTransfer?.files?.[0];
+      if (!file) return;
+      await this.handleFileUpload(file);
+    });
+  }
+
   openEditor() {
     document.getElementById('editor-panel').classList.add('open');
-    const textarea = document.getElementById('editor-textarea');
-    textarea.focus();
+    document.getElementById('editor-textarea').focus();
   }
 
-  // Close editor panel
   closeEditor() {
     if (this.state.isDraft) {
       this.confirm('Unsaved changes will be lost. Close anyway?', () => {
@@ -166,7 +252,6 @@ class IntelligenceEditor {
     }
   }
 
-  // Load draft from localStorage
   loadDraft() {
     const draft = localStorage.getItem('intelligence_draft');
     if (draft) {
@@ -181,54 +266,242 @@ class IntelligenceEditor {
         console.error('Failed to load draft:', e);
       }
     } else {
-      // Load current page content (convert HTML to markdown)
       this.loadCurrentContent();
     }
   }
 
-  // Load current published content from page
   loadCurrentContent() {
-    const contentDiv = document.querySelector('.section-label') || document.querySelector('.text-block');
-    if (contentDiv) {
-      // For now, show a placeholder
-      const placeholder = '# Intelligence Page Content\n\nEdit this content directly.';
-      this.state.draftContent = placeholder;
-      document.getElementById('editor-textarea').value = placeholder;
-      this.updatePreview();
-    }
+    const placeholder = [
+      '# Intelligence Page Content',
+      '',
+      'Edit this content directly.',
+      '',
+      '## Imported Content',
+      '',
+      'Imported sections will appear here when you use the file import flow.'
+    ].join('\n');
+
+    this.state.draftContent = placeholder;
+    document.getElementById('editor-textarea').value = placeholder;
+    this.updatePreview();
   }
 
-  // Auto-save draft (debounced)
   setupAutoSave() {
     let timeout;
     document.getElementById('editor-textarea').addEventListener('input', () => {
       clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        this.saveDraft();
-      }, 1000); // Save after 1 second of inactivity
+      timeout = setTimeout(() => this.saveDraft(), 1000);
     });
   }
 
-  // Save draft to localStorage
   saveDraft() {
     const draft = {
       content: this.state.draftContent,
       lastSaved: new Date().toISOString(),
-      version: '1.0'
+      version: '2.0'
     };
     localStorage.setItem('intelligence_draft', JSON.stringify(draft));
     this.setStatus('saved');
   }
 
-  // Update live preview
   updatePreview() {
     const html = this.markdownProcessor.toHtml(this.state.draftContent);
     document.getElementById('editor-preview').innerHTML = html;
   }
 
-  // Review with AI
+  async handleFileUpload(file) {
+    try {
+      this.validateFile(file);
+      this.showProgress(`Processing ${file.name}...`);
+
+      const parser = await this.getParserForFile(file);
+      const result = await parser.parse(file, {
+        onProgress: (message) => this.showProgress(message)
+      });
+
+      const cleanText = (result?.text || '').trim();
+      if (!cleanText) {
+        throw new Error('No readable text could be extracted from this file.');
+      }
+
+      this.state.pendingImportText = cleanText;
+      this.state.pendingImportMeta = {
+        fileName: file.name,
+        fileType: file.type || this.getExtension(file.name),
+        parser: result?.metadata?.parser || 'unknown',
+        importedAt: new Date().toISOString().slice(0, 10)
+      };
+
+      document.getElementById('modal-import-text').textContent =
+        `Extracted content from ${file.name}. Choose whether to append it, replace the current draft, or analyze it as standalone content.`;
+
+      this.hideProgress();
+      this.openModal('modal-import-choice');
+    } catch (error) {
+      this.hideProgress();
+      this.showToast(`Failed to process file: ${error.message}`, 'error');
+      console.error(error);
+    }
+  }
+
+  validateFile(file) {
+    const ext = this.getExtension(file.name);
+    if (!this.supportedExtensions.includes(ext)) {
+      throw new Error('Unsupported file format. Supported: txt, md, pdf, docx, jpg, jpeg, png.');
+    }
+  }
+
+  getExtension(fileName) {
+    return (fileName.split('.').pop() || '').toLowerCase();
+  }
+
+  async getParserForFile(file) {
+    const ext = this.getExtension(file.name);
+
+    if (ext === 'txt') return new TextFileParser();
+    if (ext === 'md') return new MarkdownFileParser();
+    if (ext === 'pdf') return new PdfFileParser(this);
+    if (ext === 'docx') return new DocxFileParser(this);
+    if (['jpg', 'jpeg', 'png'].includes(ext)) return new ImageOcrParser(this);
+
+    throw new Error('Unsupported file format.');
+  }
+
+  wrapImportedContent(text, meta) {
+    return [
+      '## Imported Content',
+      `**Source:** ${meta.fileName}  `,
+      `**Imported:** ${meta.importedAt}  `,
+      `**Parser:** ${meta.parser}`,
+      '',
+      text
+    ].join('\n');
+  }
+
+  async commitImportedContent(mode) {
+    const wrapped = this.wrapImportedContent(this.state.pendingImportText, this.state.pendingImportMeta);
+
+    if (mode === 'replace') {
+      this.state.draftContent = wrapped;
+      document.getElementById('editor-textarea').value = wrapped;
+      this.updatePreview();
+      this.markDirty();
+      this.saveDraft();
+
+      const shouldAnalyze = window.confirm('Run AI analysis on the imported content now?');
+      if (shouldAnalyze) {
+        await this.analyzeImportedContent(this.state.pendingImportText);
+      }
+    }
+
+    if (mode === 'append') {
+      const current = document.getElementById('editor-textarea').value.trim();
+      const nextValue = current ? `${current}\n\n${wrapped}` : wrapped;
+      this.state.draftContent = nextValue;
+      document.getElementById('editor-textarea').value = nextValue;
+      this.updatePreview();
+      this.markDirty();
+      this.saveDraft();
+
+      const shouldAnalyze = window.confirm('Run AI analysis on the imported content now?');
+      if (shouldAnalyze) {
+        await this.analyzeImportedContent(this.state.pendingImportText);
+      }
+    }
+
+    if (mode === 'standalone-analysis') {
+      await this.analyzeImportedContent(this.state.pendingImportText, true);
+    }
+
+    this.state.pendingImportText = '';
+    this.state.pendingImportMeta = null;
+  }
+
+  async analyzeImportedContent(importedText, standalone = false) {
+    if (!this.reviewer.hasApiKey()) {
+      this.openModal('modal-api-key');
+      return;
+    }
+
+    try {
+      this.showProgress('Analyzing Content...');
+      this.setStatus('reviewing', 'Analyzing imported content...');
+
+      const analysis = await this.reviewer.reviewContent(
+        this.buildImportedAnalysisPrompt(importedText),
+        this.getCurrentPublishedContent()
+      );
+
+      const parsed = this.reviewer.parseReview(analysis.review);
+      const insightItems = this.toBulletList(parsed.whatChanged, parsed.whyItMatters, parsed.implications);
+      const recommendationItems = this.toBulletList(parsed.recommendations);
+      const riskItems = this.toBulletList(parsed.riskFactors, parsed.accuracy, parsed.consistency);
+
+      const analysisMarkdown = [
+        '## Key Insights',
+        ...(insightItems.length ? insightItems.map(item => `- ${item}`) : ['- No key insights returned.']),
+        '',
+        '## Recommendations',
+        ...(recommendationItems.length ? recommendationItems.map(item => `- ${item}`) : ['- No recommendations returned.']),
+        '',
+        '## Risks',
+        ...(riskItems.length ? riskItems.map(item => `- ${item}`) : ['- No major risks returned.'])
+      ].join('\n');
+
+      if (standalone) {
+        this.state.draftContent = analysisMarkdown;
+        document.getElementById('editor-textarea').value = analysisMarkdown;
+      } else {
+        const current = document.getElementById('editor-textarea').value.trim();
+        const combined = `${current}\n\n---\n\n${analysisMarkdown}`.trim();
+        this.state.draftContent = combined;
+        document.getElementById('editor-textarea').value = combined;
+      }
+
+      this.updatePreview();
+      this.markDirty();
+      this.saveDraft();
+      this.hideProgress();
+      this.setStatus('ready');
+      this.showToast('Imported content analyzed and added to the draft.', 'success');
+    } catch (error) {
+      console.error('Imported analysis error:', error);
+      this.hideProgress();
+      this.setStatus('error', `Analysis failed: ${error.message}`);
+      this.showToast(`Analysis failed: ${error.message}`, 'error');
+    }
+  }
+
+  buildImportedAnalysisPrompt(text) {
+    return [
+      'Review this imported source content and produce material that helps update an enterprise architecture intelligence page.',
+      '',
+      'Focus on:',
+      '- key insights',
+      '- recommendations',
+      '- risks',
+      '',
+      'Imported content:',
+      '---',
+      text,
+      '---'
+    ].join('\n');
+  }
+
+  toBulletList(...values) {
+    const flattened = values.flatMap((value) => {
+      if (!value) return [];
+      if (Array.isArray(value)) return value;
+      return String(value)
+        .split('\n')
+        .map(line => line.replace(/^[-*•]\s*/, '').trim())
+        .filter(Boolean);
+    });
+
+    return [...new Set(flattened)];
+  }
+
   async reviewWithAI() {
-    // Check API key
     if (!this.reviewer.hasApiKey()) {
       this.openModal('modal-api-key');
       return;
@@ -238,13 +511,9 @@ class IntelligenceEditor {
     document.getElementById('btn-ai-review').disabled = true;
 
     try {
-      // Get current published content
       const currentContent = this.getCurrentPublishedContent();
-
-      // Call AI
       const result = await this.reviewer.reviewContent(this.state.draftContent, currentContent);
 
-      // Display review
       this.displayAIReview(result.review);
       this.switchMode('ai-review');
       this.reviewer.cacheReview(result);
@@ -259,23 +528,18 @@ class IntelligenceEditor {
     }
   }
 
-  // Get current published content from page
   getCurrentPublishedContent() {
-    // Extract text from all sections
     const sections = Array.from(document.querySelectorAll('.text-block, .card-title, .card-sub, .table'));
     const text = sections.map(el => el.textContent).join('\n\n');
     return text || 'Current intelligence page content';
   }
 
-  // Display AI review feedback
   displayAIReview(reviewText) {
     const panel = document.getElementById('ai-review-panel');
     panel.innerHTML = '';
 
-    // Parse review into sections
     const parsed = this.reviewer.parseReview(reviewText);
 
-    // Create collapsible sections
     const sections = [
       { key: 'whatChanged', title: 'What Changed', icon: '📝' },
       { key: 'whyItMatters', title: 'Why It Matters', icon: '⚡' },
@@ -289,33 +553,31 @@ class IntelligenceEditor {
 
     for (const section of sections) {
       const content = parsed[section.key];
-      if (content) {
-        const sectionEl = document.createElement('div');
-        sectionEl.className = 'ai-review-section';
+      if (!content || (Array.isArray(content) && !content.length)) continue;
 
-        const titleEl = document.createElement('div');
-        titleEl.className = 'ai-review-section-title';
-        titleEl.innerHTML = `${section.icon} ${section.title}`;
+      const sectionEl = document.createElement('div');
+      sectionEl.className = 'ai-review-section';
 
-        const contentEl = document.createElement('div');
-        contentEl.className = 'ai-review-content';
+      const titleEl = document.createElement('div');
+      titleEl.className = 'ai-review-section-title';
+      titleEl.innerHTML = `${section.icon} ${section.title}`;
 
-        // Format content based on type
-        if (section.key === 'riskFactors' && Array.isArray(content)) {
-          contentEl.innerHTML = content.map(item => `<div class="ai-review-risk">• ${item}</div>`).join('');
-        } else if (section.key === 'recommendations' && Array.isArray(content)) {
-          contentEl.innerHTML = content.map(item => `<div class="ai-review-recommendation">• ${item}</div>`).join('');
-        } else {
-          contentEl.textContent = typeof content === 'string' ? content : JSON.stringify(content);
-        }
+      const contentEl = document.createElement('div');
+      contentEl.className = 'ai-review-content';
 
-        sectionEl.appendChild(titleEl);
-        sectionEl.appendChild(contentEl);
-        panel.appendChild(sectionEl);
+      if (section.key === 'riskFactors' && Array.isArray(content)) {
+        contentEl.innerHTML = content.map(item => `<div class="ai-review-risk">• ${item}</div>`).join('');
+      } else if (section.key === 'recommendations' && Array.isArray(content)) {
+        contentEl.innerHTML = content.map(item => `<div class="ai-review-recommendation">• ${item}</div>`).join('');
+      } else {
+        contentEl.textContent = typeof content === 'string' ? content : JSON.stringify(content, null, 2);
       }
+
+      sectionEl.appendChild(titleEl);
+      sectionEl.appendChild(contentEl);
+      panel.appendChild(sectionEl);
     }
 
-    // Add button to return to draft
     const backBtn = document.createElement('button');
     backBtn.className = 'editor-btn';
     backBtn.textContent = '← Back to Draft';
@@ -323,9 +585,7 @@ class IntelligenceEditor {
     panel.appendChild(backBtn);
   }
 
-  // Publish to intelligence-draft branch
   async publish() {
-    // Check GitHub token
     if (!localStorage.getItem('github_token')) {
       this.openModal('modal-github-token');
       return;
@@ -342,24 +602,13 @@ class IntelligenceEditor {
         const branch = 'intelligence-draft';
         const path = 'intelligence.md';
 
-        // Get current file SHA
         const currentSha = await this.getFileSha(owner, repo, branch, path, githubToken);
-
-        // Prepare content
         const message = `Update intelligence page: ${new Date().toLocaleString()}`;
         const content = this.state.draftContent;
 
-        // Create commit
-        await this.commitToGithub(
-          owner, repo, branch, path,
-          content, message, currentSha,
-          githubToken
-        );
-
-        // Create/update PR
+        await this.commitToGithub(owner, repo, branch, path, content, message, currentSha, githubToken);
         await this.createOrUpdatePR(owner, repo, githubToken);
 
-        // Success
         this.clearDraft();
         this.setStatus('published');
         this.switchMode('draft');
@@ -376,7 +625,6 @@ class IntelligenceEditor {
     });
   }
 
-  // Get file SHA for update (GitHub API)
   async getFileSha(owner, repo, branch, path, token) {
     try {
       const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`;
@@ -384,36 +632,29 @@ class IntelligenceEditor {
         headers: { 'Authorization': `token ${token}` }
       });
 
-      if (response.status === 404) {
-        // File doesn't exist yet
-        return null;
-      }
-
+      if (response.status === 404) return null;
       const data = await response.json();
       return data.sha;
     } catch (error) {
       console.error('Failed to get file SHA:', error);
-      return null; // Assume new file
+      return null;
     }
   }
 
-  // Commit to GitHub
   async commitToGithub(owner, repo, branch, path, content, message, sha, token) {
     const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
 
     const body = {
-      message: message,
-      content: btoa(content), // Base64 encode
-      branch: branch,
+      message,
+      content: btoa(unescape(encodeURIComponent(content))),
+      branch,
       committer: {
         name: 'Intelligence Editor',
         email: 'editor@status-site'
       }
     };
 
-    if (sha) {
-      body.sha = sha;
-    }
+    if (sha) body.sha = sha;
 
     const response = await fetch(url, {
       method: 'PUT',
@@ -432,12 +673,10 @@ class IntelligenceEditor {
     return response.json();
   }
 
-  // Create or update PR
   async createOrUpdatePR(owner, repo, token) {
     const prTitle = 'Update Intelligence Page (AI-reviewed)';
     const prBody = `## Intelligence Page Update\n\nUpdated intelligence page content.\n\nReview this change before merging to main.`;
 
-    // Check if PR exists
     const listUrl = `https://api.github.com/repos/${owner}/${repo}/pulls?state=open&head=${owner}:intelligence-draft`;
     const listResponse = await fetch(listUrl, {
       headers: { 'Authorization': `token ${token}` }
@@ -446,7 +685,6 @@ class IntelligenceEditor {
     const existingPRs = await listResponse.json();
 
     if (existingPRs.length > 0) {
-      // Update existing PR
       const prNumber = existingPRs[0].number;
       const updateUrl = `https://api.github.com/repos/${owner}/${repo}/pulls/${prNumber}`;
 
@@ -459,7 +697,6 @@ class IntelligenceEditor {
         body: JSON.stringify({ body: prBody })
       });
     } else {
-      // Create new PR
       const createUrl = `https://api.github.com/repos/${owner}/${repo}/pulls`;
 
       await fetch(createUrl, {
@@ -479,11 +716,9 @@ class IntelligenceEditor {
     }
   }
 
-  // Confirm discard
   confirmDiscard() {
-    if (!this.state.isDraft) {
-      return;
-    }
+    if (!this.state.isDraft) return;
+
     this.confirm('Discard draft?', () => {
       this.clearDraft();
       this.loadCurrentContent();
@@ -492,7 +727,6 @@ class IntelligenceEditor {
     });
   }
 
-  // Clear draft
   clearDraft() {
     localStorage.removeItem('intelligence_draft');
     this.reviewer.clearCachedReview();
@@ -502,52 +736,46 @@ class IntelligenceEditor {
     this.updatePreview();
   }
 
-  // Switch editor mode
   switchMode(mode) {
-    const modes = ['draft', 'ai-review'];
-    for (const m of modes) {
+    ['draft', 'ai-review'].forEach((m) => {
       document.getElementById(`editor-mode-${m}`).classList.remove('active');
-    }
+    });
     document.getElementById(`editor-mode-${mode}`).classList.add('active');
     this.state.mode = mode;
   }
 
-  // Set status indicator
   setStatus(status, text) {
     const dot = document.getElementById('editor-status-dot');
     const statusText = document.getElementById('editor-status-text');
 
     const statusMap = {
-      'ready': { color: 'var(--teal)', text: 'Ready' },
-      'saved': { color: 'var(--green)', text: 'Saved' },
-      'dirty': { color: 'var(--gold)', text: 'Unsaved' },
-      'reviewing': { color: 'var(--blue-light)', text: text || 'Reviewing...' },
-      'published': { color: 'var(--green)', text: 'Published' },
-      'error': { color: 'var(--red)', text: text || 'Error' }
+      ready: { color: 'var(--teal)', text: 'Ready' },
+      saved: { color: 'var(--green)', text: 'Saved' },
+      dirty: { color: 'var(--gold)', text: 'Unsaved' },
+      reviewing: { color: 'var(--blue-light)', text: text || 'Reviewing...' },
+      publishing: { color: 'var(--blue-light)', text: text || 'Publishing...' },
+      published: { color: 'var(--green)', text: 'Published' },
+      error: { color: 'var(--red)', text: text || 'Error' }
     };
 
-    const config = statusMap[status] || statusMap['ready'];
+    const config = statusMap[status] || statusMap.ready;
     dot.style.background = config.color;
     statusText.textContent = config.text;
   }
 
-  // Mark as dirty (unsaved)
   markDirty() {
     this.state.isDraft = true;
     this.setStatus('dirty', 'Unsaved');
   }
 
-  // Open modal
   openModal(modalId) {
     document.getElementById(modalId).classList.add('open');
   }
 
-  // Close modal
   closeModal(modalId) {
     document.getElementById(modalId).classList.remove('open');
   }
 
-  // Save API key
   saveApiKey() {
     const input = document.getElementById('modal-api-key-input');
     const key = input.value.trim();
@@ -564,7 +792,6 @@ class IntelligenceEditor {
     }
   }
 
-  // Save GitHub token
   saveGithubToken() {
     const input = document.getElementById('modal-github-token-input');
     const token = input.value.trim();
@@ -580,24 +807,231 @@ class IntelligenceEditor {
     this.setStatus('ready');
   }
 
-  // Confirm dialog
   confirm(message, callback) {
-    this.confirmCallback = callback;
+    this.state.confirmCallback = callback;
     document.getElementById('modal-confirm-text').textContent = message;
     this.openModal('modal-confirm');
   }
 
-  // Handle confirm button
   handleConfirm() {
     this.closeModal('modal-confirm');
-    if (this.confirmCallback) {
-      this.confirmCallback();
-      this.confirmCallback = null;
+    if (this.state.confirmCallback) {
+      this.state.confirmCallback();
+      this.state.confirmCallback = null;
     }
+  }
+
+  showProgress(message) {
+    const el = document.getElementById('upload-status');
+    if (!el) return;
+    el.hidden = false;
+    el.textContent = message;
+  }
+
+  hideProgress() {
+    const el = document.getElementById('upload-status');
+    if (!el) return;
+    el.hidden = true;
+    el.textContent = '';
+  }
+
+  showToast(message, type = 'info') {
+    const el = document.getElementById('inline-toast');
+    if (!el) return;
+    el.textContent = message;
+    el.className = `editor-inline-toast ${type}`;
+    el.hidden = false;
+
+    clearTimeout(this.toastTimer);
+    this.toastTimer = setTimeout(() => {
+      el.hidden = true;
+    }, 4000);
+  }
+
+  async ensureScript(src, globalName, onLoad) {
+    if (globalName && window[globalName]) return window[globalName];
+
+    const existing = document.querySelector(`script[data-src="${src}"]`);
+    if (existing) {
+      await new Promise((resolve, reject) => {
+        if (globalName && window[globalName]) {
+          resolve();
+          return;
+        }
+        existing.addEventListener('load', resolve, { once: true });
+        existing.addEventListener('error', reject, { once: true });
+      });
+      if (onLoad) onLoad();
+      return globalName ? window[globalName] : true;
+    }
+
+    await new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = src;
+      script.async = true;
+      script.dataset.src = src;
+      script.onload = () => {
+        if (onLoad) onLoad();
+        resolve();
+      };
+      script.onerror = () => reject(new Error(`Failed to load dependency: ${src}`));
+      document.head.appendChild(script);
+    });
+
+    return globalName ? window[globalName] : true;
+  }
+
+  async ensurePdfJs() {
+    await this.ensureScript(
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
+      'pdfjsLib',
+      () => {
+        if (window.pdfjsLib) {
+          window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+      }
+    );
+    return window.pdfjsLib;
+  }
+
+  async ensureTesseract() {
+    await this.ensureScript(
+      'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js',
+      'Tesseract'
+    );
+    return window.Tesseract;
+  }
+
+  async ensureMammoth() {
+    await this.ensureScript(
+      'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.7.2/mammoth.browser.min.js',
+      'mammoth'
+    );
+    return window.mammoth;
   }
 }
 
-// Initialize on page load
+class TextFileParser {
+  async parse(file) {
+    return {
+      success: true,
+      text: await file.text(),
+      metadata: {
+        parser: 'TextFileParser',
+        fileName: file.name,
+        fileType: file.type
+      }
+    };
+  }
+}
+
+class MarkdownFileParser {
+  async parse(file) {
+    return {
+      success: true,
+      text: await file.text(),
+      metadata: {
+        parser: 'MarkdownFileParser',
+        fileName: file.name,
+        fileType: file.type
+      }
+    };
+  }
+}
+
+class PdfFileParser {
+  constructor(editor) {
+    this.editor = editor;
+  }
+
+  async parse(file, { onProgress } = {}) {
+    const pdfjsLib = await this.editor.ensurePdfJs();
+    onProgress?.('Reading PDF...');
+
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+    let fullText = '';
+
+    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+      onProgress?.(`Extracting text from PDF page ${pageNum} of ${pdf.numPages}...`);
+      const page = await pdf.getPage(pageNum);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items.map(item => item.str).join(' ').trim();
+      fullText += `${pageText}\n\n`;
+    }
+
+    return {
+      success: true,
+      text: fullText.trim(),
+      metadata: {
+        parser: 'PdfFileParser',
+        fileName: file.name,
+        fileType: file.type,
+        pageCount: pdf.numPages
+      }
+    };
+  }
+}
+
+class DocxFileParser {
+  constructor(editor) {
+    this.editor = editor;
+  }
+
+  async parse(file, { onProgress } = {}) {
+    const mammoth = await this.editor.ensureMammoth();
+    onProgress?.('Reading Word document...');
+
+    const arrayBuffer = await file.arrayBuffer();
+    const result = await mammoth.extractRawText({ arrayBuffer });
+
+    return {
+      success: true,
+      text: (result.value || '').trim(),
+      metadata: {
+        parser: 'DocxFileParser',
+        fileName: file.name,
+        fileType: file.type,
+        warnings: result.messages || []
+      }
+    };
+  }
+}
+
+class ImageOcrParser {
+  constructor(editor) {
+    this.editor = editor;
+  }
+
+  async parse(file, { onProgress } = {}) {
+    const Tesseract = await this.editor.ensureTesseract();
+    onProgress?.('Running OCR on image...');
+
+    const result = await Tesseract.recognize(file, 'eng', {
+      logger: (msg) => {
+        if (msg?.status) {
+          const percent = typeof msg.progress === 'number'
+            ? ` (${Math.round(msg.progress * 100)}%)`
+            : '';
+          onProgress?.(`${msg.status}${percent}`);
+        }
+      }
+    });
+
+    return {
+      success: true,
+      text: (result?.data?.text || '').trim(),
+      metadata: {
+        parser: 'ImageOcrParser',
+        fileName: file.name,
+        fileType: file.type
+      }
+    };
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   window.intelligenceEditor = new IntelligenceEditor();
 });
