@@ -1,0 +1,14 @@
+# Core
+neo4j>=5.18.1
+neo4j-graphrag-python[openai,experimental]>=1.0.0
+
+# Embedding providers (pick what you need)
+# neo4j-graphrag-python[sentence-transformers]  # for local embeddings
+# neo4j-graphrag-python[cohere]                 # for Cohere embeddings
+
+# Optional: hybrid retrieval NLP components
+# neo4j-graphrag-python[nlp]                    # spaCy entity resolution
+# neo4j-graphrag-python[fuzzy-matching]          # RapidFuzz dedup
+
+# Utilities
+python-dotenv>=1.0.0
