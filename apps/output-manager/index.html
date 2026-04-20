@@ -10,7 +10,7 @@
   <header class="topbar">
     <div>
       <h1>Output Manager</h1>
-      <p class="subtitle">Draft blog posts, LinkedIn articles, Substack pieces, PPTX requests, and infographic artifacts.</p>
+      <p class="subtitle">Draft blog posts, LinkedIn articles, Substack pieces, PPTX builds, and infographic artifacts in one place.</p>
     </div>
     <nav>
       <a href="../../index.html">Home</a>
@@ -28,7 +28,7 @@
             <option value="blog">Blog Post</option>
             <option value="linkedin">LinkedIn Draft</option>
             <option value="substack">Substack Article</option>
-            <option value="pptx">PPTX Request</option>
+            <option value="pptx">PPTX Build</option>
             <option value="infographic">Infographic Spec</option>
           </select>
         </label>
@@ -50,7 +50,7 @@
 
         <label>
           Core points
-          <textarea id="points" name="points" rows="7" placeholder="List the core arguments, findings, or messages."></textarea>
+          <textarea id="points" name="points" rows="6" placeholder="List the core arguments, findings, or messages."></textarea>
         </label>
 
         <label>
@@ -62,6 +62,46 @@
           Output instructions
           <textarea id="instructions" name="instructions" rows="5" placeholder="Tone, structure, required sections, HC standards, accessibility, bilingual notes, etc."></textarea>
         </label>
+
+        <section class="subform" id="pptxBuilder">
+          <h3>PPTX Builder</h3>
+          <label>
+            Deck purpose
+            <input id="deckPurpose" name="deckPurpose" type="text" placeholder="Executive briefing, ARB decision, architecture overview" />
+          </label>
+          <label>
+            Slide count
+            <input id="slideCount" name="slideCount" type="number" min="1" max="30" placeholder="10" />
+          </label>
+          <label>
+            Template / standard
+            <input id="templateStandard" name="templateStandard" type="text" placeholder="DTB Option A / HC-PHAC PPTX Design Spec" />
+          </label>
+          <label>
+            Slide outline
+            <textarea id="slideOutline" name="slideOutline" rows="6" placeholder="Slide 1 - Title\nSlide 2 - Context\nSlide 3 - Current vs Target"></textarea>
+          </label>
+          <label>
+            Required visuals
+            <textarea id="requiredVisuals" name="requiredVisuals" rows="4" placeholder="Architecture stack, maturity model, governance flow, heatmap"></textarea>
+          </label>
+        </section>
+
+        <section class="subform" id="artifactBuilder">
+          <h3>Artifact / Infographic Builder</h3>
+          <label>
+            Artifact type
+            <input id="artifactType" name="artifactType" type="text" placeholder="Infographic, placemat, diagram, poster" />
+          </label>
+          <label>
+            Artifact destination
+            <input id="artifactDestination" name="artifactDestination" type="text" placeholder="Artifact Manager / artifacts/inbox / blog companion image" />
+          </label>
+          <label>
+            Visual structure
+            <textarea id="visualStructure" name="visualStructure" rows="5" placeholder="3-column infographic, layered architecture, before/after comparison"></textarea>
+          </label>
+        </section>
 
         <div class="button-row">
           <button type="submit">Add to Queue</button>
@@ -102,16 +142,16 @@
         <li><strong>Blog Post</strong><span>Long-form web article or internal blog.</span></li>
         <li><strong>LinkedIn Draft</strong><span>Professional social content with concise framing.</span></li>
         <li><strong>Substack Article</strong><span>Longer thought-leadership or essay format.</span></li>
-        <li><strong>PPTX Request</strong><span>HC/PHAC standard slide build request with design rules.</span></li>
+        <li><strong>PPTX Build</strong><span>HC/PHAC standard slide build request with slide outline and visual requirements.</span></li>
         <li><strong>Infographic Spec</strong><span>Structured visual brief for artifact manager ingestion.</span></li>
       </ul>
 
-      <h2>HC/PHAC Build Notes</h2>
+      <h2>Integrated Build Notes</h2>
       <ul class="notes-list">
-        <li>PPTX outputs should align to HC/PHAC design standards.</li>
-        <li>Infographics should produce artifact-ready specs.</li>
-        <li>Keep governance, data, and platform context explicit.</li>
-        <li>Capture source files and references for traceability.</li>
+        <li>PPTX outputs should align to HC/PHAC standards and DTB Option A where relevant.</li>
+        <li>Infographics should produce artifact-ready specs and route cleanly into the artifact manager.</li>
+        <li>Capture source files and references for traceability and later regeneration.</li>
+        <li>Use this page as the single intake surface for content and deck production.</li>
       </ul>
     </aside>
   </main>
@@ -133,6 +173,14 @@
         <div class="detail-block">
           <strong>Core points</strong>
           <pre class="card-points"></pre>
+        </div>
+        <div class="detail-block card-pptx-block">
+          <strong>PPTX builder</strong>
+          <pre class="card-pptx"></pre>
+        </div>
+        <div class="detail-block card-artifact-block">
+          <strong>Artifact builder</strong>
+          <pre class="card-artifact"></pre>
         </div>
         <div class="detail-block">
           <strong>Sources</strong>
