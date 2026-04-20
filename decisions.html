@@ -10,14 +10,14 @@
   <div class="topnav">
     <div class="topnav-label">AI Project Dashboard</div>
     <div class="topnav-links">
-      <a class="topnav-link" href="index.html">Dashboard</a>
-      <a class="topnav-link active" href="decisions.html">Decisions</a>
-      <a class="topnav-link" href="scenarios.html">Scenarios</a>
-      <a class="topnav-link" href="intelligence.html">Intelligence</a>
-      <a class="topnav-link" href="artifacts.html">Artifacts</a>
-      <a class="topnav-link" href="path-architecture.html">Architecture</a>
-      <a class="topnav-link" href="control-plane.html">Control Plane</a>
-      <a class="topnav-link" href="pptx-builder.html">PPTX</a>
+      <a class="topnav-link" href="/status-site/index.html">Dashboard</a>
+      <a class="topnav-link active" href="/status-site/decisions.html">Decisions</a>
+      <a class="topnav-link" href="/status-site/scenarios.html">Scenarios</a>
+      <a class="topnav-link" href="/status-site/intelligence.html">Intelligence</a>
+      <a class="topnav-link" href="/status-site/artifacts.html">Artifacts</a>
+      <a class="topnav-link" href="/status-site/path-architecture.html">Architecture</a>
+      <a class="topnav-link" href="/status-site/control-plane.html">Control Plane</a>
+      <a class="topnav-link" href="/status-site/pptx-builder.html">PPTX</a>
     </div>
   </div>
 
@@ -110,9 +110,9 @@
       <div class="panel-card">
         <div class="section-label">Related Pages</div>
         <div style="margin-top: 12px; font-size: 13px;">
-          <a href="index.html" style="display: block; margin-bottom: 8px; color: var(--color-teal); text-decoration: none;">Dashboard</a>
-          <a href="scenarios.html" style="display: block; margin-bottom: 8px; color: var(--color-teal); text-decoration: none;">Scenarios</a>
-          <a href="artifacts.html" style="display: block; color: var(--color-teal); text-decoration: none;">Artifacts</a>
+          <a href="/status-site/index.html" style="display: block; margin-bottom: 8px; color: var(--color-teal); text-decoration: none;">Dashboard</a>
+          <a href="/status-site/scenarios.html" style="display: block; margin-bottom: 8px; color: var(--color-teal); text-decoration: none;">Scenarios</a>
+          <a href="/status-site/artifacts.html" style="display: block; color: var(--color-teal); text-decoration: none;">Artifacts</a>
         </div>
       </div>
     </div>
@@ -211,7 +211,7 @@
               <div style="font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-secondary);">Related Artifacts</div>
               <div style="display: flex; flex-wrap: wrap; gap: 8px;">
                 ${decision.related_artifacts.map(artId => `
-                  <a href="artifacts.html" style="font-size: 11px; padding: 4px 8px; background: var(--bg-secondary); border-radius: 3px; color: var(--color-teal); text-decoration: none;">${artId}</a>
+                  <a href="/status-site/artifacts.html" style="font-size: 11px; padding: 4px 8px; background: var(--bg-secondary); border-radius: 3px; color: var(--color-teal); text-decoration: none;">${artId}</a>
                 `).join('')}
               </div>
             </div>
@@ -222,7 +222,7 @@
               <div style="font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-secondary);">Related Scenarios</div>
               <div style="display: flex; flex-wrap: wrap; gap: 8px;">
                 ${decision.related_scenarios.map(scenId => `
-                  <a href="scenarios.html" style="font-size: 11px; padding: 4px 8px; background: var(--bg-secondary); border-radius: 3px; color: var(--color-teal); text-decoration: none;">${scenId}</a>
+                  <a href="/status-site/scenarios.html" style="font-size: 11px; padding: 4px 8px; background: var(--bg-secondary); border-radius: 3px; color: var(--color-teal); text-decoration: none;">${scenId}</a>
                 `).join('')}
               </div>
             </div>
