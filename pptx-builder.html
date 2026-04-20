@@ -24,8 +24,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14
 .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
 .card{border:1px solid var(--border);background:linear-gradient(160deg,var(--bg2),var(--bg3));padding:18px 20px}.card h2{font-family:var(--cond);font-size:22px;margin-bottom:8px}.card p,.card li,label{color:var(--text-dim)}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}button,.button-link{background:rgba(255,255,255,.04);color:var(--text);border:1px solid var(--border);padding:10px 12px;font-family:var(--mono);font-size:11px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}button.primary{border-color:var(--teal);color:var(--teal)}button.diagram,.button-link.diagram{border-color:var(--gold);color:var(--gold)}button.parse{border-color:var(--blue);color:var(--blue)}
-textarea,pre{width:100%;white-space:pre-wrap;word-break:break-word;background:#0a1018;border:1px solid var(--border);padding:14px;color:var(--text-dim);min-height:280px;font:12px/1.55 var(--mono)}
-textarea{resize:vertical}
+textarea{width:100%;white-space:pre-wrap;word-break:break-word;background:#0a1018;border:1px solid var(--border);padding:14px;color:var(--text-dim);min-height:280px;font:12px/1.55 var(--mono);resize:vertical}
 .note{font-size:12px;color:var(--text-faint);margin-top:8px}.small{font-size:11px}
 .trigger-list{display:flex;flex-direction:column;gap:10px}.trigger-item{border:1px solid var(--border);padding:12px;background:rgba(255,255,255,.02)}.trigger-title{font-weight:600;color:var(--text);margin-bottom:6px}.trigger-meta{font-size:11px;color:var(--text-faint);margin-bottom:8px}.empty{color:var(--text-faint);font-size:12px}
 .status{font-size:12px;color:var(--text-faint);margin-top:10px}
@@ -48,7 +47,7 @@ textarea{resize:vertical}
   <div>
     <div class="header-eyebrow">Presentation Automation — Claude + Diagram Trigger</div>
     <div class="header-title">PPTX Builder</div>
-    <div class="header-sub">Paste Claude slide-spec JSON, detect diagram-required slides, and launch Diagram Lab with the right starter context.</div>
+    <div class="header-sub">Paste Claude slide-spec JSON, detect diagram-required slides, and launch Diagram Lab with starter context and auto-generated components.</div>
   </div>
   <div>
     <div><span class="badge badge-blue">Claude JSON</span></div>
@@ -61,7 +60,7 @@ textarea{resize:vertical}
   <div>
     <div class="card">
       <h2>Claude Slide Spec Input</h2>
-      <p>Paste JSON produced by the HC/PHAC Claude PPTX skill. The builder will inspect `diagram_required` and `diagram_kind` fields and generate diagram launch actions automatically.</p>
+      <p>Paste JSON produced by the HC/PHAC Claude PPTX skill. The builder inspects <code>diagram_required</code>, <code>diagram_kind</code>, and optional <code>components</code> arrays to generate diagram launch actions automatically.</p>
       <div class="actions">
         <button class="primary" id="btn-load-example">Load Example</button>
         <button class="parse" id="btn-parse-json">Detect Diagram Triggers</button>
@@ -95,8 +94,8 @@ const exampleSpec = {
     type: 'architecture',
     slides: [
       { title: 'Executive Position', slide_type: 'executive-summary', bullets: ['Convergence decision required'], layout: 'title-body', visual_intent: 'decision framing', diagram_required: false },
-      { title: 'Control Plane Model', slide_type: 'control-plane', bullets: ['PATH governs runtime execution'], layout: 'title-diagram', visual_intent: 'control-plane overview', diagram_required: true, diagram_kind: 'control-plane', notes: 'Show control plane above runtime and data.' },
-      { title: 'Layered Architecture', slide_type: 'layered-architecture', bullets: ['Business, platform, data, governance'], layout: 'title-diagram', visual_intent: 'layered enterprise architecture', diagram_required: true, diagram_kind: 'layered-ea', notes: 'Four-layer architecture framing.' },
+      { title: 'Control Plane Model', slide_type: 'control-plane', bullets: ['PATH governs runtime execution'], layout: 'title-diagram', visual_intent: 'control-plane overview', diagram_required: true, diagram_kind: 'control-plane', notes: 'Show control plane above runtime and data.', components: ['Identity', 'Policy', 'Audit', 'Cost Management', 'API Gateway'] },
+      { title: 'Layered Architecture', slide_type: 'layered-architecture', bullets: ['Business, platform, data, governance'], layout: 'title-diagram', visual_intent: 'layered enterprise architecture', diagram_required: true, diagram_kind: 'layered-ea', notes: 'Four-layer architecture framing.', components: ['Business Capabilities', 'Applications', 'Data & Integration', 'Security & Governance'] },
       { title: 'Decision Ask', slide_type: 'decision-ask', bullets: ['Approve convergence architecture direction'], layout: 'title-body', visual_intent: 'decision ask', diagram_required: false }
     ]
   }
@@ -118,6 +117,14 @@ function safeSlides(spec){
   if (!spec || typeof spec !== 'object') return [];
   if (Array.isArray(spec.slides)) return spec.slides;
   if (spec.deck && Array.isArray(spec.deck.slides)) return spec.deck.slides;
+  return [];
+}
+
+function normalizeComponents(slide){
+  if (!slide || !slide.components) return [];
+  if (Array.isArray(slide.components)) {
+    return slide.components.map(c => typeof c === 'string' ? { label: c } : c).filter(Boolean);
+  }
   return [];
 }
 
@@ -152,11 +159,14 @@ function parseTriggers(){
       const template = getDiagramTemplate(kind);
       const title = encodeURIComponent(slide.title || `Slide ${slide.index}`);
       const notes = encodeURIComponent(slide.notes || '');
-      const href = `/status-site/excalidraw-ea.html?template=${template}&diagram_kind=${encodeURIComponent(kind)}&slide_title=${title}&notes=${notes}`;
+      const components = normalizeComponents(slide);
+      const componentCount = components.length;
+      const encodedComponents = encodeURIComponent(JSON.stringify(components));
+      const href = `/status-site/excalidraw-ea.html?template=${template}&diagram_kind=${encodeURIComponent(kind)}&slide_title=${title}&notes=${notes}&components=${encodedComponents}`;
       return `
         <div class="trigger-item">
           <div class="trigger-title">Slide ${slide.index}: ${slide.title || 'Untitled Slide'}</div>
-          <div class="trigger-meta">diagram_kind: ${kind} · template: ${template}</div>
+          <div class="trigger-meta">diagram_kind: ${kind} · template: ${template} · components: ${componentCount}</div>
           ${slide.notes ? `<div class="note small">${slide.notes}</div>` : ''}
           <div class="actions">
             <a class="button-link diagram" href="${href}" target="_blank">Launch Diagram Lab</a>
