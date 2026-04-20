@@ -1,5 +1,57 @@
 [
   {
+    "id": "ea-artifact-010",
+    "title": "Readme",
+    "date": "2026-04-20",
+    "artifact_type": "document",
+    "domain": [
+      "Enterprise Architecture",
+      "AI"
+    ],
+    "topics": [
+      "Enterprise Architecture"
+    ],
+    "summary": "Auto-ingested artifact generated from uploaded file: README.md. Review and refine metadata as needed.",
+    "keywords": [
+      "artifact",
+      "ea",
+      "enterprise architecture",
+      "readme"
+    ],
+    "source_file": "artifacts/inbox/README.md",
+    "detail_page": "artifact-readme.html",
+    "status": "draft",
+    "related": [
+      "Enterprise Architecture"
+    ]
+  },
+  {
+    "id": "ea-artifact-011",
+    "title": "Agentic Workflow Framework V1 Test",
+    "date": "2026-04-20",
+    "artifact_type": "diagram",
+    "domain": [
+      "Enterprise Architecture",
+      "AI"
+    ],
+    "topics": [
+      "Agents"
+    ],
+    "summary": "Auto-ingested artifact generated from uploaded file: agentic-workflow-framework-v1-test.jpeg. Review and refine metadata as needed.",
+    "keywords": [
+      "agentic-workflow-framework-v1-test",
+      "agents",
+      "artifact",
+      "ea"
+    ],
+    "source_file": "artifacts/images/agentic-workflow-framework-v1-test.jpeg",
+    "detail_page": "artifact-agentic-workflow-framework-v1-test.html",
+    "status": "draft",
+    "related": [
+      "Enterprise Architecture"
+    ]
+  },
+  {
     "id": "ea-artifact-001",
     "title": "Enterprise Automation Model — Agents, BPA, RPA, and Human Oversight",
     "date": "2026-04-18",
@@ -36,8 +88,12 @@
       "Control Plane",
       "Agentic Tooling"
     ],
-    "decisions": ["DEC-004"],
-    "scenarios": ["hail-production-move"],
+    "decisions": [
+      "DEC-004"
+    ],
+    "scenarios": [
+      "hail-production-move"
+    ],
     "demo_ready": true,
     "version": "1.0",
     "last_updated": "2026-04-19"
@@ -79,8 +135,12 @@
       "Control Plane",
       "Enterprise Architecture"
     ],
-    "decisions": ["DEC-005"],
-    "scenarios": ["agentic-ai-capability"],
+    "decisions": [
+      "DEC-005"
+    ],
+    "scenarios": [
+      "agentic-ai-capability"
+    ],
     "demo_ready": true,
     "version": "1.0",
     "last_updated": "2026-04-19"
@@ -119,8 +179,12 @@
       "Control Plane",
       "Agentic Tooling"
     ],
-    "decisions": ["DEC-005"],
-    "scenarios": ["agentic-ai-capability"],
+    "decisions": [
+      "DEC-005"
+    ],
+    "scenarios": [
+      "agentic-ai-capability"
+    ],
     "demo_ready": true,
     "version": "1.0",
     "last_updated": "2026-04-19"
@@ -159,8 +223,12 @@
       "HC/PHAC",
       "AI Capability Mapping"
     ],
-    "decisions": ["DEC-003"],
-    "scenarios": ["hcphac-capability-mapping"],
+    "decisions": [
+      "DEC-003"
+    ],
+    "scenarios": [
+      "hcphac-capability-mapping"
+    ],
     "demo_ready": true,
     "version": "1.0",
     "last_updated": "2026-04-19"
@@ -199,8 +267,15 @@
       "Control Plane",
       "HC/PHAC"
     ],
-    "decisions": ["DEC-001", "DEC-002", "DEC-003"],
-    "scenarios": ["hail-production-move", "path-governance"],
+    "decisions": [
+      "DEC-001",
+      "DEC-002",
+      "DEC-003"
+    ],
+    "scenarios": [
+      "hail-production-move",
+      "path-governance"
+    ],
     "demo_ready": true,
     "version": "1.0",
     "last_updated": "2026-04-19"
@@ -239,8 +314,16 @@
       "PATH",
       "HC/PHAC"
     ],
-    "decisions": ["DEC-001", "DEC-003", "DEC-006"],
-    "scenarios": ["hail-production-move", "path-governance", "hcphac-capability-mapping"],
+    "decisions": [
+      "DEC-001",
+      "DEC-003",
+      "DEC-006"
+    ],
+    "scenarios": [
+      "hail-production-move",
+      "path-governance",
+      "hcphac-capability-mapping"
+    ],
     "demo_ready": true,
     "version": "1.0",
     "last_updated": "2026-04-19"
@@ -279,8 +362,12 @@
       "Agentic Tooling",
       "Market Intelligence"
     ],
-    "decisions": ["DEC-002"],
-    "scenarios": ["hail-production-move"],
+    "decisions": [
+      "DEC-002"
+    ],
+    "scenarios": [
+      "hail-production-move"
+    ],
     "demo_ready": true,
     "version": "1.0",
     "last_updated": "2026-04-19"
@@ -319,8 +406,14 @@
       "PATH",
       "HC/PHAC"
     ],
-    "decisions": ["DEC-002", "DEC-006"],
-    "scenarios": ["path-governance", "hcphac-capability-mapping"],
+    "decisions": [
+      "DEC-002",
+      "DEC-006"
+    ],
+    "scenarios": [
+      "path-governance",
+      "hcphac-capability-mapping"
+    ],
     "demo_ready": true,
     "version": "1.0",
     "last_updated": "2026-04-19"
