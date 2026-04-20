@@ -18,27 +18,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14
 .breadcrumb{font-family:var(--mono);font-size:10px;color:var(--text-faint);opacity:.6;margin:16px 0 22px}
 .header{display:grid;grid-template-columns:1fr auto;align-items:start;border-bottom:2px solid var(--blue);padding-bottom:24px;margin-bottom:36px;gap:24px}
 .header-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--blue);text-transform:uppercase;margin-bottom:8px}
-.header-title{font-family:var(--cond);font-size:42px;font-weight:700;line-height:1;color:#fff}
-.header-sub{font-size:14px;color:var(--text-dim);margin-top:10px;line-height:1.6}
-.badge{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.12em;padding:5px 11px;border:1px solid;text-transform:uppercase;margin-bottom:6px}
-.badge-blue{border-color:var(--blue);color:var(--blue)} .badge-gold{border-color:var(--gold);color:var(--gold)} .badge-teal{border-color:var(--teal);color:var(--teal)}
+.header-title{font-family:var(--cond);font-size:42px;font-weight:700;line-height:1;color:#fff}.header-sub{font-size:14px;color:var(--text-dim);margin-top:10px;line-height:1.6}
+.badge{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.12em;padding:5px 11px;border:1px solid;text-transform:uppercase;margin-bottom:6px}.badge-blue{border-color:var(--blue);color:var(--blue)} .badge-gold{border-color:var(--gold);color:var(--gold)} .badge-teal{border-color:var(--teal);color:var(--teal)}
 .section-label{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-faint);margin:26px 0 14px;display:flex;align-items:center;gap:12px}.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
-.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
-.card{border:1px solid var(--border);background:linear-gradient(160deg,var(--bg2),var(--bg3));padding:18px 20px}
-.card h2{font-family:var(--cond);font-size:22px;margin-bottom:8px}.card p,.card li,label{color:var(--text-dim)}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}.field.full{grid-column:1 / -1}
-label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
-input,select,textarea{background:#0a1018;color:var(--text);border:1px solid var(--border);padding:10px 12px;font:inherit;border-radius:0}
-textarea{min-height:96px;resize:vertical}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-button{background:rgba(255,255,255,.04);color:var(--text);border:1px solid var(--border);padding:10px 12px;font-family:var(--mono);font-size:11px;cursor:pointer}
-button.primary{border-color:var(--teal);color:var(--teal)}
-button.diagram{border-color:var(--gold);color:var(--gold)}
-pre{white-space:pre-wrap;word-break:break-word;background:#0a1018;border:1px solid var(--border);padding:14px;color:var(--text-dim);min-height:280px}
-.page-section{margin-top:18px}
-.preview-sheet{background:#fff;color:#111;border:1px solid #ccc;padding:.6in;min-height:8in}
-.note{font-size:12px;color:var(--text-faint);margin-top:8px}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+.card{border:1px solid var(--border);background:linear-gradient(160deg,var(--bg2),var(--bg3));padding:18px 20px}.card h2{font-family:var(--cond);font-size:22px;margin-bottom:8px}.card p,.card li,label{color:var(--text-dim)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}button,.button-link{background:rgba(255,255,255,.04);color:var(--text);border:1px solid var(--border);padding:10px 12px;font-family:var(--mono);font-size:11px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}button.primary{border-color:var(--teal);color:var(--teal)}button.diagram,.button-link.diagram{border-color:var(--gold);color:var(--gold)}button.parse{border-color:var(--blue);color:var(--blue)}
+textarea,pre{width:100%;white-space:pre-wrap;word-break:break-word;background:#0a1018;border:1px solid var(--border);padding:14px;color:var(--text-dim);min-height:280px;font:12px/1.55 var(--mono)}
+textarea{resize:vertical}
+.note{font-size:12px;color:var(--text-faint);margin-top:8px}.small{font-size:11px}
+.trigger-list{display:flex;flex-direction:column;gap:10px}.trigger-item{border:1px solid var(--border);padding:12px;background:rgba(255,255,255,.02)}.trigger-title{font-weight:600;color:var(--text);margin-bottom:6px}.trigger-meta{font-size:11px;color:var(--text-faint);margin-bottom:8px}.empty{color:var(--text-faint);font-size:12px}
+.status{font-size:12px;color:var(--text-faint);margin-top:10px}
+@media(max-width:980px){body{width:auto;padding:20px}.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -55,24 +46,139 @@ pre{white-space:pre-wrap;word-break:break-word;background:#0a1018;border:1px sol
 
 <div class="header">
   <div>
-    <div class="header-eyebrow">Presentation Automation — MCP Integration Scaffold</div>
+    <div class="header-eyebrow">Presentation Automation — Claude + Diagram Trigger</div>
     <div class="header-title">PPTX Builder</div>
-    <div class="header-sub">Create a deck spec and build visuals. Launch Diagram Lab for EA diagrams.</div>
+    <div class="header-sub">Paste Claude slide-spec JSON, detect diagram-required slides, and launch Diagram Lab with the right starter context.</div>
+  </div>
+  <div>
+    <div><span class="badge badge-blue">Claude JSON</span></div>
+    <div><span class="badge badge-gold">Diagram Auto-Trigger</span></div>
+    <div><span class="badge badge-teal">EA Workflow</span></div>
   </div>
 </div>
 
 <div class="grid">
   <div>
     <div class="card">
-      <h2>Deck Definition</h2>
+      <h2>Claude Slide Spec Input</h2>
+      <p>Paste JSON produced by the HC/PHAC Claude PPTX skill. The builder will inspect `diagram_required` and `diagram_kind` fields and generate diagram launch actions automatically.</p>
       <div class="actions">
-        <button class="primary" id="buildJson">Build JSON</button>
-        <button class="diagram" onclick="window.open('/status-site/excalidraw-ea.html','_blank')">Open Diagram Lab</button>
+        <button class="primary" id="btn-load-example">Load Example</button>
+        <button class="parse" id="btn-parse-json">Detect Diagram Triggers</button>
+        <a class="button-link diagram" href="/status-site/excalidraw-ea.html" target="_blank">Open Diagram Lab</a>
       </div>
-      <div class="note">Use Diagram Lab to sketch EA diagrams, then export JSON or screenshots for PPTX slides.</div>
+      <div class="note">Claude Skill: claude-skills/hc-phac-pptx/SKILL.md</div>
+      <div class="note">Schema: schemas/pptx-slide-spec.schema.json</div>
+      <div class="note">Integration Guide: docs/claude-pptx-integration.md</div>
+    </div>
+
+    <div class="section-label">Slide Spec JSON</div>
+    <div class="card">
+      <textarea id="json-input" spellcheck="false"></textarea>
+      <div class="status" id="parse-status">Waiting for JSON input.</div>
+    </div>
+  </div>
+
+  <div>
+    <div class="section-label">Diagram Triggers</div>
+    <div class="card">
+      <div id="trigger-list" class="trigger-list"><div class="empty">No diagram-required slides detected yet.</div></div>
     </div>
   </div>
 </div>
 
+<script>
+const exampleSpec = {
+  deck: {
+    title: 'PATH / HAIL Convergence Briefing',
+    audience: 'ARB / EA / TPO',
+    type: 'architecture',
+    slides: [
+      { title: 'Executive Position', slide_type: 'executive-summary', bullets: ['Convergence decision required'], layout: 'title-body', visual_intent: 'decision framing', diagram_required: false },
+      { title: 'Control Plane Model', slide_type: 'control-plane', bullets: ['PATH governs runtime execution'], layout: 'title-diagram', visual_intent: 'control-plane overview', diagram_required: true, diagram_kind: 'control-plane', notes: 'Show control plane above runtime and data.' },
+      { title: 'Layered Architecture', slide_type: 'layered-architecture', bullets: ['Business, platform, data, governance'], layout: 'title-diagram', visual_intent: 'layered enterprise architecture', diagram_required: true, diagram_kind: 'layered-ea', notes: 'Four-layer architecture framing.' },
+      { title: 'Decision Ask', slide_type: 'decision-ask', bullets: ['Approve convergence architecture direction'], layout: 'title-body', visual_intent: 'decision ask', diagram_required: false }
+    ]
+  }
+};
+
+function getDiagramTemplate(kind){
+  const map = {
+    'control-plane': 'control-plane',
+    'layered-ea': 'layered',
+    'flow': 'blank',
+    'roadmap': 'blank',
+    'governance-model': 'blank',
+    'capability-map': 'blank'
+  };
+  return map[kind] || 'blank';
+}
+
+function safeSlides(spec){
+  if (!spec || typeof spec !== 'object') return [];
+  if (Array.isArray(spec.slides)) return spec.slides;
+  if (spec.deck && Array.isArray(spec.deck.slides)) return spec.deck.slides;
+  return [];
+}
+
+function parseTriggers(){
+  const input = document.getElementById('json-input').value.trim();
+  const status = document.getElementById('parse-status');
+  const list = document.getElementById('trigger-list');
+
+  if (!input) {
+    status.textContent = 'Paste Claude JSON first.';
+    list.innerHTML = '<div class="empty">No diagram-required slides detected yet.</div>';
+    return;
+  }
+
+  try {
+    const spec = JSON.parse(input);
+    const slides = safeSlides(spec);
+    const diagramSlides = slides
+      .map((slide, index) => ({ ...slide, index: index + 1 }))
+      .filter(slide => slide.diagram_required === true);
+
+    if (!diagramSlides.length) {
+      status.textContent = `Parsed ${slides.length} slides. No diagram-required slides found.`;
+      list.innerHTML = '<div class="empty">Claude did not flag any slides for diagrams.</div>';
+      return;
+    }
+
+    status.textContent = `Parsed ${slides.length} slides. Found ${diagramSlides.length} diagram trigger(s).`;
+
+    list.innerHTML = diagramSlides.map(slide => {
+      const kind = slide.diagram_kind || 'blank';
+      const template = getDiagramTemplate(kind);
+      const title = encodeURIComponent(slide.title || `Slide ${slide.index}`);
+      const notes = encodeURIComponent(slide.notes || '');
+      const href = `/status-site/excalidraw-ea.html?template=${template}&diagram_kind=${encodeURIComponent(kind)}&slide_title=${title}&notes=${notes}`;
+      return `
+        <div class="trigger-item">
+          <div class="trigger-title">Slide ${slide.index}: ${slide.title || 'Untitled Slide'}</div>
+          <div class="trigger-meta">diagram_kind: ${kind} · template: ${template}</div>
+          ${slide.notes ? `<div class="note small">${slide.notes}</div>` : ''}
+          <div class="actions">
+            <a class="button-link diagram" href="${href}" target="_blank">Launch Diagram Lab</a>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch (error) {
+    status.textContent = `JSON parse failed: ${error.message}`;
+    list.innerHTML = '<div class="empty">Fix the JSON and try again.</div>';
+  }
+}
+
+document.getElementById('btn-load-example').addEventListener('click', () => {
+  document.getElementById('json-input').value = JSON.stringify(exampleSpec, null, 2);
+  parseTriggers();
+});
+
+document.getElementById('btn-parse-json').addEventListener('click', parseTriggers);
+
+document.getElementById('json-input').value = JSON.stringify(exampleSpec, null, 2);
+parseTriggers();
+</script>
 </body>
 </html>
