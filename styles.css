@@ -914,3 +914,26 @@ body {
     font-size: 11px;
   }
 }
+
+/* ========== ARTIFACT DETAIL PAGE STYLES ========== */
+.eyebrow {
+  font-size: 12px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+
+.meta {
+  color: var(--text-dim);
+  margin-bottom: 18px;
+}
+
+.tag {
+  display: inline-block;
+  border: 1px solid rgba(0, 200, 200, 0.35);
+  color: var(--teal);
+  padding: 4px 8px;
+  margin: 4px 6px 0 0;
+  font-size: 12px;
+}
