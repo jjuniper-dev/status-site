@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Output Manager | Status Site</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Output Manager</h1>
+      <p class="subtitle">Draft blog posts, LinkedIn articles, Substack pieces, PPTX requests, and infographic artifacts.</p>
+    </div>
+    <nav>
+      <a href="../../index.html">Home</a>
+      <a href="../../artifacts/">Artifacts</a>
+    </nav>
+  </header>
+
+  <main class="layout">
+    <aside class="panel left-panel">
+      <h2>Create Output</h2>
+      <form id="outputForm">
+        <label>
+          Output type
+          <select id="outputType" name="outputType">
+            <option value="blog">Blog Post</option>
+            <option value="linkedin">LinkedIn Draft</option>
+            <option value="substack">Substack Article</option>
+            <option value="pptx">PPTX Request</option>
+            <option value="infographic">Infographic Spec</option>
+          </select>
+        </label>
+
+        <label>
+          Title
+          <input id="title" name="title" type="text" placeholder="Enter title" required />
+        </label>
+
+        <label>
+          Audience
+          <input id="audience" name="audience" type="text" placeholder="e.g. EA Core, ARB, executives, public sector readers" />
+        </label>
+
+        <label>
+          Strategic context
+          <textarea id="context" name="context" rows="4" placeholder="What is this for? What initiative, deck, or architecture thread does it support?"></textarea>
+        </label>
+
+        <label>
+          Core points
+          <textarea id="points" name="points" rows="7" placeholder="List the core arguments, findings, or messages."></textarea>
+        </label>
+
+        <label>
+          Source / references
+          <textarea id="sources" name="sources" rows="4" placeholder="Documents, decks, notes, URLs, files, or internal references."></textarea>
+        </label>
+
+        <label>
+          Output instructions
+          <textarea id="instructions" name="instructions" rows="5" placeholder="Tone, structure, required sections, HC standards, accessibility, bilingual notes, etc."></textarea>
+        </label>
+
+        <div class="button-row">
+          <button type="submit">Add to Queue</button>
+          <button type="button" id="resetBtn" class="secondary">Reset</button>
+        </div>
+      </form>
+    </aside>
+
+    <section class="panel main-panel">
+      <div class="section-head">
+        <h2>Queued Outputs</h2>
+        <div class="toolbar">
+          <button id="seedExamples" class="secondary">Load Examples</button>
+          <button id="exportJson" class="secondary">Export JSON</button>
+          <button id="clearAll" class="danger">Clear All</button>
+        </div>
+      </div>
+
+      <div class="kanban">
+        <section>
+          <h3>Drafting</h3>
+          <div id="drafting" class="card-list"></div>
+        </section>
+        <section>
+          <h3>Ready for Build</h3>
+          <div id="ready" class="card-list"></div>
+        </section>
+        <section>
+          <h3>Artifact / Publish</h3>
+          <div id="published" class="card-list"></div>
+        </section>
+      </div>
+    </section>
+
+    <aside class="panel right-panel">
+      <h2>Output Types</h2>
+      <ul class="type-list">
+        <li><strong>Blog Post</strong><span>Long-form web article or internal blog.</span></li>
+        <li><strong>LinkedIn Draft</strong><span>Professional social content with concise framing.</span></li>
+        <li><strong>Substack Article</strong><span>Longer thought-leadership or essay format.</span></li>
+        <li><strong>PPTX Request</strong><span>HC/PHAC standard slide build request with design rules.</span></li>
+        <li><strong>Infographic Spec</strong><span>Structured visual brief for artifact manager ingestion.</span></li>
+      </ul>
+
+      <h2>HC/PHAC Build Notes</h2>
+      <ul class="notes-list">
+        <li>PPTX outputs should align to HC/PHAC design standards.</li>
+        <li>Infographics should produce artifact-ready specs.</li>
+        <li>Keep governance, data, and platform context explicit.</li>
+        <li>Capture source files and references for traceability.</li>
+      </ul>
+    </aside>
+  </main>
+
+  <template id="cardTemplate">
+    <article class="card">
+      <div class="card-top">
+        <span class="badge"></span>
+        <div class="status-actions">
+          <button class="move-next">Next</button>
+          <button class="delete">Delete</button>
+        </div>
+      </div>
+      <h4 class="card-title"></h4>
+      <p class="card-audience"></p>
+      <p class="card-context"></p>
+      <details>
+        <summary>Details</summary>
+        <div class="detail-block">
+          <strong>Core points</strong>
+          <pre class="card-points"></pre>
+        </div>
+        <div class="detail-block">
+          <strong>Sources</strong>
+          <pre class="card-sources"></pre>
+        </div>
+        <div class="detail-block">
+          <strong>Instructions</strong>
+          <pre class="card-instructions"></pre>
+        </div>
+      </details>
+    </article>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>
