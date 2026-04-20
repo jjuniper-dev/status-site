@@ -17,6 +17,7 @@
     .tool-actions{display:flex;flex-wrap:wrap;gap:8px}
     .tool-actions button,.tool-actions label{padding:8px 10px;border:1px solid var(--border-bright);background:var(--surface);color:var(--text);font-family:var(--sans);font-size:12px;cursor:pointer}
     .tool-actions .primary{border-color:var(--teal);color:var(--teal)}
+    .tool-actions .reference{border-color:var(--gold);color:var(--gold)}
     .status-line{font-size:11px;color:var(--text-faint);margin-top:8px}
     .hidden-input{display:none}
     .note-list{margin-left:18px;color:var(--text-dim)}
@@ -69,6 +70,15 @@
         </div>
       </div>
       <div class="tool-group">
+        <div class="tool-title">Reference Image</div>
+        <div class="tool-text">Upload a PNG and place it on the canvas as a locked reference image so you can redraw or annotate over it.</div>
+        <div class="tool-actions">
+          <label for="import-png" class="reference">Use PNG as Example</label>
+          <input id="import-png" class="hidden-input" type="file" accept="image/png,.png">
+        </div>
+        <div class="status-line" id="reference-status">No reference image loaded.</div>
+      </div>
+      <div class="tool-group">
         <div class="tool-title">File Actions</div>
         <div class="tool-text">Save your scene in browser storage or move JSON in and out.</div>
         <div class="tool-actions">
@@ -119,10 +129,37 @@
     function textEl(text,x,y,fontSize){return {id:crypto.randomUUID(),type:'text',x,y,width:Math.max(240,text.length*fontSize*.6),height:fontSize*1.4,angle:0,strokeColor:'#F0F4FA',backgroundColor:'transparent',fillStyle:'solid',strokeWidth:1,strokeStyle:'solid',roughness:0,opacity:100,groupIds:[],frameId:null,roundness:null,seed:Math.floor(Math.random()*1e6),version:1,versionNonce:1,isDeleted:false,boundElements:null,updated:Date.now(),link:null,locked:false,text,fontSize,fontFamily:1,textAlign:'left',verticalAlign:'top',baseline:fontSize,containerId:null,originalText:text,lineHeight:1.2};}
 
     function updateStatus(msg){document.getElementById('save-status').textContent=msg;}
+    function updateReferenceStatus(msg){document.getElementById('reference-status').textContent=msg;}
     function saveLocal(){if(!excalidrawApi) return; const scene=excalidrawApi.getSceneElementsIncludingDeleted(); const appState=excalidrawApi.getAppState(); localStorage.setItem(STORAGE_KEY, JSON.stringify({elements:scene,appState})); updateStatus('Saved locally: '+new Date().toLocaleString());}
     function loadLocal(){try{const raw=localStorage.getItem(STORAGE_KEY); if(!raw) return null; return JSON.parse(raw);}catch(e){return null;}}
     function exportJson(){if(!excalidrawApi) return; const payload={elements:excalidrawApi.getSceneElementsIncludingDeleted(),appState:excalidrawApi.getAppState()}; const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='ea-diagram-scene.json'; a.click(); URL.revokeObjectURL(a.href);} 
-    function importJson(file){const reader=new FileReader(); reader.onload=()=>{try{const data=JSON.parse(reader.result); excalidrawApi.updateScene({elements:data.elements||[],appState:data.appState||{}}); updateStatus('Imported scene: '+file.name);}catch(e){updateStatus('Import failed');}}; reader.readAsText(file);} 
+    function importJson(file){const reader=new FileReader(); reader.onload=()=>{try{const data=JSON.parse(reader.result); excalidrawApi.updateScene({elements:data.elements||[],appState:data.appState||{},files:data.files||{}}); updateStatus('Imported scene: '+file.name);}catch(e){updateStatus('Import failed');}}; reader.readAsText(file);} 
+    function readAsDataURL(file){return new Promise((resolve,reject)=>{const reader=new FileReader(); reader.onload=()=>resolve(reader.result); reader.onerror=()=>reject(new Error('Failed to read PNG')); reader.readAsDataURL(file);});}
+    function loadImageInfo(dataURL){return new Promise((resolve,reject)=>{const img=new Image(); img.onload=()=>resolve({width:img.width,height:img.height}); img.onerror=()=>reject(new Error('Invalid PNG')); img.src=dataURL;});}
+    async function importPngReference(file){
+      if(!excalidrawApi) return;
+      try{
+        updateReferenceStatus('Loading PNG reference...');
+        const dataURL=await readAsDataURL(file);
+        const info=await loadImageInfo(dataURL);
+        const maxWidth=1100;
+        const scale=info.width>maxWidth ? maxWidth/info.width : 1;
+        const width=Math.round(info.width*scale);
+        const height=Math.round(info.height*scale);
+        const fileId=crypto.randomUUID();
+        const imageFile={id:fileId,dataURL,mimeType:file.type||'image/png',created:Date.now(),lastRetrieved:Date.now()};
+        const imageElement={
+          id:crypto.randomUUID(),type:'image',x:80,y:80,width,height,angle:0,strokeColor:'transparent',backgroundColor:'transparent',fillStyle:'solid',strokeWidth:1,strokeStyle:'solid',roughness:0,opacity:80,groupIds:[],frameId:null,roundness:null,seed:Math.floor(Math.random()*1e6),version:1,versionNonce:1,isDeleted:false,boundElements:null,updated:Date.now(),link:null,locked:true,fileId,scale:[1,1],status:'saved',crop:null
+        };
+        const existing=excalidrawApi.getSceneElementsIncludingDeleted();
+        if(typeof excalidrawApi.addFiles==='function') excalidrawApi.addFiles([imageFile]);
+        excalidrawApi.updateScene({elements:[...existing,imageElement],files:{[fileId]:imageFile}});
+        updateReferenceStatus(`Reference loaded: ${file.name} (${width}×${height})`);
+      }catch(error){
+        console.error(error);
+        updateReferenceStatus('PNG import failed.');
+      }
+    }
 
     function renderApp(){
       const root=ReactDOM.createRoot(document.getElementById('excalidraw-app'));
@@ -138,6 +175,7 @@
       document.getElementById('btn-layered').addEventListener('click',()=>excalidrawApi&&excalidrawApi.updateScene(starterScene('layered')));
       document.getElementById('btn-control-plane').addEventListener('click',()=>excalidrawApi&&excalidrawApi.updateScene(starterScene('control-plane')));
       document.getElementById('import-json').addEventListener('change',(e)=>{const file=e.target.files?.[0]; if(file) importJson(file); e.target.value='';});
+      document.getElementById('import-png').addEventListener('change',(e)=>{const file=e.target.files?.[0]; if(file) importPngReference(file); e.target.value='';});
       if(loadLocal()) updateStatus('Loaded local scene.');
     });
   </script>
