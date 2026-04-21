@@ -5,6 +5,7 @@ class IntelligenceEditor {
   constructor() {
     this.reviewer = new AIContentReviewer();
     this.markdownProcessor = new MarkdownProcessor();
+    this.localAnalyzer = new LocalLLMAnalyzer();
 
     this.state = {
       mode: 'draft',
@@ -521,35 +522,30 @@ class IntelligenceEditor {
   }
 
   async analyzeImportedContent() {
-    if (!this.reviewer.hasApiKey()) {
-      document.getElementById('modal-api-key-input').value = '';
-      this.openModal('modal-api-key');
-      return;
-    }
-
-    this.setStatus('loading', 'AI analyzing imported content...');
+    this.setStatus('loading', 'Local AI analyzing imported content (no external calls)...');
 
     try {
       const { pendingImportText, pendingImportMeta } = this.state;
-      const prompt = pendingImportMeta.isImage
-        ? `You are analyzing an imported image document for an enterprise AI governance intelligence page.
-           Assess: (1) Is this content relevant to AI governance/architecture? (2) What sections should it inform?
-           (3) What specific insights should be extracted? (4) Should it be incorporated as-is or synthesized?`
-        : `You are analyzing imported document content for an enterprise AI governance intelligence page.
-           Assess: (1) Is this content relevant and accurate? (2) What sections should it inform?
-           (3) What specific insights are valuable? (4) Should it be incorporated directly or synthesized?`;
 
-      const analysis = await this.reviewer.analyzeImportedContent(
+      // Set up status callback to show model loading progress
+      this.localAnalyzer.setStatusCallback((status, message) => {
+        if (status === 'loading' || status === 'initializing') {
+          this.setStatus('loading', message || 'Analyzing...');
+        } else if (status === 'analyzing') {
+          this.setStatus('loading', message || 'Analyzing...');
+        }
+      });
+
+      const analysis = await this.localAnalyzer.analyzeImportedContent(
         pendingImportText,
-        prompt,
         pendingImportMeta
       );
 
       this.displayImportAnalysis(analysis);
-      this.setStatus('completed', 'Analysis complete');
+      this.setStatus('completed', 'Local analysis complete (no data sent externally)');
     } catch (error) {
       this.setStatus('error', `Analysis failed: ${error.message}`);
-      alert(`AI analysis failed: ${error.message}`);
+      alert(`Local analysis failed: ${error.message}. Check browser console for details.`);
     }
   }
 
