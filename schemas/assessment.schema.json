@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Offering Assessment",
+  "type": "object",
+  "required": [
+    "vendor",
+    "version",
+    "review_date",
+    "item_type",
+    "capability_type",
+    "tier",
+    "gates",
+    "scores",
+    "positioning",
+    "recommendation",
+    "sources"
+  ],
+  "properties": {
+    "vendor": { "type": "string" },
+    "version": { "type": "string" },
+    "review_date": { "type": "string", "format": "date" },
+    "item_type": { "type": "string" },
+    "capability_type": { "type": "string" },
+    "tier": { "type": "string" },
+    "gates": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "enum": ["pass", "fail", "na"]
+      }
+    },
+    "scores": {
+      "type": "object",
+      "required": ["governance", "architecture", "capability", "procurement", "composite"],
+      "properties": {
+        "governance": { "type": "number", "minimum": 0, "maximum": 5 },
+        "architecture": { "type": "number", "minimum": 0, "maximum": 5 },
+        "capability": { "type": "number", "minimum": 0, "maximum": 5 },
+        "procurement": { "type": "number", "minimum": 0, "maximum": 5 },
+        "composite": { "type": "number", "minimum": 0, "maximum": 100 }
+      }
+    },
+    "positioning": {
+      "type": "object",
+      "required": ["openness", "sovereignty", "runtime"],
+      "properties": {
+        "openness": { "type": "string" },
+        "sovereignty": { "type": "string" },
+        "runtime": { "type": "string" }
+      }
+    },
+    "recommendation": { "type": "string" },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "type"],
+        "properties": {
+          "title": { "type": "string" },
+          "type": { "type": "string" },
+          "date": { "type": "string" },
+          "note": { "type": "string" }
+        }
+      }
+    }
+  }
+}
