@@ -1,0 +1,478 @@
+{
+  "schema_version": "1.0",
+  "artifact_type": "ea_layered_architecture_diagram",
+  "id": "hcphac-ai-platform-layering-v1",
+  "title": "AI Platform Layering & Deployment Reality",
+  "subtitle": "HC/PHAC Enterprise Architecture Interpretation",
+  "canvas": {
+    "width": 1600,
+    "height": 900,
+    "background": "#F4F6F7",
+    "margin": 40
+  },
+  "theme": {
+    "font_family": "Arial",
+    "title_color": "#1F2A30",
+    "text_color": "#1F2A30",
+    "layer_fill": "#EAF2F3",
+    "component_fill": "#6FAFB3",
+    "component_fill_emphasis": "#2F6F73",
+    "highlight": "#A6CE39",
+    "line_color": "#2F6F73",
+    "warning_color": "#6D6E71",
+    "border_radius": 10,
+    "stroke_width": 2
+  },
+  "global_rules": {
+    "layout_style": "horizontal_layer_stack",
+    "reading_order": "top_to_bottom_left_to_right",
+    "connector_style": "straight_arrows_only",
+    "max_words_per_shape": 4,
+    "no_gradients": true,
+    "no_drop_shadows": true,
+    "no_overlaps": true,
+    "align_to_grid": true,
+    "grid_size": 8
+  },
+  "header": {
+    "x": 40,
+    "y": 30,
+    "w": 1520,
+    "h": 70,
+    "title": "AI Platform Layering & Deployment Reality",
+    "subtitle": "HC/PHAC Enterprise Architecture Interpretation"
+  },
+  "ownership_zones": [
+    {
+      "id": "zone_gc",
+      "label": "GC-provided",
+      "x": 40,
+      "y": 120,
+      "w": 1520,
+      "h": 250,
+      "style": {
+        "fill": "#F7FAFA",
+        "stroke": "#D7E3E5",
+        "stroke_style": "solid"
+      }
+    },
+    {
+      "id": "zone_hcphac",
+      "label": "HC/PHAC-controlled",
+      "x": 40,
+      "y": 370,
+      "w": 1520,
+      "h": 430,
+      "style": {
+        "fill": "#F4F6F7",
+        "stroke": "#D7E3E5",
+        "stroke_style": "solid"
+      }
+    }
+  ],
+  "layers": [
+    {
+      "id": "layer_1",
+      "label": "User Interaction (UI Access Only)",
+      "x": 60,
+      "y": 140,
+      "w": 1480,
+      "h": 95,
+      "style": {
+        "fill": "#EEF5F6",
+        "stroke": "#2F6F73"
+      },
+      "components": [
+        {
+          "id": "canchat",
+          "type": "box",
+          "label": "CANChat",
+          "x": 260,
+          "y": 162,
+          "w": 200,
+          "h": 46,
+          "style": {
+            "fill": "#6FAFB3",
+            "stroke": "#2F6F73",
+            "stroke_style": "dashed"
+          },
+          "annotation": {
+            "text": "UI only — no guaranteed API / LLM endpoint access",
+            "position": "below",
+            "font_size": 14
+          },
+          "alt_text": "CANChat is a GC-provided user interface for AI interaction. It should not be assumed to provide reusable LLM service endpoints for departmental applications."
+        },
+        {
+          "id": "copilot",
+          "type": "box",
+          "label": "M365 Copilot",
+          "x": 520,
+          "y": 162,
+          "w": 220,
+          "h": 46,
+          "style": {
+            "fill": "#6FAFB3",
+            "stroke": "#2F6F73"
+          },
+          "alt_text": "Microsoft 365 Copilot is an embedded assistive AI interface inside Microsoft 365 workloads."
+        }
+      ]
+    },
+    {
+      "id": "layer_2",
+      "label": "Governed Shared AI Services",
+      "x": 60,
+      "y": 250,
+      "w": 1480,
+      "h": 95,
+      "style": {
+        "fill": "#EAF2F3",
+        "stroke": "#2F6F73"
+      },
+      "components": [
+        {
+          "id": "gctranslate",
+          "type": "box",
+          "label": "GCTranslate",
+          "x": 360,
+          "y": 272,
+          "w": 220,
+          "h": 46,
+          "style": {
+            "fill": "#6FAFB3",
+            "stroke": "#2F6F73"
+          },
+          "annotation": {
+            "text": "Governed vertical AI service",
+            "position": "below",
+            "font_size": 14
+          },
+          "alt_text": "GCTranslate is a governed, domain-specific shared AI service for translation, positioned as a reusable vertical enterprise capability."
+        },
+        {
+          "id": "future_gc_services",
+          "type": "box",
+          "label": "Future GC Services",
+          "x": 660,
+          "y": 272,
+          "w": 260,
+          "h": 46,
+          "style": {
+            "fill": "#DCEBED",
+            "stroke": "#2F6F73",
+            "stroke_style": "dashed"
+          },
+          "alt_text": "Placeholder for future GC-wide governed AI services."
+        }
+      ]
+    },
+    {
+      "id": "layer_3",
+      "label": "Departmental AI Modules (HC/PHAC Owned)",
+      "x": 60,
+      "y": 400,
+      "w": 1480,
+      "h": 110,
+      "style": {
+        "fill": "#E6F0F1",
+        "stroke": "#2F6F73"
+      },
+      "components": [
+        {
+          "id": "grep_exp",
+          "type": "box",
+          "label": "GREP-ExP",
+          "x": 180,
+          "y": 430,
+          "w": 200,
+          "h": 50,
+          "style": {
+            "fill": "#2F6F73",
+            "stroke": "#2F6F73",
+            "text_color": "#FFFFFF"
+          },
+          "annotation": {
+            "text": "Scientific decision-support reference pattern",
+            "position": "below",
+            "font_size": 14
+          },
+          "alt_text": "GREP-ExP is an HC/PHAC-owned AI-enabled scientific workflow module demonstrating advanced decision-support, human-in-the-loop, and disagreement-driven validation patterns."
+        },
+        {
+          "id": "scientific_workflows",
+          "type": "box",
+          "label": "Scientific Workflows",
+          "x": 460,
+          "y": 430,
+          "w": 250,
+          "h": 50,
+          "style": {
+            "fill": "#6FAFB3",
+            "stroke": "#2F6F73"
+          },
+          "alt_text": "HC/PHAC-owned scientific AI workflows hosted in departmental Microsoft environments."
+        },
+        {
+          "id": "regulatory_ai_tools",
+          "type": "box",
+          "label": "Regulatory AI Tools",
+          "x": 790,
+          "y": 430,
+          "w": 250,
+          "h": 50,
+          "style": {
+            "fill": "#6FAFB3",
+            "stroke": "#2F6F73"
+          },
+          "alt_text": "HC/PHAC-owned regulatory AI application modules hosted in departmental Microsoft environments."
+        },
+        {
+          "id": "branch_copilots",
+          "type": "box",
+          "label": "Branch Modules",
+          "x": 1120,
+          "y": 430,
+          "w": 220,
+          "h": 50,
+          "style": {
+            "fill": "#6FAFB3",
+            "stroke": "#2F6F73"
+          },
+          "alt_text": "Additional HC/PHAC branch-specific AI-enabled modules and copilots."
+        }
+      ]
+    },
+    {
+      "id": "layer_4",
+      "label": "AI Runtime & Execution Layer",
+      "x": 60,
+      "y": 545,
+      "w": 1480,
+      "h": 110,
+      "style": {
+        "fill": "#DCEBED",
+        "stroke": "#2F6F73"
+      },
+      "components": [
+        {
+          "id": "hail",
+          "type": "box",
+          "label": "HAIL",
+          "x": 400,
+          "y": 575,
+          "w": 220,
+          "h": 52,
+          "style": {
+            "fill": "#2F6F73",
+            "stroke": "#2F6F73",
+            "text_color": "#FFFFFF"
+          },
+          "tag": {
+            "text": "Current",
+            "fill": "#A6CE39",
+            "text_color": "#1F2A30"
+          },
+          "alt_text": "HAIL is the current HC/PHAC AI runtime and execution environment."
+        },
+        {
+          "id": "path",
+          "type": "box",
+          "label": "PATH",
+          "x": 760,
+          "y": 575,
+          "w": 220,
+          "h": 52,
+          "style": {
+            "fill": "#F4F6F7",
+            "stroke": "#2F6F73",
+            "stroke_style": "solid",
+            "text_color": "#1F2A30"
+          },
+          "tag": {
+            "text": "Target",
+            "fill": "#DCEBED",
+            "text_color": "#1F2A30"
+          },
+          "alt_text": "PATH is the target-state AI control and governed execution environment for HC/PHAC."
+        }
+      ]
+    },
+    {
+      "id": "layer_5",
+      "label": "Control & Data Governance Layer",
+      "x": 60,
+      "y": 690,
+      "w": 1480,
+      "h": 110,
+      "style": {
+        "fill": "#D4E5E7",
+        "stroke": "#2F6F73"
+      },
+      "components": [
+        {
+          "id": "purview",
+          "type": "box",
+          "label": "Purview",
+          "x": 260,
+          "y": 720,
+          "w": 220,
+          "h": 52,
+          "style": {
+            "fill": "#2F6F73",
+            "stroke": "#2F6F73",
+            "text_color": "#FFFFFF"
+          },
+          "alt_text": "Purview provides data governance, classification, lineage, and policy enforcement."
+        },
+        {
+          "id": "entra",
+          "type": "box",
+          "label": "Entra ID",
+          "x": 600,
+          "y": 720,
+          "w": 220,
+          "h": 52,
+          "style": {
+            "fill": "#2F6F73",
+            "stroke": "#2F6F73",
+            "text_color": "#FFFFFF"
+          },
+          "alt_text": "Entra ID provides identity, authentication, and access control."
+        },
+        {
+          "id": "audit_logging",
+          "type": "box",
+          "label": "Audit / Logging",
+          "x": 940,
+          "y": 720,
+          "w": 260,
+          "h": 52,
+          "style": {
+            "fill": "#2F6F73",
+            "stroke": "#2F6F73",
+            "text_color": "#FFFFFF"
+          },
+          "alt_text": "Audit and logging services provide telemetry, traceability, and compliance evidence."
+        }
+      ]
+    }
+  ],
+  "connectors": [
+    {
+      "from": "canchat",
+      "to": "hail",
+      "style": "dotted_arrow",
+      "label": "User-directed only"
+    },
+    {
+      "from": "copilot",
+      "to": "hail",
+      "style": "solid_arrow"
+    },
+    {
+      "from": "gctranslate",
+      "to": "hail",
+      "style": "solid_arrow"
+    },
+    {
+      "from": "future_gc_services",
+      "to": "hail",
+      "style": "solid_arrow"
+    },
+    {
+      "from": "grep_exp",
+      "to": "hail",
+      "style": "solid_arrow"
+    },
+    {
+      "from": "scientific_workflows",
+      "to": "hail",
+      "style": "solid_arrow"
+    },
+    {
+      "from": "regulatory_ai_tools",
+      "to": "hail",
+      "style": "solid_arrow"
+    },
+    {
+      "from": "branch_copilots",
+      "to": "hail",
+      "style": "solid_arrow"
+    },
+    {
+      "from": "hail",
+      "to": "purview",
+      "style": "solid_arrow"
+    },
+    {
+      "from": "hail",
+      "to": "entra",
+      "style": "solid_arrow"
+    },
+    {
+      "from": "hail",
+      "to": "audit_logging",
+      "style": "solid_arrow"
+    },
+    {
+      "from": "path",
+      "to": "purview",
+      "style": "solid_arrow"
+    },
+    {
+      "from": "path",
+      "to": "entra",
+      "style": "solid_arrow"
+    },
+    {
+      "from": "path",
+      "to": "audit_logging",
+      "style": "solid_arrow"
+    }
+  ],
+  "side_notes": [
+    {
+      "id": "key_distinction",
+      "title": "Key Distinction",
+      "x": 1260,
+      "y": 405,
+      "w": 260,
+      "h": 170,
+      "style": {
+        "fill": "#FFFFFF",
+        "stroke": "#6D6E71"
+      },
+      "bullets": [
+        "LLM access ≠ app integration",
+        "Shared tools ≠ enterprise capability",
+        "Modules require departmental hosting"
+      ]
+    }
+  ],
+  "top_progression": {
+    "x": 1090,
+    "y": 110,
+    "w": 420,
+    "h": 24,
+    "label": "Productivity → Knowledge → Decision AI",
+    "style": {
+      "text_color": "#2F6F73"
+    }
+  },
+  "footer": {
+    "x": 40,
+    "y": 840,
+    "w": 1520,
+    "h": 24,
+    "left_text": "Internal EA interpretation — HC/PHAC",
+    "right_text": "v1.0"
+  },
+  "rendering_hints": {
+    "preferred_tool": "Excalidraw",
+    "shape_language": "rectangles_with_annotations",
+    "text_wrap": true,
+    "center_labels_vertically": true,
+    "snap_to_grid": true
+  }
+}
