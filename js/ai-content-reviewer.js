@@ -243,6 +243,92 @@ Provide structured analysis in the following format:
   clearCachedReview() {
     localStorage.removeItem('intelligence_ai_review');
   }
+
+  // Analyze imported content (text or image) for relevance and incorporation approach
+  async analyzeImportedContent(content, prompt, metadata) {
+    if (!this.apiKey) {
+      throw new Error('API key not configured');
+    }
+
+    const systemPrompt = `You are analyzing imported content for an enterprise AI governance intelligence page.
+Determine: (1) Is this relevant? (2) What sections should it inform? (3) Key insights? (4) How to incorporate?
+Respond with a structured analysis that helps the author decide whether and how to use this content.`;
+
+    const messages = [
+      {
+        role: 'user',
+        content: this.buildImportAnalysisPrompt(content, metadata, prompt)
+      }
+    ];
+
+    try {
+      const response = await fetch(this.apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': this.apiKey,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: this.model,
+          max_tokens: 1000,
+          system: systemPrompt,
+          messages
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error?.message || `API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const analysisText = data.content[0]?.text || '';
+
+      return this.parseImportAnalysis(analysisText);
+    } catch (error) {
+      throw new Error(`Failed to analyze imported content: ${error.message}`);
+    }
+  }
+
+  buildImportAnalysisPrompt(content, metadata, customPrompt) {
+    const contentPreview = metadata.isImage
+      ? `[Image: ${metadata.fileName}]`
+      : content.substring(0, 1000);
+
+    return `${customPrompt}
+
+IMPORTED CONTENT:
+---
+${contentPreview}
+---
+
+Provide a concise analysis with:
+- Relevance assessment (is this useful for the intelligence page?)
+- Suggested sections/areas it should inform
+- Key insights to extract
+- How it should be incorporated (as-is, synthesized, referenced, etc.)
+- Any concerns or caveats`;
+  }
+
+  parseImportAnalysis(analysisText) {
+    const analysis = {
+      isRelevant: !analysisText.toLowerCase().includes('not relevant'),
+      relevance: this.extractSection(analysisText, 'Relevance'),
+      suggestedSections: this.extractSection(analysisText, 'Suggested'),
+      keyInsights: this.extractSection(analysisText, 'Key Insights'),
+      incorporationApproach: this.extractSection(analysisText, 'How|Incorporate'),
+      concerns: this.extractSection(analysisText, 'Concerns|Caveats')
+    };
+
+    return analysis;
+  }
+
+  extractSection(text, keyword) {
+    const regex = new RegExp(`${keyword}[^\\n]*\\n([^\\n]+(?:\\n(?!\\n)[^\\n]+)*)`, 'i');
+    const match = text.match(regex);
+    return match ? match[1].trim() : '';
+  }
 }
 
 // Export for use in intelligence-editor.js
