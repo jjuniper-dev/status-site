@@ -6,157 +6,36 @@
   <title>AI Offering Assessment Comparison</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <style>
-    .compare-controls { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px; }
-    .compare-note { color: var(--text-dim); font-size: 13px; margin-top: 8px; }
-    .compare-table td:first-child, .compare-table th:first-child { width: 220px; }
-    .compare-table td, .compare-table th { vertical-align: top; }
-    .compare-table .metric-label { color: var(--text); font-weight: 600; }
-    .pill { display:inline-block; padding:4px 8px; border:1px solid var(--border); font-family: var(--mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
-    .pill.red { color: var(--red); border-color: var(--red); }
-    .pill.amber { color: var(--gold); border-color: var(--gold); }
-    .pill.green { color: var(--green); border-color: var(--green); }
-    .comparison-links { display:flex; gap:8px; flex-wrap:wrap; margin-top: 10px; }
-  </style>
 </head>
 <body>
 <div class="layout">
-  <div class="topnav">
-    <div class="topnav-label">AI Project Dashboard</div>
-    <div class="topnav-links">
-      <a class="topnav-link" href="/status-site/index.html">Dashboard</a>
-      <a class="topnav-link active" href="/status-site/assessments.html">Assessments</a>
-      <a class="topnav-link" href="/status-site/intelligence.html">Intelligence</a>
-      <a class="topnav-link" href="/status-site/path-architecture.html">Architecture</a>
-    </div>
-  </div>
-
+  <div class="topnav"><div class="topnav-label">AI Project Dashboard</div></div>
   <div class="breadcrumb">Assessments &gt; Comparison</div>
-
-  <div class="header">
-    <div class="header-eyebrow">Decision Support View</div>
-    <div class="header-title">Vendor <span>/</span> Comparison</div>
-    <div class="header-sub">Side-by-side assessment of AI offerings using the same PATH/HAIL visual and analytical standard.</div>
-    <div class="badges">
-      <div class="badge badge-red">Gate Aware</div>
-      <div class="badge badge-teal">Side by Side</div>
-      <div class="badge badge-gold">EA Review</div>
-    </div>
-  </div>
-
-  <div class="positioning">
-    <div class="positioning-label">Core Position</div>
-    <div class="positioning-text">Comparison is only meaningful when <em>composite score</em>, <em>overall status</em>, and <em>gate failure</em> are read together.</div>
-  </div>
-
-  <div class="section-label">Comparison Surface</div>
-  <div class="card">
-    <div class="compare-controls" id="compare-controls"></div>
-    <div class="compare-note">Select up to three offerings. With only one assessment currently loaded, this page acts as the reusable comparison shell for future vendors.</div>
-  </div>
-
+  <div class="header"><div class="header-title">Vendor Comparison</div></div>
   <div id="comparison-output"></div>
-
-  <div class="footer">
-    <div class="footer-left">HC/PHAC · AI Assessment Comparison</div>
-    <div class="footer-right">Static JSON comparison surface</div>
-  </div>
 </div>
-
 <script>
-let registry = [];
-let selected = [];
-
-function bandClass(v) {
-  const s = String(v || '').toLowerCase();
-  if (s === 'red') return 'red';
-  if (s === 'amber') return 'amber';
-  return 'green';
-}
-
-function vendorKey(item) {
-  return `${item.vendor}|${item.version}`;
-}
-
-function fetchAssessment(item) {
-  return fetch(`data/assessments/${item.vendor}-${item.version}.json`).then(r => r.json());
-}
-
-function renderControls() {
-  const host = document.getElementById('compare-controls');
-  host.innerHTML = '';
-  registry.forEach(item => {
-    const key = vendorKey(item);
-    const active = selected.includes(key);
-    const button = document.createElement('button');
-    button.className = 'topnav-link' + (active ? ' active' : '');
-    button.textContent = `${item.display_name} ${item.version}`;
-    button.onclick = () => toggleSelection(key);
-    host.appendChild(button);
-  });
-}
-
-function toggleSelection(key) {
-  if (selected.includes(key)) {
-    selected = selected.filter(k => k !== key);
-  } else {
-    if (selected.length >= 3) return;
-    selected.push(key);
-  }
-  renderControls();
-  renderComparison();
-}
-
-async function renderComparison() {
-  const output = document.getElementById('comparison-output');
-  if (!selected.length) {
-    output.innerHTML = '<div class="card"><div class="card-title">No offerings selected</div><div class="card-sub">Choose one or more assessments above to compare.</div></div>';
-    return;
-  }
-
-  const items = registry.filter(item => selected.includes(vendorKey(item)));
-  const datasets = await Promise.all(items.map(fetchAssessment));
-
-  const headers = datasets.map(d => `<th>${d.vendor}<br><span class="meta-sub">${d.version}</span></th>`).join('');
-  const row = (label, values) => `<tr><td class="metric-label">${label}</td>${values.map(v => `<td>${v}</td>`).join('')}</tr>`;
-
-  output.innerHTML = `
-    <div class="section-label">Assessment Comparison</div>
-    <table class="table compare-table">
-      <thead>
-        <tr>
-          <th>Dimension</th>
-          ${headers}
-        </tr>
-      </thead>
-      <tbody>
-        ${row('Composite Score', datasets.map(d => d.composite))}
-        ${row('Overall Status', datasets.map(d => `<span class="pill ${bandClass(d.overall_status)}">${d.overall_status}</span>`))}
-        ${row('Governance', datasets.map(d => d.scores.governance))}
-        ${row('Architecture', datasets.map(d => d.scores.architecture))}
-        ${row('Capability', datasets.map(d => d.scores.capability))}
-        ${row('Procurement', datasets.map(d => d.scores.procurement))}
-        ${row('Failed Gates', datasets.map(d => Object.entries(d.gates).filter(([_,v]) => String(v).toLowerCase()==='fail').map(([k]) => k).join(', ') || 'None'))}
-        ${row('Recommendation', datasets.map(d => d.recommendation))}
-      </tbody>
-    </table>
-    <div class="card">
-      <div class="card-title">Open Individual Assessments</div>
-      <div class="comparison-links">
-        ${items.map(i => `<a class="topnav-link" href="assessment.html?vendor=${i.vendor}&version=${i.version}">${i.display_name} ${i.version}</a>`).join('')}
-      </div>
-    </div>
-  `;
-}
-
-fetch('data/assessments/index.json')
-  .then(r => r.json())
-  .then(data => {
-    registry = data;
-    selected = data.slice(0, Math.min(2, data.length)).map(vendorKey);
-    renderControls();
-    renderComparison();
-  });
+let registry=[];let selected=[];
+function vendorKey(i){return `${i.vendor}|${i.version}`}
+function fetchAssessment(i){return fetch(`data/assessments/${i.vendor}-${i.version}.json`).then(r=>r.json())}
+function row(l,v){return `<tr><td>${l}</td>${v.map(x=>`<td>${x}</td>`).join('')}</tr>`}
+async function render(){
+const items=registry;const data=await Promise.all(items.map(fetchAssessment));
+document.getElementById('comparison-output').innerHTML=`
+<table class="table">
+<thead><tr><th>Dimension</th>${data.map(d=>`<th>${d.vendor}</th>`).join('')}</tr></thead>
+<tbody>
+${row('Composite',data.map(d=>d.composite))}
+${row('Status',data.map(d=>d.overall_status))}
+${row('Governance',data.map(d=>d.scores.governance))}
+${row('Architecture',data.map(d=>d.scores.architecture))}
+${row('Capability',data.map(d=>d.scores.capability))}
+${row('Procurement',data.map(d=>d.scores.procurement))}
+${row('Openness',data.map(d=>d.positioning.openness))}
+${row('Sovereignty',data.map(d=>d.positioning.sovereignty))}
+${row('Runtime',data.map(d=>d.positioning.runtime))}
+</tbody></table>`}
+fetch('data/assessments/index.json').then(r=>r.json()).then(d=>{registry=d;render()})
 </script>
 </body>
 </html>
