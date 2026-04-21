@@ -1,0 +1,41 @@
+{
+  "vendor": "Cohere",
+  "version": "v0.1",
+  "review_date": "2026-04-01",
+  "item_type": "Product",
+  "capability_type": "Embedded",
+  "tier": "Tier 3 - Productivity",
+  "gates": {
+    "G1": "pass",
+    "G2": "fail",
+    "G3": "fail",
+    "G4": "na",
+    "G5": "na",
+    "G6": "pass",
+    "G7": "pass",
+    "G8": "pass",
+    "G9": "pass",
+    "G10": "na"
+  },
+  "scores": {
+    "governance": 2.75,
+    "architecture": 2.75,
+    "capability": 3.25,
+    "procurement": 3.0,
+    "composite": 58.5
+  },
+  "positioning": {
+    "openness": "Mixed — Command proprietary, Aya open-weight",
+    "sovereignty": "Nuanced — Canadian entity + weights, US-operated hosting",
+    "runtime": "Partial — CANChat today, PATH target-state"
+  },
+  "recommendation": "Approve for unclassified workloads via CANChat. Do not approve for Protected B or direct-API consumption. Require documented deployment pattern, HC/PHAC-owned SA&A path, and PATH runtime integration plan.",
+  "sources": [
+    {
+      "title": "HC AI Strategy",
+      "type": "internal",
+      "date": "2026",
+      "note": "Alignment reference"
+    }
+  ]
+}
