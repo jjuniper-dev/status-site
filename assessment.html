@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="content"></div>
+<script>
+const params=new URLSearchParams(window.location.search);
+const vendor=params.get('vendor');
+const version=params.get('version');
+fetch(`data/assessments/${vendor}-${version}.json`)
+.then(r=>r.json())
+.then(d=>{
+ document.getElementById('content').innerHTML=`
+ <h1>${d.vendor}</h1>
+ <p>${d.version}</p>
+ <p>${d.composite}</p>
+ <p>${d.overall_status}</p>
+ <p>${d.recommendation}</p>`;
+});
+</script>
+</body>
+</html>
