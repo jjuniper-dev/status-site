@@ -1,0 +1,24 @@
+{
+  "vendor": "Gemini",
+  "slug": "gemini",
+  "version": "v0.1",
+  "composite": 68.0,
+  "composite_band": "Amber",
+  "overall_status": "Red",
+  "gates": {
+    "G2": "fail",
+    "G3": "fail"
+  },
+  "scores": {
+    "governance": 3.5,
+    "architecture": 3.75,
+    "capability": 4.25,
+    "procurement": 2.5
+  },
+  "positioning": {
+    "openness": "Proprietary",
+    "sovereignty": "Google cloud controlled",
+    "runtime": "Workspace-integrated and cloud APIs"
+  },
+  "recommendation": "Strong enterprise integration, but HC/PHAC deployment constraints remain"
+}
