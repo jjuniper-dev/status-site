@@ -1,0 +1,12 @@
+[
+  {
+    "vendor": "cohere",
+    "display_name": "Cohere",
+    "version": "v0.1",
+    "composite": 58.5,
+    "composite_band": "Amber",
+    "overall_status": "Red",
+    "recommendation": "Approve with conditions",
+    "path": "assessment.html?vendor=cohere&version=v0.1"
+  }
+]
