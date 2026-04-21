@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<h1>AI Offering Assessments</h1>
+<div id="list"></div>
+<script>
+fetch('data/assessments/index.json')
+.then(r=>r.json())
+.then(data=>{
+ const el=document.getElementById('list');
+ data.forEach(a=>{
+   const div=document.createElement('div');
+   div.innerHTML=`<h2>${a.display_name}</h2>
+   <p>${a.version}</p>
+   <p>${a.composite}</p>
+   <p>${a.overall_status}</p>
+   <a href="${a.path}">View</a>`;
+   el.appendChild(div);
+ });
+});
+</script>
+</body>
+</html>
