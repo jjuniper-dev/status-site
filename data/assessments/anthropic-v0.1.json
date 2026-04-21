@@ -1,0 +1,24 @@
+{
+  "vendor": "Anthropic",
+  "slug": "anthropic",
+  "version": "v0.1",
+  "composite": 66.5,
+  "composite_band": "Amber",
+  "overall_status": "Red",
+  "gates": {
+    "G2": "fail",
+    "G3": "fail"
+  },
+  "scores": {
+    "governance": 3.25,
+    "architecture": 3.25,
+    "capability": 4.5,
+    "procurement": 2.5
+  },
+  "positioning": {
+    "openness": "Proprietary",
+    "sovereignty": "US-based with gov cloud options",
+    "runtime": "API and cloud-hosted (AWS/GCP)"
+  },
+  "recommendation": "Strong safety posture and gov fit, but not yet aligned to HC/PHAC runtime"
+}
