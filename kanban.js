@@ -69,7 +69,11 @@ function loadStoredCards() {
 }
 
 function saveCards() {
-  localStorage.setItem(getStorageKey(), JSON.stringify(state.cards));
+  try {
+    localStorage.setItem(getStorageKey(), JSON.stringify(state.cards));
+  } catch {
+    // Storage may be unavailable (private mode / file protocol / strict browser settings).
+  }
 }
 
 async function loadArtifacts() {
@@ -404,7 +408,11 @@ function bindUI() {
 
   root.querySelector('#kanban-reset-board')?.addEventListener('click', async () => {
     if (!confirm('Reset board to latest imported seed items?')) return;
-    localStorage.removeItem(getStorageKey());
+    try {
+      localStorage.removeItem(getStorageKey());
+    } catch {
+      // No-op when storage is unavailable.
+    }
     await initializeCards();
     render();
   });
