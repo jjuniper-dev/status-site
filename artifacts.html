@@ -8,7 +8,8 @@
 <style>
 :root{--teal:#00C8C8;--bg:#07090F;--bg2:#0D1117;--bg3:#131920;--border:rgba(255,255,255,0.10);--text:#F0F4FA;--text-dim:#B0BFCF;--text-faint:#6A7D90;--mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;--cond:'IBM Plex Sans Condensed',sans-serif;}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.55;width:1100px;margin:0 auto;padding:28px 40px 64px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.55;max-width:1100px;width:100%;margin:0 auto;padding:28px 40px 64px}
+@media(max-width:768px){body{padding:16px 20px 40px}input{margin-bottom:12px}}
 .breadcrumb{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);opacity:.6;margin-bottom:22px}
 h1{font-family:var(--cond);font-size:36px;font-weight:700;margin-bottom:20px}
 input{padding:10px 12px;width:100%;margin-bottom:20px;background:#0a1018;color:var(--text);border:1px solid var(--border);font-family:var(--sans);font-size:14px}

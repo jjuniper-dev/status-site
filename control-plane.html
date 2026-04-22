@@ -13,7 +13,7 @@
   --mono:'IBM Plex Mono', monospace; --sans:'IBM Plex Sans', sans-serif; --cond:'IBM Plex Sans Condensed', sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.55;width:1100px;margin:0 auto;padding:28px 40px 64px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.55;max-width:1100px;width:100%;margin:0 auto;padding:28px 40px 64px}
 .breadcrumb{font-family:var(--mono);font-size:10px;color:var(--text-faint);opacity:.6;margin:16px 0 22px}
 .header{display:grid;grid-template-columns:1fr auto;align-items:start;border-bottom:2px solid var(--teal);padding-bottom:24px;margin-bottom:36px;gap:24px}
 .header-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--teal);text-transform:uppercase;margin-bottom:8px}
@@ -36,6 +36,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14
 .agent-flow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}.flow-step{border:1px solid var(--border);background:rgba(255,255,255,.03);padding:12px}.flow-step-title{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);margin-bottom:6px}.flow-step p{font-size:12px;color:var(--text-dim);line-height:1.5}
 .callout{border-left:3px solid var(--gold);background:rgba(249,208,48,.06);padding:14px 16px;margin-bottom:36px}.callout strong{color:#fff}.callout p{color:var(--text-dim);margin-top:6px}
 .footer{display:flex;justify-content:space-between;align-items:center;padding-top:22px;border-top:1px solid var(--border)}.footer-left,.footer-right{font-family:var(--mono);font-size:10px;color:var(--text-faint);line-height:1.8}.footer-right{text-align:right}
+@media(max-width:768px){body{padding:16px 20px 40px}.header{grid-template-columns:1fr}.header-title{font-size:28px}.grid-2{grid-template-columns:1fr}.positioning{flex-direction:column;text-align:center}.positioning-label{writing-mode:horizontal-tb;transform:none;margin-bottom:12px}.agent-flow{grid-template-columns:repeat(auto-fit,minmax(100px,1fr))}
 </style>
 <link rel="stylesheet" href="styles.css">
 </head>
