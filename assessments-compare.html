@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Offering Assessment Comparison</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="layout">
+  <div class="topnav"><div class="topnav-label">AI Project Dashboard</div></div>
+  <div class="breadcrumb">Assessments &gt; Comparison</div>
+  <div class="header"><div class="header-title">Vendor Comparison</div></div>
+  <div id="comparison-output"></div>
+</div>
+<script>
+let registry=[];let selected=[];
+function vendorKey(i){return `${i.vendor}|${i.version}`}
+function fetchAssessment(i){return fetch(`data/assessments/${i.vendor}-${i.version}.json`).then(r=>r.json())}
+function row(l,v){return `<tr><td>${l}</td>${v.map(x=>`<td>${x}</td>`).join('')}</tr>`}
+async function render(){
+const items=registry;const data=await Promise.all(items.map(fetchAssessment));
+document.getElementById('comparison-output').innerHTML=`
+<table class="table">
+<thead><tr><th>Dimension</th>${data.map(d=>`<th>${d.vendor}</th>`).join('')}</tr></thead>
+<tbody>
+${row('Composite',data.map(d=>d.composite))}
+${row('Status',data.map(d=>d.overall_status))}
+${row('Governance',data.map(d=>d.scores.governance))}
+${row('Architecture',data.map(d=>d.scores.architecture))}
+${row('Capability',data.map(d=>d.scores.capability))}
+${row('Procurement',data.map(d=>d.scores.procurement))}
+${row('Openness',data.map(d=>d.positioning.openness))}
+${row('Sovereignty',data.map(d=>d.positioning.sovereignty))}
+${row('Runtime',data.map(d=>d.positioning.runtime))}
+</tbody></table>`}
+fetch('data/assessments/index.json').then(r=>r.json()).then(d=>{registry=d;render()})
+</script>
+</body>
+</html>

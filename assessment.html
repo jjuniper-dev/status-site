@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assessment Detail</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="layout">
+  <div class="topnav">
+    <div class="topnav-label">AI Project Dashboard</div>
+    <div class="topnav-links">
+      <a class="topnav-link" href="/status-site/index.html">Dashboard</a>
+      <a class="topnav-link active" href="/status-site/assessments.html">Assessments</a>
+    </div>
+  </div>
+
+  <div class="breadcrumb">Assessments &gt; Detail</div>
+
+  <div class="main-content" id="content"></div>
+
+  <div class="footer">
+    <div class="footer-left">HC/PHAC · AI Assessment Detail</div>
+    <div class="footer-right">Governance-aligned rendering</div>
+  </div>
+</div>
+
+<script>
+function statusDot(v){
+  const s = String(v||'').toLowerCase();
+  if(s==='fail') return 'dot-blocked';
+  if(s==='pass') return 'dot-active';
+  return 'dot-emerging';
+}
+
+const params = new URLSearchParams(window.location.search);
+const vendor = params.get('vendor');
+const version = params.get('version');
+
+fetch(`data/assessments/${vendor}-${version}.json`)
+  .then(r=>r.json())
+  .then(d=>{
+    document.getElementById('content').innerHTML = `
+      <div class="header">
+        <div class="header-eyebrow">Vendor Assessment</div>
+        <div class="header-title">${d.vendor} <span>/</span> ${d.version}</div>
+        <div class="header-sub">Structured evaluation across governance, architecture, capability, and procurement dimensions.</div>
+      </div>
+
+      <div class="positioning">
+        <div class="positioning-label">Outcome</div>
+        <div class="positioning-text">${d.recommendation}</div>
+      </div>
+
+      <div class="section-label">Score Summary</div>
+      <div class="meta-grid">
+        <div class="meta-cell">
+          <div class="meta-label">Composite</div>
+          <div class="meta-value">${d.composite}</div>
+          <div class="meta-sub">Overall score</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Status</div>
+          <div class="meta-value">${d.overall_status}</div>
+          <div class="meta-sub">Gate-adjusted</div>
+        </div>
+      </div>
+
+      <div class="section-label">Gate Evaluation</div>
+      <table class="table">
+        <thead><tr><th>Gate</th><th>Status</th></tr></thead>
+        <tbody>
+          ${Object.entries(d.gates).map(([k,v])=>`
+            <tr>
+              <td>${k}</td>
+              <td><span class="status-badge"><span class="status-dot ${statusDot(v)}"></span>${v}</span></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+
+      <div class="section-label">Score Breakdown</div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Governance</div>
+          <div class="meta-value">${d.scores.governance}</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Architecture</div>
+          <div class="meta-value">${d.scores.architecture}</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Capability</div>
+          <div class="meta-value">${d.scores.capability}</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Procurement</div>
+          <div class="meta-value">${d.scores.procurement}</div>
+        </div>
+      </div>
+    `;
+  });
+</script>
+</body>
+</html>

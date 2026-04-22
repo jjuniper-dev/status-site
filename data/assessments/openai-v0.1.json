@@ -1,0 +1,24 @@
+{
+  "vendor": "OpenAI",
+  "slug": "openai",
+  "version": "v0.1",
+  "composite": 69.0,
+  "composite_band": "Amber",
+  "overall_status": "Red",
+  "gates": {
+    "G2": "fail",
+    "G3": "fail"
+  },
+  "scores": {
+    "governance": 3.5,
+    "architecture": 3.5,
+    "capability": 4.75,
+    "procurement": 2.5
+  },
+  "positioning": {
+    "openness": "Proprietary models",
+    "sovereignty": "Dependent on deployment pattern",
+    "runtime": "API and Azure-hosted patterns"
+  },
+  "recommendation": "High capability but requires governed deployment"
+}

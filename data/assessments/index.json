@@ -1,0 +1,52 @@
+[
+  {
+    "vendor": "cohere",
+    "display_name": "Cohere",
+    "version": "v0.1",
+    "composite": 58.5,
+    "composite_band": "Amber",
+    "overall_status": "Red",
+    "recommendation": "Approve with conditions",
+    "path": "assessment.html?vendor=cohere&version=v0.1"
+  },
+  {
+    "vendor": "openai",
+    "display_name": "OpenAI",
+    "version": "v0.1",
+    "composite": 69.0,
+    "composite_band": "Amber",
+    "overall_status": "Red",
+    "recommendation": "High capability but requires controlled deployment pattern",
+    "path": "assessment.html?vendor=openai&version=v0.1"
+  },
+  {
+    "vendor": "anthropic",
+    "display_name": "Anthropic",
+    "version": "v0.1",
+    "composite": 66.5,
+    "composite_band": "Amber",
+    "overall_status": "Red",
+    "recommendation": "Strong government fit signal, but not yet HC/PHAC cleared for direct use",
+    "path": "assessment.html?vendor=anthropic&version=v0.1"
+  },
+  {
+    "vendor": "gemini",
+    "display_name": "Gemini",
+    "version": "v0.1",
+    "composite": 68.0,
+    "composite_band": "Amber",
+    "overall_status": "Red",
+    "recommendation": "Strong M365 competitor with enterprise controls, but HC/PHAC deployment path remains constrained",
+    "path": "assessment.html?vendor=gemini&version=v0.1"
+  },
+  {
+    "vendor": "gc-llm",
+    "display_name": "GC LLM",
+    "version": "v0.1",
+    "composite": 61.0,
+    "composite_band": "Amber",
+    "overall_status": "Red",
+    "recommendation": "Useful sovereign-adjacent workforce option through CANChat, but not a PATH substitute",
+    "path": "assessment.html?vendor=gc-llm&version=v0.1"
+  }
+]

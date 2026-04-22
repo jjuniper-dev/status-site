@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Offering Assessments</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .assessment-card .meta-value { font-size: 24px; }
+    .assessment-card .card-sub { min-height: 64px; }
+    .status-red { color: var(--red); }
+    .status-amber { color: var(--gold); }
+    .status-green { color: var(--green); }
+    .assessment-card .card-link { margin-top: 12px; display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <div class="topnav">
+    <div class="topnav-label">AI Project Dashboard</div>
+    <div class="topnav-links">
+      <a class="topnav-link" href="/status-site/index.html">Dashboard</a>
+      <a class="topnav-link" href="/status-site/decisions.html">Decisions</a>
+      <a class="topnav-link" href="/status-site/scenarios.html">Scenarios</a>
+      <a class="topnav-link" href="/status-site/intelligence.html">Intelligence</a>
+      <a class="topnav-link active" href="/status-site/assessments.html">Assessments</a>
+      <a class="topnav-link" href="/status-site/artifacts.html">Artifacts</a>
+      <a class="topnav-link" href="/status-site/path-architecture.html">Architecture</a>
+      <a class="topnav-link" href="/status-site/control-plane.html">Control Plane</a>
+      <a class="topnav-link" href="/status-site/pptx-builder.html">PPTX</a>
+      <a class="topnav-link" href="/status-site/settings.html">Settings</a>
+    </div>
+  </div>
+
+  <div class="breadcrumb">Intelligence &gt; Vendor Assessments</div>
+
+  <div class="header">
+    <div class="header-eyebrow">AI Offering Review Layer</div>
+    <div class="header-title">Assessments <span>/</span> Registry</div>
+    <div class="header-sub">Structured vendor evaluations aligned to the HC/PHAC four-layer rubric, rendered in the same enterprise visual language as PATH and HAIL.</div>
+    <div class="badges">
+      <div class="badge badge-red">Decision Support</div>
+      <div class="badge badge-teal">EA / TPO</div>
+      <div class="badge badge-gold">Draft</div>
+    </div>
+  </div>
+
+  <div class="positioning">
+    <div class="positioning-label">Core Position</div>
+    <div class="positioning-text">Vendor capability alone is insufficient. <em>Governability</em>, integration fit, and enterprise operating model determine whether an AI offering is viable for HC/PHAC.</div>
+  </div>
+
+  <div class="section-label">Assessment Inventory</div>
+  <div id="assessment-grid" class="grid-2"></div>
+
+  <div class="footer">
+    <div class="footer-left">
+      Health Canada · Public Health Agency of Canada<br>
+      AI Offering Assessment Registry — Internal Use
+    </div>
+    <div class="footer-right">
+      Static JSON backed · PATH/HAIL visual standard
+    </div>
+  </div>
+</div>
+
+<script>
+function statusClass(value) {
+  const v = String(value || '').toLowerCase();
+  if (v === 'red') return 'status-red';
+  if (v === 'amber') return 'status-amber';
+  return 'status-green';
+}
+
+fetch('data/assessments/index.json')
+  .then(r => r.json())
+  .then(data => {
+    const grid = document.getElementById('assessment-grid');
+    data.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'card assessment-card';
+      card.innerHTML = `
+        <div class="meta-label">${item.display_name}</div>
+        <div class="meta-value">${item.version}</div>
+        <div class="card-sub">${item.recommendation}</div>
+        <div class="meta-grid">
+          <div class="meta-cell">
+            <div class="meta-label">Composite</div>
+            <div class="meta-value">${item.composite}</div>
+            <div class="meta-sub ${statusClass(item.composite_band)}">${item.composite_band} band</div>
+          </div>
+          <div class="meta-cell">
+            <div class="meta-label">Overall</div>
+            <div class="meta-value ${statusClass(item.overall_status)}">${item.overall_status}</div>
+            <div class="meta-sub">Gate-adjusted status</div>
+          </div>
+        </div>
+        <a class="card-link" href="${item.path}">→ Open assessment</a>
+      `;
+      grid.appendChild(card);
+    });
+  });
+</script>
+</body>
+</html>

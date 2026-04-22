@@ -1,0 +1,19 @@
+{
+  "vendor": "Cohere",
+  "slug": "cohere",
+  "version": "v0.1",
+  "composite": 58.5,
+  "composite_band": "Amber",
+  "overall_status": "Red",
+  "gates": {
+    "G2": "fail",
+    "G3": "fail"
+  },
+  "scores": {
+    "governance": 2.75,
+    "architecture": 2.75,
+    "capability": 3.25,
+    "procurement": 3.0
+  },
+  "recommendation": "Approve with conditions"
+}

@@ -1,0 +1,24 @@
+{
+  "vendor": "GC LLM",
+  "slug": "gc-llm",
+  "version": "v0.1",
+  "composite": 61.0,
+  "composite_band": "Amber",
+  "overall_status": "Red",
+  "gates": {
+    "G2": "fail",
+    "G3": "fail"
+  },
+  "scores": {
+    "governance": 3.0,
+    "architecture": 2.75,
+    "capability": 3.25,
+    "procurement": 4.0
+  },
+  "positioning": {
+    "openness": "Closed GC model",
+    "sovereignty": "Canadian-hosted",
+    "runtime": "CANChat only"
+  },
+  "recommendation": "Good workforce tool but not enterprise platform"
+}
