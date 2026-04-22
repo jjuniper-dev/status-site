@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Architecture Switchboard | PATH/HAIL</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: #00c8c8;
+      --bg: #07090f;
+      --bg2: #0d1117;
+      --card: #0f1520;
+      --border: rgba(255,255,255,0.10);
+      --text: #f0f4fa;
+      --dim: #b0bfcf;
+      --faint: #6a7d90;
+      --mono: 'IBM Plex Mono', monospace;
+      --sans: 'IBM Plex Sans', sans-serif;
+      --condensed: 'IBM Plex Sans Condensed', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--sans);
+      color: var(--text);
+      background: linear-gradient(180deg,var(--bg),var(--bg2));
+      padding: 24px 32px 40px;
+      min-height: 100vh;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid var(--border);
+      padding: 12px 14px;
+      background: rgba(13,17,23,.95);
+      margin-bottom: 18px;
+    }
+    .brand { font-family: var(--mono); font-size: 11px; color: var(--faint); text-transform: uppercase; letter-spacing: .08em; }
+    .back { color: var(--teal); text-decoration: none; font-family: var(--mono); font-size: 11px; }
+    .hero, .panel {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .eyebrow { color: var(--teal); font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .12em; margin-bottom: 10px; }
+    h1 { font-family: var(--condensed); font-size: 38px; line-height: 1.05; margin-bottom: 12px; }
+    .lead { color: var(--dim); max-width: 980px; }
+    label { display: block; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--faint); margin-bottom: 8px; }
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      font-size: 14px;
+      margin-bottom: 14px;
+    }
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .meta-item {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.015);
+      padding: 10px;
+    }
+    .meta-item .k { font-family: var(--mono); color: var(--faint); font-size: 10px; text-transform: uppercase; margin-bottom: 6px; }
+    .meta-item .v { color: var(--text); font-size: 13px; }
+    iframe {
+      width: 100%;
+      min-height: 70vh;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+    .note { margin-top: 12px; color: var(--faint); font-family: var(--mono); font-size: 11px; }
+    @media (max-width: 900px) {
+      body { padding: 18px; }
+      h1 { font-size: 30px; }
+      .meta { grid-template-columns: 1fr; }
+      iframe { min-height: 60vh; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Health Canada / PHAC — Architecture Decision Workspace</div>
+    <a class="back" href="dashboard.html">← Back to dashboard</a>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow">End-State Configuration Switchboard</div>
+    <h1>Architecture Switchboard</h1>
+    <p class="lead">
+      Switch between conceptual end-state architecture views. The default selection is the recommended Protected B reference architecture.
+    </p>
+  </section>
+
+  <section class="panel">
+    <label for="conceptSelect">Selected concept</label>
+    <select id="conceptSelect">
+      <option value="path-architecture.html" data-zone="Protected B" data-pattern="Recommended" data-owner="Enterprise Architecture">Protected B End-State (Recommended)</option>
+      <option value="control-plane.html" data-zone="Protected B + Shared Services" data-pattern="Control Plane" data-owner="Platform Engineering">Control Plane Overlay</option>
+      <option value="scenarios.html" data-zone="Program-Specific" data-pattern="Scenario Views" data-owner="Transformation Office">Scenario Mapping View</option>
+    </select>
+
+    <div class="meta" aria-live="polite">
+      <div class="meta-item"><div class="k">Security Zone</div><div class="v" id="metaZone">Protected B</div></div>
+      <div class="meta-item"><div class="k">Pattern</div><div class="v" id="metaPattern">Recommended</div></div>
+      <div class="meta-item"><div class="k">Owner</div><div class="v" id="metaOwner">Enterprise Architecture</div></div>
+    </div>
+
+    <iframe id="conceptFrame" src="path-architecture.html" title="Architecture concept view"></iframe>
+    <p class="note">Relocated into this repository for local review and decision workshops.</p>
+  </section>
+
+  <script>
+    const selectEl = document.getElementById('conceptSelect');
+    const frameEl = document.getElementById('conceptFrame');
+    const zoneEl = document.getElementById('metaZone');
+    const patternEl = document.getElementById('metaPattern');
+    const ownerEl = document.getElementById('metaOwner');
+
+    function setView() {
+      const option = selectEl.options[selectEl.selectedIndex];
+      frameEl.src = option.value;
+      zoneEl.textContent = option.dataset.zone || '—';
+      patternEl.textContent = option.dataset.pattern || '—';
+      ownerEl.textContent = option.dataset.owner || '—';
+    }
+
+    selectEl.addEventListener('change', setView);
+  </script>
+</body>
+</html>
