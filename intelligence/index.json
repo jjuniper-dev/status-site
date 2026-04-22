@@ -1,0 +1,164 @@
+{
+  "$schema": "../schemas/dashboard-manifest.schema.json",
+  "version": "1.0",
+  "defaultLayout": "workspace",
+  "defaultOpen": {
+    "center": "platform-intelligence",
+    "rightTop": "context-summary",
+    "rightMiddle": "related-items",
+    "rightBottom": "agent-review"
+  },
+  "collections": [
+    {
+      "id": "intelligence",
+      "title": "Intelligence",
+      "icon": "intel"
+    },
+    {
+      "id": "engagements",
+      "title": "Engagements",
+      "icon": "engagement"
+    },
+    {
+      "id": "decisions",
+      "title": "Decisions",
+      "icon": "decision"
+    },
+    {
+      "id": "artifacts",
+      "title": "Artifacts",
+      "icon": "artifact"
+    }
+  ],
+  "documents": [
+    {
+      "id": "platform-intelligence",
+      "slug": "platform-intelligence",
+      "title": "AI Platform Intelligence",
+      "type": "intelligence",
+      "collection": "intelligence",
+      "path": "intelligence/platform-intelligence.md",
+      "status": "living",
+      "layoutHints": {
+        "preferredRegion": "center",
+        "allowTab": true,
+        "allowSplit": true,
+        "allowPin": true,
+        "defaultMode": "read"
+      },
+      "summary": "Enterprise AI platform landscape and governance position.",
+      "tags": ["platform", "governance", "path", "hail"],
+      "related": ["pmra-ai-intake", "copilot-expansion", "llm-rubric-v1"],
+      "metadata": {
+        "audience": ["EA", "TPO", "ARB"],
+        "classification": "internal",
+        "owner": "EA",
+        "updated": "2026-04-21"
+      }
+    },
+    {
+      "id": "pmra-ai-intake",
+      "slug": "pmra-ai-intake",
+      "title": "PMRA AI Intake",
+      "type": "engagement",
+      "collection": "engagements",
+      "path": "intelligence/engagements/pmra-ai-intake.md",
+      "status": "review",
+      "layoutHints": {
+        "preferredRegion": "center",
+        "allowTab": true,
+        "allowSplit": true,
+        "allowPin": true,
+        "defaultMode": "edit"
+      },
+      "summary": "Engagement workspace for PMRA intake and architecture review.",
+      "tags": ["pmra", "intake", "protected-b"],
+      "related": ["platform-intelligence", "llm-rubric-v1"],
+      "metadata": {
+        "owner": "HPFB",
+        "classification": "protected-b",
+        "updated": "2026-04-21"
+      }
+    },
+    {
+      "id": "copilot-expansion",
+      "slug": "copilot-expansion",
+      "title": "Copilot Expansion",
+      "type": "engagement",
+      "collection": "engagements",
+      "path": "intelligence/engagements/copilot-expansion.md",
+      "status": "draft",
+      "layoutHints": {
+        "preferredRegion": "center",
+        "allowTab": true,
+        "allowSplit": true,
+        "allowPin": true,
+        "defaultMode": "edit"
+      },
+      "summary": "Workspace for Copilot rollout, control posture, and ATO discussion.",
+      "tags": ["copilot", "m365", "shadow-ai"],
+      "related": ["platform-intelligence", "pmra-ai-intake"],
+      "metadata": {
+        "owner": "DTB",
+        "classification": "internal",
+        "updated": "2026-04-21"
+      }
+    },
+    {
+      "id": "llm-rubric-v1",
+      "slug": "llm-rubric-v1",
+      "title": "LLM Evaluation Rubric v1",
+      "type": "decision",
+      "collection": "decisions",
+      "path": "intelligence/decisions/llm-rubric-v1.md",
+      "status": "review",
+      "layoutHints": {
+        "preferredRegion": "center",
+        "allowTab": true,
+        "allowSplit": true,
+        "allowPin": true,
+        "defaultMode": "read"
+      },
+      "summary": "Decision support rubric for evaluating model offerings against enterprise architecture fit.",
+      "tags": ["llm", "rubric", "decision", "vendor"],
+      "related": ["platform-intelligence", "pmra-ai-intake"],
+      "metadata": {
+        "owner": "EA",
+        "classification": "internal",
+        "updated": "2026-04-21"
+      }
+    }
+  ],
+  "widgets": [
+    {
+      "id": "context-summary",
+      "type": "widget",
+      "title": "Context Summary",
+      "component": "ContextSummaryWidget",
+      "layoutHints": {
+        "preferredRegion": "rightTop",
+        "pinnable": false
+      }
+    },
+    {
+      "id": "related-items",
+      "type": "widget",
+      "title": "Related Items",
+      "component": "RelatedItemsWidget",
+      "layoutHints": {
+        "preferredRegion": "rightMiddle",
+        "pinnable": false
+      }
+    },
+    {
+      "id": "agent-review",
+      "type": "widget",
+      "title": "Agent Review",
+      "component": "AgentReviewWidget",
+      "layoutHints": {
+        "preferredRegion": "rightBottom",
+        "pinnable": false
+      }
+    }
+  ]
+}
