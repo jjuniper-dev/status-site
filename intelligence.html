@@ -709,18 +709,6 @@ User approves → content integrated into intelligence page</pre>
 <script src="js/local-llm-analyzer.js"></script>
 <script src="js/intelligence-editor.js"></script>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    document.querySelectorAll('.topnav-link').forEach(link => {
-      if (link.getAttribute('href') === currentPage) {
-        link.classList.add('active');
-      } else {
-        link.classList.remove('active');
-      }
-    });
-  });
-</script>
 
 </body>
 </html>

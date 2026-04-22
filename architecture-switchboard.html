@@ -85,8 +85,19 @@
     }
   </style>
 </head>
-<body>
-  <header class="topbar">
+<body data-page="architecture">
+  <div id="nav-container"></div>
+<script>
+fetch('components/nav.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('nav-container').innerHTML = html;
+    const page = document.body.dataset.page;
+    document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+  })
+  .catch(() => {});
+</script>
+<header class="topbar">
     <div class="brand">Health Canada / PHAC — Architecture Decision Workspace</div>
     <a class="back" href="dashboard.html">← Back to dashboard</a>
   </header>

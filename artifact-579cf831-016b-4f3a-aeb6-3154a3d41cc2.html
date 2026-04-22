@@ -15,7 +15,18 @@ img{max-width:100%;height:auto;border:1px solid rgba(255,255,255,.12)}
 .tag{display:inline-block;border:1px solid rgba(0,200,200,.35);color:#00C8C8;padding:4px 8px;margin:4px 6px 0 0;font-size:12px}
 </style>
 </head>
-<body>
+<body data-page="artifacts">
+<div id="nav-container"></div>
+<script>
+fetch('components/nav.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('nav-container').innerHTML = html;
+    const page = document.body.dataset.page;
+    document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+  })
+  .catch(() => {});
+</script>
 <div class="eyebrow">EA Artifact</div>
 <h1>579Cf831 016B 4F3A Aeb6 3154A3D41Cc2</h1>
 <div class="meta">Diagram · 2026-04-18 · Draft</div>
