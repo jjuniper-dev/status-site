@@ -8,6 +8,7 @@ const STATUSES = [
 
 const PRIORITIES = ['high', 'medium', 'low'];
 const DEFAULT_GROUP = 'General';
+const RUNTIME_FLAG = '__status_site_kanban_bootstrapped__';
 
 const state = {
   cards: [],
@@ -506,8 +507,21 @@ window.addEventListener('kanban:issues-loaded', () => {
 });
 
 function startKanban() {
-  if (!getRoot()) return;
-  initializeCards().then(render);
+  const boardRoot = getRoot();
+  if (!boardRoot) {
+    console.warn('Kanban root element "#kanban-root" was not found.');
+    return;
+  }
+
+  if (window[RUNTIME_FLAG]) return;
+  window[RUNTIME_FLAG] = true;
+
+  initializeCards()
+    .then(render)
+    .catch(error => {
+      window[RUNTIME_FLAG] = false;
+      console.error('Kanban failed to initialize', error);
+    });
 }
 
 if (document.readyState === 'loading') {
