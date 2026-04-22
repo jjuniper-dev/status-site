@@ -1,0 +1,146 @@
+{
+  "epics": [
+    {
+      "id": "EPIC-001",
+      "title": "Standards Hardcoding: TOGAF, WCAG, Microsoft",
+      "description": "Integrate TOGAF domains, WCAG compliance levels, and Microsoft well-architected principles across all platform data, schemas, and UI. Team no longer needs to manually reference or track these standards.",
+      "status": "pending",
+      "priority": "high",
+      "totalHours": 25,
+      "owner": "EA Team",
+      "startDate": null,
+      "completionDate": null,
+      "phases": [
+        {
+          "id": "TASK-001",
+          "title": "Phase 1: Data Foundation",
+          "description": "Create /data/standards.json with comprehensive TOGAF domains, WCAG levels, Microsoft pillars definitions",
+          "status": "pending",
+          "hours": 10,
+          "dependencies": [],
+          "subtasks": [
+            "Research and document TOGAF framework (domains, maturity levels, building blocks)",
+            "Document WCAG guidelines (levels A, AA, AAA, success criteria)",
+            "Document Microsoft well-architected pillars and design principles",
+            "Create JSON schema and validate structure"
+          ]
+        },
+        {
+          "id": "TASK-002",
+          "title": "Phase 2: Schema Extensions",
+          "description": "Extend /schemas/ to enforce standard fields in decisions, artifacts, assessments",
+          "status": "pending",
+          "hours": 5,
+          "dependencies": ["TASK-001"],
+          "subtasks": [
+            "Extend decision.schema.json with togaf_domain, wcag_level, microsoft_principles",
+            "Extend artifact.schema.json with standard classification fields",
+            "Extend assessment.schema.json with maturity and pillar scores",
+            "Validate existing data against new schemas"
+          ]
+        },
+        {
+          "id": "TASK-003",
+          "title": "Phase 3: Data Migration",
+          "description": "Populate decisions.json, artifacts-index.json, and assessments with standard mappings",
+          "status": "pending",
+          "hours": 8,
+          "dependencies": ["TASK-002"],
+          "subtasks": [
+            "Update /data/decisions.json with standard fields (20-30 decisions)",
+            "Update /data/artifacts-index.json with standard classifications",
+            "Update /data/assessments/ files with TOGAF maturity, WCAG readiness, Microsoft pillar scores",
+            "Validate all migrated data against schemas"
+          ]
+        },
+        {
+          "id": "TASK-004",
+          "title": "Phase 4: UI Filtering & Badges",
+          "description": "Add standard-based filtering and visual badges to decisions.html and artifacts.html",
+          "status": "pending",
+          "hours": 5,
+          "dependencies": ["TASK-003"],
+          "subtasks": [
+            "Create /js/standards-registry.js (singleton loader for standards.json)",
+            "Create /js/standards-filter.js (reusable filter logic)",
+            "Update decisions.html with filter panel and badge rendering",
+            "Update artifacts.html with filter panel and badge rendering",
+            "Add CSS styling for badges (colors, hover effects)"
+          ]
+        },
+        {
+          "id": "TASK-005",
+          "title": "Phase 5: Testing & QA",
+          "description": "Validate filtering, badge rendering, data integrity across platform",
+          "status": "pending",
+          "hours": 2,
+          "dependencies": ["TASK-004"],
+          "subtasks": [
+            "Test filtering on decisions.html (TOGAF domain, WCAG level, Microsoft pillar)",
+            "Test filtering on artifacts.html",
+            "Verify badge rendering and styling",
+            "Check data consistency across all pages"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-002",
+      "title": "Service Health Monitoring",
+      "description": "Add real-time service health monitoring to settings.html with animated ping indicators for dashboard, backend APIs, Neo4j, GitHub, and LLM inference.",
+      "status": "pending",
+      "priority": "medium",
+      "totalHours": 10,
+      "owner": "DevOps / Platform",
+      "startDate": null,
+      "completionDate": null,
+      "phases": [
+        {
+          "id": "TASK-006",
+          "title": "Phase 1: Service Health Data Structure",
+          "description": "Create /data/services.json and health check logic",
+          "status": "pending",
+          "hours": 3,
+          "dependencies": [],
+          "subtasks": [
+            "Define service check endpoints (dashboard, APIs, Neo4j, GitHub, LLM)",
+            "Create /data/services.json with service definitions",
+            "Implement health check utility /js/health-checker.js",
+            "Set up uptime tracking (last 7 days, percentage)"
+          ]
+        },
+        {
+          "id": "TASK-007",
+          "title": "Phase 2: Settings Page UI",
+          "description": "Build service health monitoring panel on settings.html",
+          "status": "pending",
+          "hours": 4,
+          "dependencies": ["TASK-006"],
+          "subtasks": [
+            "Design service card layout with animated ping indicator",
+            "Add status indicators (up, down, degraded)",
+            "Display uptime percentage and last check time",
+            "Add refresh button for manual health checks",
+            "Wire to health-checker.js"
+          ]
+        },
+        {
+          "id": "TASK-008",
+          "title": "Phase 3: Real-Time Updates",
+          "description": "Implement periodic health checks and real-time status updates",
+          "status": "pending",
+          "hours": 3,
+          "dependencies": ["TASK-007"],
+          "subtasks": [
+            "Implement auto-refresh interval (30s default, configurable)",
+            "Add animation for ping indicators (pulsing dot, color change)",
+            "Store uptime history in browser localStorage",
+            "Display uptime graph/trend (optional)",
+            "Add visual alerts for service degradation"
+          ]
+        }
+      ]
+    }
+  ],
+  "completedEpics": []
+}

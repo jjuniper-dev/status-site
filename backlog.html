@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backlog — Status Site</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .backlog-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .epic-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .epic-header {
+      background: #f8f8f8;
+      padding: 1.5rem;
+      border-bottom: 2px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .epic-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin: 0 0 0.5rem 0;
+      color: #222;
+    }
+
+    .epic-description {
+      font-size: 0.95rem;
+      color: #666;
+      margin: 0;
+    }
+
+    .epic-meta {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      flex-shrink: 0;
+      margin-left: 2rem;
+    }
+
+    .epic-stat {
+      text-align: right;
+    }
+
+    .epic-stat-label {
+      font-size: 0.75rem;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.25rem;
+    }
+
+    .epic-stat-value {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #222;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-transform: capitalize;
+      margin-right: 0.5rem;
+    }
+
+    .status-badge.pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .status-badge.in-progress {
+      background: #cce5ff;
+      color: #004085;
+    }
+
+    .status-badge.done {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .priority-badge {
+      display: inline-block;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-transform: capitalize;
+    }
+
+    .priority-badge.critical {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .priority-badge.high {
+      background: #ffeaa7;
+      color: #d63031;
+    }
+
+    .priority-badge.medium {
+      background: #b3e5fc;
+      color: #01579b;
+    }
+
+    .priority-badge.low {
+      background: #e8f5e9;
+      color: #1b5e20;
+    }
+
+    .epic-body {
+      padding: 1.5rem;
+    }
+
+    .task-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .task-item {
+      border: 1px solid #f0f0f0;
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background: #fafafa;
+      transition: all 0.2s ease;
+    }
+
+    .task-item:hover {
+      background: #fff;
+      border-color: #ddd;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .task-item.done {
+      opacity: 0.7;
+      background: #f5f5f5;
+    }
+
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+    }
+
+    .task-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #222;
+      margin: 0;
+    }
+
+    .task-meta {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .task-hours {
+      background: #f0f0f0;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .task-description {
+      font-size: 0.9rem;
+      color: #666;
+      margin: 0.5rem 0;
+    }
+
+    .subtasks {
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      color: #777;
+    }
+
+    .subtask-list {
+      list-style: none;
+      padding: 0 0 0 1.5rem;
+      margin: 0.5rem 0 0 0;
+    }
+
+    .subtask-list li {
+      margin-bottom: 0.3rem;
+    }
+
+    .subtask-list li:before {
+      content: "→ ";
+      color: #aaa;
+      margin-right: 0.5rem;
+    }
+
+    .task-status {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 0.75rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      margin-top: 1rem;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4CAF50, #8BC34A);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .epic-footer {
+      border-top: 1px solid #f0f0f0;
+      padding: 1rem 1.5rem;
+      background: #fafafa;
+      font-size: 0.85rem;
+      color: #999;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .filter-controls {
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .filter-label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #666;
+    }
+
+    .filter-select {
+      padding: 0.5rem 0.8rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      background: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body data-page="backlog">
+<div id="nav-container"></div>
+
+<script>
+fetch('components/nav.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('nav-container').innerHTML = html;
+    document.querySelector('[data-page="backlog"]')?.classList.add('active');
+  })
+  .catch(() => {});
+</script>
+
+<div class="layout">
+  <div class="main-content">
+    <div class="breadcrumb">Backlog &gt; Roadmap</div>
+
+    <div class="header">
+      <div class="header-eyebrow">Project Tracking</div>
+      <div class="header-title">Backlog</div>
+      <div class="header-sub">Platform roadmap and work tracking</div>
+    </div>
+
+    <div class="backlog-container">
+      <div class="filter-controls">
+        <div class="filter-group">
+          <label class="filter-label">Filter by Status:</label>
+          <select id="statusFilter" class="filter-select">
+            <option value="">All</option>
+            <option value="pending">Pending</option>
+            <option value="in-progress">In Progress</option>
+            <option value="done">Done</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Filter by Priority:</label>
+          <select id="priorityFilter" class="filter-select">
+            <option value="">All</option>
+            <option value="critical">Critical</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="epicsContainer"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+async function loadBacklog() {
+  try {
+    const response = await fetch('data/backlog.json');
+    const backlog = await response.json();
+    renderBacklog(backlog);
+    setupFilters(backlog);
+  } catch (error) {
+    console.error('Error loading backlog:', error);
+    document.getElementById('epicsContainer').innerHTML = '<p>Error loading backlog data</p>';
+  }
+}
+
+function renderBacklog(backlog) {
+  const container = document.getElementById('epicsContainer');
+  container.innerHTML = '';
+
+  backlog.epics.forEach(epic => {
+    const completedTasks = epic.phases.filter(p => p.status === 'done').length;
+    const completionPercentage = (completedTasks / epic.phases.length) * 100;
+
+    const epicCard = document.createElement('div');
+    epicCard.className = `epic-card status-${epic.status}`;
+    epicCard.dataset.status = epic.status;
+    epicCard.dataset.priority = epic.priority;
+
+    const tasksHtml = epic.phases.map(task => `
+      <li class="task-item ${task.status}">
+        <div class="task-header">
+          <h4 class="task-title">${task.title}</h4>
+          <div class="task-meta">
+            <span class="task-hours">${task.hours}h</span>
+            <span class="status-badge ${task.status}">${task.status}</span>
+          </div>
+        </div>
+        <p class="task-description">${task.description}</p>
+        ${task.subtasks ? `
+          <div class="subtasks">
+            <strong>Subtasks:</strong>
+            <ul class="subtask-list">
+              ${task.subtasks.map(st => `<li>${st}</li>`).join('')}
+            </ul>
+          </div>
+        ` : ''}
+      </li>
+    `).join('');
+
+    epicCard.innerHTML = `
+      <div class="epic-header">
+        <div>
+          <h2 class="epic-title">${epic.title}</h2>
+          <p class="epic-description">${epic.description}</p>
+          <div style="margin-top: 0.75rem;">
+            <span class="status-badge ${epic.status}">${epic.status}</span>
+            <span class="priority-badge ${epic.priority}">${epic.priority} priority</span>
+          </div>
+        </div>
+        <div class="epic-meta">
+          <div class="epic-stat">
+            <div class="epic-stat-label">Total Hours</div>
+            <div class="epic-stat-value">${epic.totalHours}h</div>
+          </div>
+          <div class="epic-stat">
+            <div class="epic-stat-label">Tasks</div>
+            <div class="epic-stat-value">${epic.phases.length}</div>
+          </div>
+        </div>
+      </div>
+      <div class="epic-body">
+        <ul class="task-list">
+          ${tasksHtml}
+        </ul>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${completionPercentage}%"></div>
+        </div>
+      </div>
+      <div class="epic-footer">
+        <span>Owner: ${epic.owner}</span>
+        <span>${completedTasks} of ${epic.phases.length} tasks completed</span>
+      </div>
+    `;
+
+    container.appendChild(epicCard);
+  });
+}
+
+function setupFilters(backlog) {
+  const statusFilter = document.getElementById('statusFilter');
+  const priorityFilter = document.getElementById('priorityFilter');
+
+  const applyFilters = () => {
+    const status = statusFilter.value;
+    const priority = priorityFilter.value;
+
+    document.querySelectorAll('.epic-card').forEach(card => {
+      let show = true;
+
+      if (status && card.dataset.status !== status) {
+        show = false;
+      }
+      if (priority && card.dataset.priority !== priority) {
+        show = false;
+      }
+
+      card.style.display = show ? 'block' : 'none';
+    });
+  };
+
+  statusFilter.addEventListener('change', applyFilters);
+  priorityFilter.addEventListener('change', applyFilters);
+}
+
+// Load backlog on page load
+loadBacklog();
+</script>
+
+</body>
+</html>
