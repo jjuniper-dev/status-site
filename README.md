@@ -1,17 +1,17 @@
-# AI Project Dashboard — PATH / HAIL Status Site
+# AI Project Dashboard
 
-GitHub Pages site for tracking enterprise AI architecture, governance, scenarios, and artifacts related to PATH and HAIL in the Health Canada / PHAC context.
+GitHub Pages site for tracking enterprise architecture, governance, scenarios, decisions, and artifacts in a reusable dashboard format.
 
 ## What this repo is
 
 This repository is a working dashboard and reference site for:
-- enterprise AI governance and operating-model analysis
-- PATH / HAIL status tracking
-- architecture decisions and scenario framing
+- architecture and governance analysis
+- status tracking across major initiatives
+- decision logging and scenario framing
 - artifact indexing and supporting visuals
 - PPTX and settings utilities used alongside the site
 
-The repo treats **PATH** as a governance / control-plane concept and **HAIL** as the active delivery/runtime environment reflected in the current site narrative.
+It is structured as a reusable status and intelligence surface for architecture, planning, and reporting workflows.
 
 ## Current site structure
 
@@ -19,7 +19,7 @@ Main pages currently linked from the site navigation:
 - `index.html` — Dashboard
 - `decisions.html` — Decision log
 - `scenarios.html` — Scenario navigator
-- `intelligence.html` — Intelligence and platform analysis
+- `intelligence.html` — Intelligence and analysis
 - `artifacts.html` — Artifact library
 - `path-architecture.html` — Architecture view
 - `control-plane.html` — Control-plane view
@@ -52,10 +52,10 @@ Why this wording:
 
 Rather than hard-coding one inconsistent version number in this README, this file reflects the repo’s current state as an actively refined v1.x dashboard.
 
-## What was corrected in this README
+## README alignment notes
 
 This README has been aligned to the repo as it exists now:
-- removed the unverified expansion of the PATH acronym
+- removed program- and organization-specific identifiers
 - removed the claim that artifact ingestion is powered by a root-level `generate_artifacts.py` GitHub Action pipeline
 - updated the page list to match the current navigation, including `decisions.html`, `scenarios.html`, and `settings.html`
 - updated the project-status section to reflect the repo’s current versioning inconsistency instead of asserting a single stale value
@@ -96,8 +96,8 @@ Edit:
 
 ## Notes
 
-- This repo appears to be intended for internal / working use rather than polished public release documentation.
-- Some documentation files describe the site as already consolidated to 1.0, while the live page footer indicates 1.1. Keep that inconsistency in mind when preparing release notes or executive-facing outputs.
+- This repo appears to be intended as a working dashboard and reference surface rather than polished product documentation.
+- Some documentation files describe the site as already consolidated to 1.0, while the live page footer indicates 1.1. Keep that inconsistency in mind when preparing release notes or external-facing outputs.
 - If artifact automation is reintroduced, document the actual workflow file and script path explicitly in this README.
 
 ## Related references
@@ -108,4 +108,4 @@ Edit:
 
 ## License / usage
 
-Internal HC/PHAC working use.
+Working-use repository.
