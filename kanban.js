@@ -8,6 +8,7 @@ const STATUSES = [
 
 const PRIORITIES = ['high', 'medium', 'low'];
 const DEFAULT_GROUP = 'General';
+const RUNTIME_FLAG = '__status_site_kanban_bootstrapped__';
 
 const state = {
   cards: [],
@@ -20,7 +21,12 @@ const state = {
 };
 
 const cfg = window.KANBAN_CONFIG || {};
-const root = document.getElementById('kanban-root');
+let root = null;
+
+function getRoot() {
+  if (!root) root = document.getElementById('kanban-root');
+  return root;
+}
 
 function escapeHtml(value = '') {
   return String(value)
@@ -257,7 +263,10 @@ function renderBoard() {
 }
 
 function render() {
-  root.innerHTML = `
+  const boardRoot = getRoot();
+  if (!boardRoot) return;
+
+  boardRoot.innerHTML = `
     <div class="kanban-shell">
       ${renderSummary()}
       ${renderToolbar()}
@@ -376,29 +385,32 @@ function openModal(card) {
 }
 
 function bindUI() {
-  root.querySelector('#kanban-search')?.addEventListener('input', event => {
+  const boardRoot = getRoot();
+  if (!boardRoot) return;
+
+  boardRoot.querySelector('#kanban-search')?.addEventListener('input', event => {
     state.search = event.target.value;
     render();
   });
 
-  root.querySelector('#kanban-group')?.addEventListener('change', event => {
+  boardRoot.querySelector('#kanban-group')?.addEventListener('change', event => {
     state.group = event.target.value;
     render();
   });
 
-  root.querySelector('#kanban-status')?.addEventListener('change', event => {
+  boardRoot.querySelector('#kanban-status')?.addEventListener('change', event => {
     state.status = event.target.value;
     render();
   });
 
-  root.querySelector('#kanban-priority')?.addEventListener('change', event => {
+  boardRoot.querySelector('#kanban-priority')?.addEventListener('change', event => {
     state.priority = event.target.value;
     render();
   });
 
-  root.querySelector('#kanban-add')?.addEventListener('click', () => openModal());
+  boardRoot.querySelector('#kanban-add')?.addEventListener('click', () => openModal());
 
-  root.querySelector('#kanban-clear-filters')?.addEventListener('click', () => {
+  boardRoot.querySelector('#kanban-clear-filters')?.addEventListener('click', () => {
     state.search = '';
     state.group = 'all';
     state.status = 'all';
@@ -406,7 +418,7 @@ function bindUI() {
     render();
   });
 
-  root.querySelector('#kanban-reset-board')?.addEventListener('click', async () => {
+  boardRoot.querySelector('#kanban-reset-board')?.addEventListener('click', async () => {
     if (!confirm('Reset board to latest imported seed items?')) return;
     try {
       localStorage.removeItem(getStorageKey());
@@ -417,14 +429,14 @@ function bindUI() {
     render();
   });
 
-  root.querySelectorAll('[data-action="edit"]').forEach(button => {
+  boardRoot.querySelectorAll('[data-action="edit"]').forEach(button => {
     button.addEventListener('click', event => {
       const card = state.cards.find(item => item.id === event.target.dataset.id);
       if (card) openModal(card);
     });
   });
 
-  root.querySelectorAll('[data-action="delete"]').forEach(button => {
+  boardRoot.querySelectorAll('[data-action="delete"]').forEach(button => {
     button.addEventListener('click', event => {
       const id = event.target.dataset.id;
       state.cards = state.cards.filter(item => item.id !== id);
@@ -433,7 +445,7 @@ function bindUI() {
     });
   });
 
-  root.querySelectorAll('.kanban-card').forEach(card => {
+  boardRoot.querySelectorAll('.kanban-card').forEach(card => {
     card.addEventListener('dragstart', event => {
       const id = event.currentTarget.dataset.id;
       state.dragId = id;
@@ -447,7 +459,7 @@ function bindUI() {
     });
   });
 
-  root.querySelectorAll('[data-dropzone]').forEach(zone => {
+  boardRoot.querySelectorAll('[data-dropzone]').forEach(zone => {
     zone.addEventListener('dragover', event => {
       event.preventDefault();
       zone.closest('.kanban-column')?.classList.add('is-over');
@@ -494,4 +506,26 @@ window.addEventListener('kanban:issues-loaded', () => {
   initializeCards().then(render);
 });
 
-initializeCards().then(render);
+function startKanban() {
+  const boardRoot = getRoot();
+  if (!boardRoot) {
+    console.warn('Kanban root element "#kanban-root" was not found.');
+    return;
+  }
+
+  if (window[RUNTIME_FLAG]) return;
+  window[RUNTIME_FLAG] = true;
+
+  initializeCards()
+    .then(render)
+    .catch(error => {
+      window[RUNTIME_FLAG] = false;
+      console.error('Kanban failed to initialize', error);
+    });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', startKanban, { once: true });
+} else {
+  startKanban();
+}
