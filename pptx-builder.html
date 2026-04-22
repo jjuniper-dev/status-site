@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PPTX Builder — PATH Status Site</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 <style>
 :root{--teal:#00C8C8;--red:#E8192E;--gold:#F9D030;--blue:#5FA8E8;--bg:#07090F;--bg2:#0D1117;--bg3:#131920;--surface:#1A2230;--border:rgba(255,255,255,.10);--text:#F0F4FA;--text-dim:#B0BFCF;--text-faint:#6A7D90;--mono:'IBM Plex Mono', monospace;--sans:'IBM Plex Sans', sans-serif;--cond:'IBM Plex Sans Condensed', sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -31,21 +32,21 @@ textarea{width:100%;white-space:pre-wrap;word-break:break-word;background:#0a101
 @media(max-width:980px){body{width:auto;padding:20px}.grid{grid-template-columns:1fr}}
 </style>
 </head>
-<body>
-<div class="topnav">
-  <div class="topnav-label">AI Project Dashboard</div>
-  <div class="topnav-links">
-    <a href="/status-site/index.html">Dashboard</a>
-    <a href="/status-site/decisions.html">Decisions</a>
-    <a href="/status-site/scenarios.html">Scenarios</a>
-    <a href="/status-site/intelligence.html">Intelligence</a>
-    <a href="/status-site/artifacts.html">Artifacts</a>
-    <a href="/status-site/path-architecture.html">Architecture</a>
-    <a href="/status-site/control-plane.html">Control Plane</a>
-    <a href="/status-site/pptx-builder.html" class="active">PPTX</a>
-    <a href="/status-site/settings.html">Settings</a>
-  </div>
-</div>
+<body data-page="pptx">
+<div id="nav-container"></div>
+
+<script>
+fetch('components/nav.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('nav-container').innerHTML = html;
+
+    const page = document.body.dataset.page;
+    document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+  });
+</script>
+
+
 
 <div class="breadcrumb">Overview &gt; PPTX Builder</div>
 
