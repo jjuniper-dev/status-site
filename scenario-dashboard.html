@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scenario Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="scenario-dashboard">
+<div id="nav-container"></div>
+<script>
+fetch('components/nav.html').then(r=>r.text()).then(html=>{
+  document.getElementById('nav-container').innerHTML=html;
+});
+</script>
+
+<div class="layout">
+  <div class="header">
+    <div class="header-eyebrow">Scenario Intelligence</div>
+    <div class="header-title">Scenario Dashboard</div>
+    <div class="header-sub">Event → Impact → Condition → Infrastructure reasoning surface.</div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Scenario Controls</div>
+      <select id="event-type"><option>Heatwave</option><option>Flood</option></select>
+      <input id="severity" type="range" min="1" max="10" value="7">
+    </div>
+
+    <div class="card">
+      <div class="card-title">Decision Output</div>
+      <div id="decision-output">Run a scenario</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Subgraph Inspector</div>
+    <div id="cy" style="height:400px"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+<script>
+const cy = cytoscape({
+  container: document.getElementById('cy'),
+  elements: [
+    { data:{id:'e1',label:'Heatwave',type:'event'}, position:{x:0,y:100}},
+    { data:{id:'i1',label:'Air Quality',type:'impact'}, position:{x:200,y:100}},
+    { data:{id:'c1',label:'Asthma',type:'condition'}, position:{x:400,y:100}},
+    { data:{id:'h1',label:'Hospital',type:'hospital'}, position:{x:600,y:100}},
+    { data:{source:'e1',target:'i1'}},
+    { data:{source:'i1',target:'c1'}},
+    { data:{source:'c1',target:'h1'}}
+  ],
+  style:[
+    { selector:'node', style:{label:'data(label)','background-color':'#2F6F73'}},
+    { selector:'edge', style:{'curve-style':'taxi','target-arrow-shape':'triangle'} }
+  ],
+  layout:{name:'preset'}
+});
+</script>
+</body>
+</html>
