@@ -42,23 +42,107 @@ fetch('components/nav.html').then(r=>r.text()).then(html=>{
 
 <script src="https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
 <script>
-const cy = cytoscape({
-  container: document.getElementById('cy'),
-  elements: [
-    { data:{id:'e1',label:'Heatwave',type:'event'}, position:{x:0,y:100}},
-    { data:{id:'i1',label:'Air Quality',type:'impact'}, position:{x:200,y:100}},
-    { data:{id:'c1',label:'Asthma',type:'condition'}, position:{x:400,y:100}},
-    { data:{id:'h1',label:'Hospital',type:'hospital'}, position:{x:600,y:100}},
-    { data:{source:'e1',target:'i1'}},
-    { data:{source:'i1',target:'c1'}},
-    { data:{source:'c1',target:'h1'}}
-  ],
-  style:[
-    { selector:'node', style:{label:'data(label)','background-color':'#2F6F73'}},
-    { selector:'edge', style:{'curve-style':'taxi','target-arrow-shape':'triangle'} }
-  ],
-  layout:{name:'preset'}
-});
+const LANE_ORDER = ['event','impact','condition','hospital','location','unit','route'];
+
+function computePositions(nodes){
+  const lanes = {};
+  nodes.forEach(n=>{
+    const t=(n.type||'unknown').toLowerCase();
+    if(!lanes[t]) lanes[t]=[];
+    lanes[t].push(n);
+  });
+
+  const laneWidth=220, rowHeight=110;
+  const out=[];
+
+  LANE_ORDER.forEach((t,i)=>{
+    (lanes[t]||[]).forEach((n,r)=>{
+      out.push({...n, position:{
+        x:100+i*laneWidth,
+        y:120+r*rowHeight
+      }});
+    });
+  });
+
+  return out;
+}
+
+function color(type){
+  switch(type){
+    case 'event':return '#E8192E';
+    case 'impact':return '#F9D030';
+    case 'condition':return '#A6CE39';
+    case 'hospital':return '#2F6F73';
+    case 'location':return '#5E9EA3';
+    case 'unit':return '#355C7D';
+    default:return '#00C8C8';
+  }
+}
+
+function renderGraph(){
+  const nodes=[
+    {id:'e',label:'Heatwave',type:'event'},
+    {id:'i',label:'Air Quality',type:'impact'},
+    {id:'c',label:'Asthma',type:'condition'},
+    {id:'h',label:'Hospital',type:'hospital'},
+    {id:'l',label:'Ottawa',type:'location'}
+  ];
+
+  const edges=[
+    {source:'e',target:'i',label:'TRIGGERS'},
+    {source:'i',target:'c',label:'RISK'},
+    {source:'c',target:'h',label:'STRAINS'},
+    {source:'h',target:'l',label:'LOCATED_IN'}
+  ];
+
+  const positioned=computePositions(nodes);
+
+  const cy=cytoscape({
+    container:document.getElementById('cy'),
+    elements:[
+      ...positioned.map(n=>({
+        data:{...n},
+        position:n.position,
+        locked:true
+      })),
+      ...edges.map((e,i)=>({
+        data:{id:'e'+i,...e}
+      }))
+    ],
+    style:[
+      {
+        selector:'node',
+        style:{
+          'background-color':ele=>color(ele.data('type')),
+          'label':'data(label)',
+          'color':'#fff',
+          'text-wrap':'wrap',
+          'text-max-width':110,
+          'font-size':11
+        }
+      },
+      {
+        selector:'edge',
+        style:{
+          'curve-style':'taxi',
+          'taxi-direction':'rightward',
+          'target-arrow-shape':'triangle',
+          'label':'data(label)',
+          'font-size':9
+        }
+      }
+    ],
+    layout:{name:'preset'}
+  });
+
+  cy.on('tap','node',e=>{
+    const n=e.target.data();
+    document.getElementById('decision-output').innerHTML=
+      `<strong>${n.label}</strong><br/>Type: ${n.type}`;
+  });
+}
+
+renderGraph();
 </script>
 </body>
 </html>
