@@ -914,3 +914,27 @@ body {
     font-size: 11px;
   }
 }
+
+.main-nav {
+  display: flex;
+  gap: 20px;
+  padding: 12px 20px;
+  background: #1f2a30;
+  border-bottom: 1px solid #2f6f73;
+}
+
+.main-nav a {
+  color: #d0d7da;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.main-nav a:hover {
+  color: #ffffff;
+}
+
+.main-nav a.active {
+  color: #a6ce39;
+  border-bottom: 2px solid #a6ce39;
+}
