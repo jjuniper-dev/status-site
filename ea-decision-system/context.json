@@ -1,0 +1,7 @@
+{
+  "system_name": "EA Decision System",
+  "version": "0.1.0",
+  "modules": ["dashboard", "compare", "intelligence", "kanban"],
+  "core_objects": ["capability", "pattern", "standard", "assessment", "decision"],
+  "decision_statuses": ["draft", "under_review", "recommended", "approved"]
+}
