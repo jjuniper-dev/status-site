@@ -43,22 +43,24 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14
 .callout{border-left:3px solid var(--gold);background:rgba(249,208,48,.06);padding:14px 16px;margin-bottom:36px}.callout strong{color:#fff}.callout p{color:var(--text-dim);margin-top:6px}
 .footer{display:flex;justify-content:space-between;align-items:center;padding-top:22px;border-top:1px solid var(--border)}.footer-left,.footer-right{font-family:var(--mono);font-size:10px;color:var(--text-faint);line-height:1.8}.footer-right{text-align:right}
 </style>
+<link rel="stylesheet" href="styles.css">
 </head>
-<body>
-<div class="topnav">
-  <div class="topnav-label">AI Project Dashboard</div>
-  <div class="topnav-links">
-    <a href="/status-site/index.html">Dashboard</a>
-    <a href="/status-site/decisions.html">Decisions</a>
-    <a href="/status-site/scenarios.html">Scenarios</a>
-    <a href="/status-site/intelligence.html">Intelligence</a>
-    <a href="/status-site/artifacts.html">Artifacts</a>
-    <a href="/status-site/path-architecture.html">Architecture</a>
-    <a class="active" href="/status-site/control-plane.html">Control Plane</a>
-    <a href="/status-site/pptx-builder.html">PPTX</a>
-    <a href="/status-site/settings.html">Settings</a>
-  </div>
-</div>
+<body data-page="control-plane">
+<div id="nav-container"></div>
+
+<script>
+fetch('components/nav.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('nav-container').innerHTML = html;
+
+    const page = document.body.dataset.page;
+    document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+  })
+  .catch(() => {});
+</script>
+
+
 <div class="breadcrumb">Overview &gt; Control Plane</div>
 <div class="header">
   <div>
