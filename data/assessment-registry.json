@@ -1,0 +1,163 @@
+{
+  "version": "0.1.0",
+  "page_title": "Compare Workbench",
+  "default_selection": ["openai", "anthropic", "gemini"],
+  "vendors": [
+    { "slug": "openai", "display_name": "OpenAI" },
+    { "slug": "anthropic", "display_name": "Anthropic" },
+    { "slug": "gemini", "display_name": "Gemini" },
+    { "slug": "gc-llm", "display_name": "GC LLM" }
+  ],
+  "assessments": [
+    {
+      "slug": "openai",
+      "vendor": "OpenAI",
+      "version": "2026.04",
+      "composite": 4.2,
+      "composite_band": "green",
+      "overall_status": "green",
+      "recommendation": "Proceed for controlled integration and pilot use.",
+      "gates": {
+        "security": "pass",
+        "privacy": "conditional",
+        "supportability": "pass"
+      },
+      "scores": {
+        "governance": 4.0,
+        "architecture": 4.5,
+        "capability": 4.8,
+        "procurement": 3.6
+      },
+      "positioning": {
+        "openness": "closed managed service",
+        "sovereignty": "requires controls review",
+        "runtime": "strong hosted integration pattern"
+      },
+      "detail_url": "assessment.html?vendor=openai&version=2026.04",
+      "evidence_ids": ["vendor-openai-summary", "rubric-method"]
+    },
+    {
+      "slug": "anthropic",
+      "vendor": "Anthropic",
+      "version": "2026.04",
+      "composite": 3.9,
+      "composite_band": "amber",
+      "overall_status": "amber",
+      "recommendation": "Retain as strong secondary option pending integration and support model clarity.",
+      "gates": {
+        "security": "conditional",
+        "privacy": "conditional",
+        "supportability": "pass"
+      },
+      "scores": {
+        "governance": 3.8,
+        "architecture": 4.1,
+        "capability": 4.5,
+        "procurement": 3.2
+      },
+      "positioning": {
+        "openness": "managed external service",
+        "sovereignty": "needs deployment review",
+        "runtime": "good fit with governed broker pattern"
+      },
+      "detail_url": "assessment.html?vendor=anthropic&version=2026.04",
+      "evidence_ids": ["vendor-anthropic-summary", "rubric-method"]
+    },
+    {
+      "slug": "gemini",
+      "vendor": "Gemini",
+      "version": "2026.04",
+      "composite": 3.6,
+      "composite_band": "amber",
+      "overall_status": "amber",
+      "recommendation": "Assess where Microsoft and Google ecosystem alignment materially changes fit.",
+      "gates": {
+        "security": "conditional",
+        "privacy": "conditional",
+        "supportability": "conditional"
+      },
+      "scores": {
+        "governance": 3.5,
+        "architecture": 3.7,
+        "capability": 4.2,
+        "procurement": 3.0
+      },
+      "positioning": {
+        "openness": "managed external service",
+        "sovereignty": "needs controls confirmation",
+        "runtime": "context dependent on enterprise stack choices"
+      },
+      "detail_url": "assessment.html?vendor=gemini&version=2026.04",
+      "evidence_ids": ["vendor-gemini-summary", "rubric-method"]
+    },
+    {
+      "slug": "gc-llm",
+      "vendor": "GC LLM",
+      "version": "2026.04",
+      "composite": 3.2,
+      "composite_band": "amber",
+      "overall_status": "amber",
+      "recommendation": "Track as strategic public-sector-aligned option but do not assume current endpoint readiness.",
+      "gates": {
+        "security": "pass",
+        "privacy": "pass",
+        "supportability": "conditional"
+      },
+      "scores": {
+        "governance": 4.4,
+        "architecture": 3.1,
+        "capability": 2.8,
+        "procurement": 4.0
+      },
+      "positioning": {
+        "openness": "government-managed service pattern",
+        "sovereignty": "strong policy alignment",
+        "runtime": "readiness depends on confirmed departmental consumability"
+      },
+      "detail_url": "assessment.html?vendor=gc-llm&version=2026.04",
+      "evidence_ids": ["vendor-gcllm-summary", "rubric-method"]
+    }
+  ],
+  "documents": [
+    {
+      "id": "vendor-openai-summary",
+      "type": "evidence",
+      "title": "OpenAI Evidence Summary",
+      "meta": "Vendor evidence · 2026-04-22",
+      "summary": "OpenAI fit, constraints, and initial recommendation.",
+      "content": "# OpenAI Evidence Summary\n\nOpenAI currently presents the strongest balance of capability, architecture fit, and practical integration flexibility for the compare workbench pilot.\n\n- Strong overall capability\n- Good hosted integration fit\n- Requires governance and controls review for sovereignty-sensitive workloads"
+    },
+    {
+      "id": "vendor-anthropic-summary",
+      "type": "evidence",
+      "title": "Anthropic Evidence Summary",
+      "meta": "Vendor evidence · 2026-04-22",
+      "summary": "Anthropic as a strong secondary option.",
+      "content": "# Anthropic Evidence Summary\n\nAnthropic remains a credible option with strong model quality, but its enterprise fit should be assessed through supportability, controls, and procurement path.\n\n- Strong model performance\n- Good governance potential\n- Needs clearer operational pathway"
+    },
+    {
+      "id": "vendor-gemini-summary",
+      "type": "evidence",
+      "title": "Gemini Evidence Summary",
+      "meta": "Vendor evidence · 2026-04-22",
+      "summary": "Gemini fit depends more heavily on surrounding enterprise platform context.",
+      "content": "# Gemini Evidence Summary\n\nGemini may become more attractive where ecosystem alignment materially improves integration or supportability.\n\n- Good capability\n- Context-sensitive architecture fit\n- Requires stronger enterprise alignment case"
+    },
+    {
+      "id": "vendor-gcllm-summary",
+      "type": "evidence",
+      "title": "GC LLM Evidence Summary",
+      "meta": "Vendor evidence · 2026-04-22",
+      "summary": "GC LLM has strategic public-sector value but uncertain current consumability assumptions.",
+      "content": "# GC LLM Evidence Summary\n\nGC LLM aligns well with public-sector governance intent, but current departmental endpoint consumability should not be assumed without explicit confirmation.\n\n- Strong governance alignment\n- Strategic importance\n- Current consumption model still needs validation"
+    },
+    {
+      "id": "rubric-method",
+      "type": "intelligence",
+      "title": "Rubric Method",
+      "meta": "Framework note · 2026-04-22",
+      "summary": "How to interpret the compare frame.",
+      "content": "# Rubric Method\n\nGates come first. Composite score supports ranking, not automatic approval.\n\nArchitecture fit, governance pathway, and enterprise support model all matter."
+    }
+  ]
+}
