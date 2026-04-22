@@ -7,24 +7,10 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body data-page="dashboard">
+<div id="nav-container"></div>
+
 <div class="layout">
-  <div class="topnav">
-    <div class="topnav-label">AI Project Dashboard</div>
-    <div class="topnav-links">
-      <a class="topnav-link active" href="/status-site/index.html">Dashboard</a>
-      <a class="topnav-link" href="/status-site/decisions.html">Decisions</a>
-      <a class="topnav-link" href="/status-site/scenarios.html">Scenarios</a>
-      <a class="topnav-link" href="/status-site/recommendations.html">Recommendations</a>
-      <a class="topnav-link" href="/status-site/submissions.html">Submissions</a>
-      <a class="topnav-link" href="/status-site/intelligence.html">Intelligence</a>
-      <a class="topnav-link" href="/status-site/artifacts.html">Artifacts</a>
-      <a class="topnav-link" href="/status-site/path-architecture.html">Architecture</a>
-      <a class="topnav-link" href="/status-site/control-plane.html">Control Plane</a>
-      <a class="topnav-link" href="/status-site/pptx-builder.html">PPTX</a>
-      <a class="topnav-link" href="/status-site/settings.html">Settings</a>
-    </div>
-  </div>
 
   <div class="dashboard">
     <div class="left-rail">
@@ -256,13 +242,15 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    document.querySelectorAll('.topnav-link').forEach(link => {
-      if (link.getAttribute('href') === currentPage) {
-        link.classList.add('active');
-      } else {
-        link.classList.remove('active');
-      }
+    fetch('/status-site/components/nav.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('nav-container').innerHTML = html;
+        const page = document.body.dataset.page;
+        document.querySelector(`.topnav-link[data-page="${page}"]`)?.classList.add('active');
+      })
+      .catch(() => {
+        document.getElementById('nav-container').innerHTML = '';
     });
 
     Promise.all([

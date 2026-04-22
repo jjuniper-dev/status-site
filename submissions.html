@@ -7,16 +7,9 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body data-page="submissions">
+<div id="nav-container"></div>
 <div class="layout">
-  <div class="topnav">
-    <div class="topnav-label">AI Project Dashboard</div>
-    <div class="topnav-links">
-      <a class="topnav-link" href="/status-site/index.html">Dashboard</a>
-      <a class="topnav-link" href="/status-site/recommendations.html">Recommendations</a>
-      <a class="topnav-link active" href="/status-site/submissions.html">Submissions</a>
-    </div>
-  </div>
   <div class="main-content">
     <div class="breadcrumb">Dashboard &gt; Submissions</div>
     <div class="section-label">Evaluated Submissions</div>
@@ -24,6 +17,13 @@
   </div>
 </div>
 <script>
+  fetch('/status-site/components/nav.html')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('nav-container').innerHTML = html;
+      document.querySelector('.topnav-link[data-page=\"submissions\"]')?.classList.add('active');
+    });
+
   const container = document.getElementById('submissions-list');
   fetch('/status-site/data/submissions.json')
     .then(r => r.ok ? r.json() : { submissions: [] })
