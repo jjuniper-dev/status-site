@@ -1,107 +1,111 @@
-# HC/PHAC AI Status Site
+# AI Project Dashboard — PATH / HAIL Status Site
 
-**EA intelligence and capability reporting platform** for Health Canada's PATH (Platform for AI governance and Technology Healthcare) and HAIL (Healthcare AI Implementation Layer) enterprise AI programs.
+GitHub Pages site for tracking enterprise AI architecture, governance, scenarios, and artifacts related to PATH and HAIL in the Health Canada / PHAC context.
 
-## Purpose
+## What this repo is
 
-This site provides:
-- **Real-time EA intelligence** — Current state of GC AI platforms and HC/PHAC strategic positioning
-- **Architecture documentation** — PATH control plane, HAIL runtime, and governance models
-- **Decision records and scenarios** — ARB-ready architecture assessments and strategic options
-- **Artifact repository** — Conceptual models, diagrams, and reference materials for EA and leadership teams
+This repository is a working dashboard and reference site for:
+- enterprise AI governance and operating-model analysis
+- PATH / HAIL status tracking
+- architecture decisions and scenario framing
+- artifact indexing and supporting visuals
+- PPTX and settings utilities used alongside the site
 
-**Audience:** EA/TPO teams, Architecture Review Board (ARB), Office of Chief Data Officer (OCDO), HC/PHAC leadership.
+The repo treats **PATH** as a governance / control-plane concept and **HAIL** as the active delivery/runtime environment reflected in the current site narrative.
 
-## Site Structure
+## Current site structure
 
-### Main Pages
+Main pages currently linked from the site navigation:
+- `index.html` — Dashboard
+- `decisions.html` — Decision log
+- `scenarios.html` — Scenario navigator
+- `intelligence.html` — Intelligence and platform analysis
+- `artifacts.html` — Artifact library
+- `path-architecture.html` — Architecture view
+- `control-plane.html` — Control-plane view
+- `pptx-builder.html` — PPTX utility
+- `settings.html` — Local settings / configuration utility
 
-- **[Dashboard](index.html)** — Executive overview, program status, key decisions
-- **[Intelligence](intelligence.html)** — Platform landscape analysis, HC/PHAC AI tool assessments
-- **[Architecture](path-architecture.html)** — PATH control plane reference architecture
-- **[Control Plane](control-plane.html)** — Runtime governance model, enforcement components
-- **[Scenarios](scenarios.html)** — Strategic options and decision pathways
-- **[Decisions](decisions.html)** — Architecture decisions and rationale
-- **[Artifacts](artifacts.html)** — Conceptual diagrams, models, and visual references
+## Data and styling
 
-## Artifact Ingest Pipeline
+Shared styling:
+- `styles.css` — unified design system used across the main dashboard pages
 
-Artifacts are ingested via a GitHub Actions workflow:
+Current data files:
+- `data/decisions.json`
+- `data/scenarios.json`
+- `data/artifacts-index.json`
 
-```
-artifacts/inbox/         →  GitHub Action (generate_artifacts.py)  →  artifact detail pages
-(drop images/diagrams)       (rename + metadata)                         + index update
-```
+Supporting documentation:
+- `ASSESSMENT_AND_1.0_PLAN.md`
+- `CONSOLIDATION_STATUS.md`
+- `CONSOLIDATED_SITE_DESIGN.md`
 
-### Workflow
+## Project status
 
-1. **Add artifact** to `artifacts/inbox/`
-2. **GitHub Action triggers:** `generate_artifacts.py`
-3. **Metadata generation:** Claude Vision API generates title, summary, and tags
-4. **Output:**
-   - Detail page created in `artifacts/` with styled HTML
-   - Entry added to `data/artifacts-index.json`
-   - `artifacts.html` index updated automatically
+This repo is in **active v1.x refinement**.
 
-### Manual Artifact Creation
+Why this wording:
+- the shared stylesheet is marked **Version 1.0**
+- the consolidation note says **Version 1.0 Complete**
+- the dashboard footer currently shows **Version 1.1**
 
-For detailed workflow and examples, see [ASSESSMENT_AND_1.0_PLAN.md](ASSESSMENT_AND_1.0_PLAN.md#artifact-pipeline).
+Rather than hard-coding one inconsistent version number in this README, this file reflects the repo’s current state as an actively refined v1.x dashboard.
 
-## Project Status
+## What was corrected in this README
 
-**Current Version:** 1.4 (draft)  
-**Target Version:** 1.0 (production-ready)  
-**Last Updated:** April 2026
+This README has been aligned to the repo as it exists now:
+- removed the unverified expansion of the PATH acronym
+- removed the claim that artifact ingestion is powered by a root-level `generate_artifacts.py` GitHub Action pipeline
+- updated the page list to match the current navigation, including `decisions.html`, `scenarios.html`, and `settings.html`
+- updated the project-status section to reflect the repo’s current versioning inconsistency instead of asserting a single stale value
 
-### Known Issues
+## Local setup
 
-- **Mobile responsiveness:** Fixed 1100px width on main pages (responsive breakpoint needed)
-- **CSS duplication:** ~4800 lines of duplicated styles across pages (#11)
-- **Repository structure:** All HTML, CSS, and generated files in root directory (#9)
+Clone the repo and serve it locally with any static file server.
 
-See [ASSESSMENT_AND_1.0_PLAN.md](ASSESSMENT_AND_1.0_PLAN.md) for full assessment and release roadmap.
-
-## Development & Contribution
-
-### Local Setup
+### Python
 
 ```bash
-# Clone repo
 git clone https://github.com/jjuniper-dev/status-site.git
 cd status-site
-
-# Serve locally (Python)
 python -m http.server 8000
-
-# Open in browser
-open http://localhost:8000
 ```
 
-### Adding Content
+Then open:
+- `http://localhost:8000/`
 
-- **Edit pages:** Modify `.html` files directly
-- **Update intelligence:** Edit and link in `intelligence.html`
-- **Add artifacts:** Drop files in `artifacts/inbox/`, wait for Action to run
-- **Styling:** Update `styles.css` (shared design system in progress)
+## Content update guidance
 
-### Pending Tasks
+### Update page content
+Edit the relevant `.html` file directly.
 
-High-priority items before 1.0:
-- Consolidate CSS into unified design system (#11)
-- Add responsive mobile breakpoints
-- Restructure repository for clarity (#9)
-- Remove backup/obsolete files (#8)
+### Update decisions or scenarios
+Edit the JSON files under `data/`:
+- `data/decisions.json`
+- `data/scenarios.json`
 
-## Related Documents
+### Update artifacts
+Maintain artifact entries in:
+- `data/artifacts-index.json`
+- `artifacts/`
 
-- **[ASSESSMENT_AND_1.0_PLAN.md](ASSESSMENT_AND_1.0_PLAN.md)** — Full site assessment, issues, and 4-phase release plan
-- **[CONSOLIDATION_STATUS.md](CONSOLIDATION_STATUS.md)** — PATH/HAIL convergence status
-- **[CONSOLIDATED_SITE_DESIGN.md](CONSOLIDATED_SITE_DESIGN.md)** — Design system specifications
+### Update styles
+Edit:
+- `styles.css`
 
-## License
+## Notes
 
-Internal HC/PHAC use.
+- This repo appears to be intended for internal / working use rather than polished public release documentation.
+- Some documentation files describe the site as already consolidated to 1.0, while the live page footer indicates 1.1. Keep that inconsistency in mind when preparing release notes or executive-facing outputs.
+- If artifact automation is reintroduced, document the actual workflow file and script path explicitly in this README.
 
----
+## Related references
 
-*For issues, questions, or contributions: see [GitHub Issues](https://github.com/jjuniper-dev/status-site/issues).*
+- `ASSESSMENT_AND_1.0_PLAN.md` — assessment and release plan
+- `CONSOLIDATION_STATUS.md` — consolidation summary and page inventory
+- `CONSOLIDATED_SITE_DESIGN.md` — design direction and conventions
+
+## License / usage
+
+Internal HC/PHAC working use.
