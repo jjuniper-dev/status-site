@@ -6,18 +6,23 @@
   <title>Output Manager | Status Site</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-  <header class="topbar">
+<body data-page="output-manager">
+  <div id="nav-container"></div>
+<script>
+fetch('components/nav.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('nav-container').innerHTML = html;
+    const page = document.body.dataset.page;
+    document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+  })
+  .catch(() => {});
+</script>
+<header class="topbar">
     <div>
       <h1>Output Manager</h1>
       <p class="subtitle">Draft blog posts, LinkedIn articles, Substack pieces, PPTX builds, and infographic artifacts in one place.</p>
     </div>
-    <nav class="topnav">
-      <a href="/status-site/">Home</a>
-      <a href="/status-site/apps/output-manager/">Output Manager</a>
-      <a href="/status-site/artifacts/">Artifacts</a>
-      <a href="/status-site/artifacts/standards/hc-phac-pptx-design-spec.md">PPTX Spec</a>
-    </nav>
   </header>
 
   <main class="layout">

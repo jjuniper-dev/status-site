@@ -244,17 +244,5 @@ fetch('components/nav.html')
   </div>
 </div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    document.querySelectorAll('.topnav-link').forEach(link => {
-      if (link.getAttribute('href') === currentPage) {
-        link.classList.add('active');
-      } else {
-        link.classList.remove('active');
-      }
-    });
-  });
-</script>
 </body>
 </html>

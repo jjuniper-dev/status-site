@@ -1,7 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head><title>Artifact</title></head>
-<body style="background:#07090F;color:#F0F4FA;font-family:Arial;padding:30px">
+<body style="background:#07090F;color:#F0F4FA;font-family:Arial;padding:30px" data-page="artifacts">
+<div id="nav-container"></div>
+<script>
+fetch('components/nav.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('nav-container').innerHTML = html;
+    const page = document.body.dataset.page;
+    document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+  })
+  .catch(() => {});
+</script>
 <h1>Enterprise Automation Model — Agents, BPA, RPA, and Human Oversight</h1>
 <img src="artifacts/images/enterprise-automation-model-agents-bpa-rpa-hitl.jpeg" style="max-width:100%">
 <p>This artifact shows the relationship between agents, BPA, RPA, and governance layers.</p>

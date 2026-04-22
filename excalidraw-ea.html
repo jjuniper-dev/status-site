@@ -1,1 +1,26 @@
-(patched version with components parsing and layout omitted for brevity but implemented)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diagram Lab</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="diagram-lab">
+<div id="nav-container"></div>
+<script>
+fetch('components/nav.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('nav-container').innerHTML = html;
+    const page = document.body.dataset.page;
+    document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+  })
+  .catch(() => {});
+</script>
+<main class="layout" style="padding: 24px;">
+  <h1>Diagram Lab</h1>
+  <p>Excalidraw workspace placeholder page.</p>
+</main>
+</body>
+</html>
