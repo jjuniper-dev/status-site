@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dashboard Workspace State",
+  "type": "object",
+  "properties": {
+    "layoutMode": {
+      "type": "string",
+      "enum": ["single", "compare", "workspace"]
+    },
+    "openTabs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "activeTabId": { "type": "string" },
+    "regions": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "pinned": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "recent": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}
