@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EA Diagram Request",
+  "type": "object",
+  "required": [
+    "title",
+    "purpose",
+    "layers",
+    "components",
+    "relationships"
+  ],
+  "properties": {
+    "title": { "type": "string" },
+    "purpose": { "type": "string" },
+    "audience": { "type": "string" },
+    "layers": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "layer"],
+        "properties": {
+          "name": { "type": "string" },
+          "layer": { "type": "string" },
+          "type": { "type": "string" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from", "to"],
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "type": { "type": "string" }
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "target_format": {
+      "type": "string",
+      "enum": ["excalidraw", "svg", "pptx", "mermaid"]
+    }
+  }
+}
