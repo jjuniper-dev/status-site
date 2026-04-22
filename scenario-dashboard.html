@@ -43,6 +43,7 @@ fetch('components/nav.html').then(r=>r.text()).then(html=>{
 <script src="https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
 <script>
 const LANE_ORDER = ['event','impact','condition','hospital','location','unit','route'];
+const DECISION_PATH = ['e','i','c','h'];
 
 function computePositions(nodes){
   const lanes = {};
@@ -77,6 +78,41 @@ function color(type){
     case 'unit':return '#355C7D';
     default:return '#00C8C8';
   }
+}
+
+function renderDecisionExplanation(){
+  document.getElementById('decision-output').innerHTML = `
+    <strong>Escalate response posture</strong><br/>
+    Confidence: 87%<br/><br/>
+    Decision influenced by:<br/>
+    - Heatwave severity<br/>
+    - Air quality degradation<br/>
+    - Respiratory pressure<br/>
+    - Hospital load
+  `;
+}
+
+function highlightDecisionTrace(cy){
+  cy.elements().addClass('is-dim');
+
+  DECISION_PATH.forEach(id=>{
+    cy.getElementById(id).removeClass('is-dim').addClass('is-focus');
+  });
+
+  for(let i=0;i<DECISION_PATH.length-1;i++){
+    const src = DECISION_PATH[i];
+    const tgt = DECISION_PATH[i+1];
+    cy.edges().forEach(edge=>{
+      if(edge.data('source')===src && edge.data('target')===tgt){
+        edge.removeClass('is-dim').addClass('is-focus');
+      }
+    });
+  }
+}
+
+function clearTrace(cy){
+  cy.elements().removeClass('is-dim');
+  cy.elements().removeClass('is-focus');
 }
 
 function renderGraph(){
@@ -118,7 +154,9 @@ function renderGraph(){
           'color':'#fff',
           'text-wrap':'wrap',
           'text-max-width':110,
-          'font-size':11
+          'font-size':11,
+          'border-width':2,
+          'border-color':'#ffffff'
         }
       },
       {
@@ -128,17 +166,48 @@ function renderGraph(){
           'taxi-direction':'rightward',
           'target-arrow-shape':'triangle',
           'label':'data(label)',
-          'font-size':9
+          'font-size':9,
+          'line-color':'#8AA5AD',
+          'target-arrow-color':'#8AA5AD'
+        }
+      },
+      {
+        selector:'.is-dim',
+        style:{
+          'opacity':0.18
+        }
+      },
+      {
+        selector:'.is-focus',
+        style:{
+          'opacity':1,
+          'border-color':'#00C8C8',
+          'border-width':4,
+          'line-color':'#00C8C8',
+          'target-arrow-color':'#00C8C8',
+          'z-index':999
         }
       }
     ],
     layout:{name:'preset'}
   });
 
+  renderDecisionExplanation();
+  highlightDecisionTrace(cy);
+
   cy.on('tap','node',e=>{
+    clearTrace(cy);
     const n=e.target.data();
     document.getElementById('decision-output').innerHTML=
       `<strong>${n.label}</strong><br/>Type: ${n.type}`;
+    e.target.addClass('is-focus');
+  });
+
+  cy.on('tap', evt => {
+    if(evt.target === cy){
+      renderDecisionExplanation();
+      highlightDecisionTrace(cy);
+    }
   });
 }
 
