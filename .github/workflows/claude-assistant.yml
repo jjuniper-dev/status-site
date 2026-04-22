@@ -1,0 +1,33 @@
+name: Claude Code Assistant
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+
+jobs:
+  claude-assist:
+    # Only trigger when someone mentions @claude
+    if: contains(github.event.comment.body, '@claude')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Git with Fine-grained PAT
+        run: |
+          git config --global url."https://oauth2:${{ secrets.CLAUDE_PAT }}@github.com/".insteadOf "https://github.com/"
+          git config --global user.name "Claude Assistant"
+          git config --global user.email "claude@yourorg.com"
+
+      - name: Run Claude Code
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.CLAUDE_PAT }}
+          prompt: |
+            Analyze the code change and provide:
+            1. Security implications
+            2. Performance considerations
+            3. Suggested improvements

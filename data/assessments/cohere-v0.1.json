@@ -15,5 +15,10 @@
     "capability": 3.25,
     "procurement": 3.0
   },
+  "positioning": {
+    "openness": "Proprietary",
+    "sovereignty": "Canadian HQ; US/multi-cloud hosted",
+    "runtime": "Cloud API (Cohere platform, Azure, AWS)"
+  },
   "recommendation": "Approve with conditions"
 }

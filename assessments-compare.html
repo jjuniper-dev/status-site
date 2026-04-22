@@ -3,19 +3,301 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Offering Assessment Comparison</title>
+  <title>Vendor Comparison — AI Assessment</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ── Vendor toggle pills ── */
+    .compare-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+    .compare-controls-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+    }
+    .vendor-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      cursor: pointer;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+      user-select: none;
+    }
+    .vendor-toggle.active {
+      border-color: var(--teal);
+      color: var(--teal);
+      background: rgba(0, 200, 200, 0.08);
+    }
+    .ctrl-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-faint);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 5px 10px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .ctrl-btn:hover {
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    /* ── Summary score cards ── */
+    .compare-summary {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .summary-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      padding: 18px 14px 14px;
+      text-align: center;
+      transition: border-color 0.15s;
+    }
+    .summary-card.is-selected {
+      border-color: rgba(0, 200, 200, 0.4);
+    }
+    .summary-card.is-leader {
+      border-color: var(--teal);
+    }
+    .summary-vendor {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .summary-composite {
+      font-family: var(--mono);
+      font-size: 36px;
+      font-weight: 600;
+      line-height: 1;
+    }
+    .summary-band-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-top: 3px;
+      margin-bottom: 10px;
+    }
+    .summary-rec {
+      font-size: 11px;
+      color: var(--text-faint);
+      line-height: 1.4;
+      min-height: 44px;
+    }
+    .summary-detail-link {
+      display: block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--teal);
+      text-decoration: none;
+      margin-top: 10px;
+      opacity: 0.65;
+      transition: opacity 0.15s;
+    }
+    .summary-detail-link:hover { opacity: 1; }
+
+    /* ── Score bar ── */
+    .score-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .score-bar {
+      flex: 1;
+      height: 5px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 3px;
+      overflow: hidden;
+      min-width: 50px;
+    }
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+    .fill-low  { background: var(--red); }
+    .fill-mid  { background: var(--gold); }
+    .fill-high { background: var(--teal); }
+    .score-val {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      min-width: 30px;
+      text-align: right;
+    }
+    .val-low  { color: var(--red); }
+    .val-mid  { color: var(--gold); }
+    .val-high { color: var(--teal); }
+
+    /* ── Comparison table ── */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 32px;
+    }
+    .compare-table th {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 16px;
+      text-align: left;
+      background: var(--bg2);
+    }
+    .compare-table th.vendor-col {
+      color: var(--text);
+      border-bottom: 2px solid var(--teal);
+      text-align: center;
+      vertical-align: bottom;
+      padding-bottom: 14px;
+    }
+    .compare-table td {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      vertical-align: middle;
+    }
+    .compare-table tr:hover td:not(.dim-label) {
+      background: rgba(255,255,255,0.015);
+    }
+    .dim-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      white-space: nowrap;
+      background: var(--bg2);
+    }
+    .dim-label.sub { padding-left: 26px; color: var(--text-faint); }
+    .section-row td {
+      background: rgba(0, 200, 200, 0.04) !important;
+      border-top: 1px solid rgba(0, 200, 200, 0.18);
+    }
+    .section-row .dim-label { color: var(--teal); font-size: 11px; }
+
+    /* ── Vendor header cell ── */
+    .vhdr { text-align: center; }
+    .vhdr-name {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.04em;
+    }
+    .vhdr-ver {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-faint);
+      letter-spacing: 0.1em;
+      margin-bottom: 4px;
+    }
+    .vhdr-link {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--teal);
+      text-decoration: none;
+      opacity: 0.65;
+      transition: opacity 0.15s;
+    }
+    .vhdr-link:hover { opacity: 1; }
+
+    /* ── Composite cell ── */
+    .comp-big {
+      font-family: var(--mono);
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 1;
+      text-align: center;
+    }
+    .comp-band {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-align: center;
+      margin-top: 2px;
+    }
+    .best-tag {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-left: 5px;
+    }
+
+    /* ── Color helpers ── */
+    .c-amber { color: var(--gold); }
+    .c-red   { color: var(--red); }
+    .c-green { color: var(--green); }
+    .c-teal  { color: var(--teal); }
+
+    /* ── Positioning / recommendation cells ── */
+    .pos-cell {
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.45;
+      text-align: center;
+    }
+    .rec-cell {
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.45;
+      max-width: 200px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1100px) {
+      .compare-summary { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 760px) {
+      .compare-summary { grid-template-columns: 1fr 1fr; }
+      .compare-table th, .compare-table td { padding: 8px 10px; font-size: 11px; }
+    }
+    @media (max-width: 500px) {
+      .compare-summary { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body data-page="assessments-compare">
 <div id="nav-container"></div>
-
 <script>
 fetch('components/nav.html')
-  .then(res => res.text())
+  .then(r => r.text())
   .then(html => {
     document.getElementById('nav-container').innerHTML = html;
-
     const page = document.body.dataset.page;
     document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
   })
@@ -23,33 +305,266 @@ fetch('components/nav.html')
 </script>
 
 <div class="layout">
-  
   <div class="breadcrumb">Assessments &gt; Comparison</div>
-  <div class="header"><div class="header-title">Vendor Comparison</div></div>
+
+  <div class="header">
+    <div class="header-eyebrow">AI Offering Review Layer</div>
+    <div class="header-title">Vendor <span>/</span> Comparison</div>
+    <div class="header-sub">Side-by-side evaluation across governance, architecture, capability, and procurement. All vendors assessed against the HC/PHAC four-layer rubric — v0.1 baseline.</div>
+    <div class="badges">
+      <div class="badge badge-red">Decision Support</div>
+      <div class="badge badge-teal">EA / TPO</div>
+      <div class="badge badge-gold">v0.1</div>
+    </div>
+  </div>
+
+  <div class="positioning">
+    <div class="positioning-label">Assessment Position</div>
+    <div class="positioning-text">No vendor reaches Green status at this baseline. All five carry gate failures on <em>G2 (data residency / sovereignty)</em> and <em>G3 (ATO / procurement clearance)</em>. Composite scores range from <em>58.5 to 69.0</em> — all Amber band. Vendor selection must be driven by deployment pattern and governance pathway, not capability rank alone.</div>
+  </div>
+
+  <div class="section-label">Composite Scores</div>
+  <div id="summary-cards" class="compare-summary"></div>
+
+  <div class="section-label">Filter Vendors</div>
+  <div class="compare-controls">
+    <span class="compare-controls-label">Show:</span>
+    <div id="vendor-toggles" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+    <button class="ctrl-btn" id="btn-all">All</button>
+    <button class="ctrl-btn" id="btn-clear">Clear</button>
+  </div>
+
+  <div class="section-label">Comparison Matrix</div>
   <div id="comparison-output"></div>
+
+  <div class="footer">
+    <div class="footer-left">Health Canada · Public Health Agency of Canada<br>AI Offering Assessment Registry — Internal Use</div>
+    <div class="footer-right">Static JSON backed · HC/PHAC visual standard</div>
+  </div>
 </div>
+
 <script>
-let registry=[];let selected=[];
-function vendorKey(i){return `${i.vendor}|${i.version}`}
-function fetchAssessment(i){return fetch(`data/assessments/${i.vendor}-${i.version}.json`).then(r=>r.json())}
-function row(l,v){return `<tr><td>${l}</td>${v.map(x=>`<td>${x}</td>`).join('')}</tr>`}
-async function render(){
-const items=registry;const data=await Promise.all(items.map(fetchAssessment));
-document.getElementById('comparison-output').innerHTML=`
-<table class="table">
-<thead><tr><th>Dimension</th>${data.map(d=>`<th>${d.vendor}</th>`).join('')}</tr></thead>
-<tbody>
-${row('Composite',data.map(d=>d.composite))}
-${row('Status',data.map(d=>d.overall_status))}
-${row('Governance',data.map(d=>d.scores.governance))}
-${row('Architecture',data.map(d=>d.scores.architecture))}
-${row('Capability',data.map(d=>d.scores.capability))}
-${row('Procurement',data.map(d=>d.scores.procurement))}
-${row('Openness',data.map(d=>d.positioning.openness))}
-${row('Sovereignty',data.map(d=>d.positioning.sovereignty))}
-${row('Runtime',data.map(d=>d.positioning.runtime))}
-</tbody></table>`}
-fetch('data/assessments/index.json').then(r=>r.json()).then(d=>{registry=d;render()})
+/* ── helpers ── */
+function scoreLevel(v) {
+  if (v < 2.5) return 'low';
+  if (v < 3.5) return 'mid';
+  return 'high';
+}
+
+function scoreBarHtml(v, isBest) {
+  const pct = (v / 5 * 100).toFixed(1);
+  const lv  = scoreLevel(v);
+  return `<div class="score-bar-wrap">
+    <div class="score-bar"><div class="score-bar-fill fill-${lv}" style="width:${pct}%"></div></div>
+    <span class="score-val val-${lv}">${v.toFixed(2)}</span>
+    ${isBest ? '<span class="best-tag">best</span>' : ''}
+  </div>`;
+}
+
+function bandClass(band) {
+  const b = (band || '').toLowerCase();
+  if (b === 'green') return 'c-green';
+  if (b === 'red')   return 'c-red';
+  return 'c-amber';
+}
+
+function statusDotCls(v) {
+  const s = String(v || '').toLowerCase();
+  if (s === 'fail') return 'dot-blocked';
+  if (s === 'pass') return 'dot-active';
+  return 'dot-emerging';
+}
+
+function statusDotHtml(statusVal) {
+  const s = String(statusVal || '').toLowerCase();
+  const color = s === 'red' ? 'var(--red)' : s === 'green' ? 'var(--green)' : 'var(--gold)';
+  const dot   = s === 'red' ? 'dot-blocked' : s === 'green' ? 'dot-active' : 'dot-emerging';
+  return `<span class="status-badge"><span class="status-dot ${dot}"></span><span style="font-family:var(--mono);font-size:12px;color:${color}">${statusVal}</span></span>`;
+}
+
+function gatesHtml(gates) {
+  if (!gates) return '<span style="color:var(--text-faint)">—</span>';
+  return Object.entries(gates).map(([k, v]) => {
+    const cls = statusDotCls(v);
+    const color = v === 'fail' ? 'var(--red)' : v === 'pass' ? 'var(--green)' : 'var(--gold)';
+    return `<div style="margin-bottom:3px"><span class="status-badge"><span class="status-dot ${cls}"></span><span style="font-family:var(--mono);font-size:11px;color:${color}">${k}: ${v}</span></span></div>`;
+  }).join('');
+}
+
+function posVal(d, key) {
+  return d.positioning?.[key] || '<span style="color:var(--text-faint)">—</span>';
+}
+
+/* ── state ── */
+let registry = [];
+let allData  = [];
+let selected = new Set();
+
+/* ── summary cards ── */
+function buildSummaryCards() {
+  const leader = Math.max(...allData.map(d => d.composite));
+  document.getElementById('summary-cards').innerHTML = allData.map(d => {
+    const bc = bandClass(d.composite_band);
+    const isLeader = d.composite === leader;
+    const isSel    = selected.has(d.slug);
+    return `<div class="summary-card${isSel ? ' is-selected' : ''}${isLeader ? ' is-leader' : ''}">
+      <div class="summary-vendor">${d.vendor}</div>
+      <div class="summary-composite ${bc}">${d.composite}</div>
+      <div class="summary-band-label ${bc}">${d.composite_band} band${isLeader ? ' ↑' : ''}</div>
+      <div class="summary-rec">${d.recommendation}</div>
+      <a class="summary-detail-link" href="assessment.html?vendor=${d.slug}&version=${d.version}">→ Full assessment</a>
+    </div>`;
+  }).join('');
+}
+
+/* ── vendor toggles ── */
+function buildToggles() {
+  const wrap = document.getElementById('vendor-toggles');
+  wrap.innerHTML = registry.map(item => `
+    <label class="vendor-toggle${selected.has(item.vendor) ? ' active' : ''}" data-slug="${item.vendor}">
+      ${item.display_name}
+    </label>
+  `).join('');
+  wrap.querySelectorAll('.vendor-toggle').forEach(lbl => {
+    lbl.addEventListener('click', () => {
+      const slug = lbl.dataset.slug;
+      if (selected.has(slug)) { selected.delete(slug); lbl.classList.remove('active'); }
+      else                    { selected.add(slug);    lbl.classList.add('active');    }
+      buildSummaryCards();
+      renderTable();
+    });
+  });
+}
+
+/* ── main render ── */
+function renderTable() {
+  const showing = allData.filter(d => selected.has(d.slug));
+  const out = document.getElementById('comparison-output');
+
+  if (!showing.length) {
+    out.innerHTML = '<p style="color:var(--text-faint);font-family:var(--mono);font-size:12px;padding:24px 0">Select at least one vendor above to compare.</p>';
+    return;
+  }
+
+  const dims    = ['governance', 'architecture', 'capability', 'procurement'];
+  const bestDim = {};
+  dims.forEach(d => { bestDim[d] = Math.max(...showing.map(v => v.scores[d])); });
+  const bestComp = Math.max(...showing.map(v => v.composite));
+
+  const vCols = showing.map(d => `
+    <th class="vendor-col">
+      <div class="vhdr">
+        <div class="vhdr-name">${d.vendor}</div>
+        <div class="vhdr-ver">${d.version}</div>
+        <a class="vhdr-link" href="assessment.html?vendor=${d.slug}&version=${d.version}">→ detail</a>
+      </div>
+    </th>
+  `).join('');
+
+  const compRow = showing.map(d => {
+    const bc      = bandClass(d.composite_band);
+    const isLeader = d.composite === bestComp && showing.length > 1;
+    return `<td>
+      <div class="comp-big ${bc}">${d.composite}${isLeader ? '<span class="best-tag">↑</span>' : ''}</div>
+      <div class="comp-band ${bc}">${d.composite_band}</div>
+    </td>`;
+  }).join('');
+
+  const statusRow = showing.map(d => `<td style="text-align:center">${statusDotHtml(d.overall_status)}</td>`).join('');
+  const gateRow   = showing.map(d => `<td>${gatesHtml(d.gates)}</td>`).join('');
+
+  const dimRows = dims.map(dim => `
+    <tr>
+      <td class="dim-label sub">${dim.charAt(0).toUpperCase() + dim.slice(1)}</td>
+      ${showing.map(d => `<td>${scoreBarHtml(d.scores[dim], d.scores[dim] === bestDim[dim] && showing.length > 1)}</td>`).join('')}
+    </tr>
+  `).join('');
+
+  const posRows = ['openness', 'sovereignty', 'runtime'].map(key => `
+    <tr>
+      <td class="dim-label sub">${key.charAt(0).toUpperCase() + key.slice(1)}</td>
+      ${showing.map(d => `<td class="pos-cell">${posVal(d, key)}</td>`).join('')}
+    </tr>
+  `).join('');
+
+  const recRow = showing.map(d => `<td><div class="rec-cell">${d.recommendation}</div></td>`).join('');
+
+  out.innerHTML = `
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th style="min-width:130px">Dimension</th>
+          ${vCols}
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="section-row">
+          <td class="dim-label">Composite</td>
+          ${compRow}
+        </tr>
+        <tr>
+          <td class="dim-label">Overall Status</td>
+          ${statusRow}
+        </tr>
+        <tr>
+          <td class="dim-label">Gate Status</td>
+          ${gateRow}
+        </tr>
+        <tr class="section-row">
+          <td class="dim-label">Dimension Scores</td>
+          ${showing.map(() => '<td></td>').join('')}
+        </tr>
+        ${dimRows}
+        <tr class="section-row">
+          <td class="dim-label">Positioning</td>
+          ${showing.map(() => '<td></td>').join('')}
+        </tr>
+        ${posRows}
+        <tr class="section-row">
+          <td class="dim-label">Recommendation</td>
+          ${recRow}
+        </tr>
+      </tbody>
+    </table>
+  `;
+}
+
+/* ── init ── */
+document.getElementById('btn-all').addEventListener('click', () => {
+  registry.forEach(r => selected.add(r.vendor));
+  buildToggles();
+  buildSummaryCards();
+  renderTable();
+});
+document.getElementById('btn-clear').addEventListener('click', () => {
+  selected.clear();
+  buildToggles();
+  buildSummaryCards();
+  renderTable();
+});
+
+async function init() {
+  registry = await fetch('data/assessments/index.json').then(r => r.json());
+  allData  = await Promise.all(
+    registry.map(item =>
+      fetch(`data/assessments/${item.vendor}-${item.version}.json`).then(r => r.json())
+    )
+  );
+  /* Merge index metadata into detail objects */
+  registry.forEach((item, i) => {
+    allData[i].slug    = item.vendor;
+    allData[i].version = item.version;
+    if (!allData[i].composite_band) allData[i].composite_band = item.composite_band;
+    if (!allData[i].recommendation) allData[i].recommendation = item.recommendation;
+    if (allData[i].composite === undefined) allData[i].composite = item.composite;
+  });
+  selected = new Set(registry.map(r => r.vendor));
+  buildToggles();
+  buildSummaryCards();
+  renderTable();
+}
+
+init();
 </script>
 </body>
 </html>

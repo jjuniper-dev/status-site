@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Dev Lifecycle | EA Workbench</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../styles.css" />
+  <style>
+    body { background:#F4F6F7; font-family:Arial,sans-serif; color:#1F2A30; margin:0; }
+    .container { max-width:1400px; margin:0 auto; padding:24px; }
+    h1 { color:#2F6F73; margin-bottom:8px; }
+    .subtitle { color:#5E9EA3; margin-bottom:24px; }
+    .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+    .card { background:white; border-radius:12px; padding:16px; box-shadow:0 2px 6px rgba(0,0,0,0.08); border-top:6px solid #2F6F73; }
+    .tier-1 { border-color:#A6CE39; }
+    .tier-2 { border-color:#5E9EA3; }
+    .tier-3 { border-color:#3D8589; }
+    .tier-4 { border-color:#1F2A30; }
+    .card h2 { margin-top:0; }
+    .workflow { margin-top:32px; display:grid; grid-template-columns:repeat(13,1fr); gap:12px; align-items:center; }
+    .step { background:white; padding:12px; border-radius:10px; text-align:center; font-size:13px; box-shadow:0 1px 4px rgba(0,0,0,0.08); }
+    .arrow { text-align:center; font-size:18px; }
+    .rules { margin-top:32px; background:white; padding:20px; border-radius:12px; }
+    code { background:#eef2f3; padding:6px; display:block; border-radius:6px; margin-top:10px; white-space:pre-wrap; }
+    @media (max-width: 1100px) { .grid { grid-template-columns:repeat(2,1fr); } .workflow { grid-template-columns:repeat(7,1fr); } }
+    @media (max-width: 700px) { .grid { grid-template-columns:1fr; } .workflow { grid-template-columns:1fr; } .arrow { display:none; } }
+  </style>
+</head>
+<body data-page="workflow">
+<div id="nav-container"></div>
+<script>
+fetch('../components/nav.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('nav-container').innerHTML = html;
+    const page = document.body.dataset.page;
+    document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+  })
+  .catch(() => {});
+</script>
+<div class="container">
+  <h1>AI Development Lifecycle</h1>
+  <div class="subtitle">Cost-optimized orchestration of AI agents for non-developer workflows</div>
+  <div class="grid">
+    <div class="card tier-1">
+      <h2>Tier 1 — Fast / Cheap</h2>
+      <p><strong>Tools:</strong> ChatGPT (default), Claude Haiku</p>
+      <p><strong>Use:</strong></p>
+      <ul><li>Specs</li><li>JSON schemas</li><li>Simple code</li><li>Debugging</li></ul>
+    </div>
+    <div class="card tier-2">
+      <h2>Tier 2 — Builder</h2>
+      <p><strong>Tools:</strong> Claude Sonnet</p>
+      <p><strong>Use:</strong></p>
+      <ul><li>Multi-file logic</li><li>Refactoring</li><li>Architecture shaping</li></ul>
+    </div>
+    <div class="card tier-3">
+      <h2>Tier 3 — Execution</h2>
+      <p><strong>Tools:</strong> Claude Code, Codex</p>
+      <p><strong>Use:</strong></p>
+      <ul><li>Write real files</li><li>Edit repo</li><li>Implement features</li></ul>
+    </div>
+    <div class="card tier-4">
+      <h2>Tier 4 — Deep Reasoning</h2>
+      <p><strong>Tools:</strong> Claude Opus</p>
+      <p><strong>Use:</strong></p>
+      <ul><li>Complex decisions</li><li>Architecture validation</li><li>Edge cases</li></ul>
+    </div>
+  </div>
+  <div class="workflow">
+    <div class="step">1. Define Task<br>(ChatGPT)</div>
+    <div class="arrow">→</div>
+    <div class="step">2. Break Down<br>(ChatGPT / Sonnet)</div>
+    <div class="arrow">→</div>
+    <div class="step">3. Build Code<br>(Claude Code / Codex)</div>
+    <div class="arrow">→</div>
+    <div class="step">4. Iterate<br>(Escalate if needed)</div>
+    <div class="arrow">→</div>
+    <div class="step">5. Refactor<br>(Sonnet)</div>
+    <div class="arrow">→</div>
+    <div class="step">6. Validate<br>(Opus if required)</div>
+    <div class="arrow">→</div>
+    <div class="step">7. Commit<br>(GitHub)</div>
+  </div>
+  <div class="rules">
+    <h2>Cost Control Logic</h2>
+    <p><strong>Rule:</strong> Always use the lowest capable model first.</p>
+    <code>Is task simple? → ChatGPT
+
+Is it structural? → Claude Sonnet
+
+Does it require real code changes? → Claude Code / Codex
+
+Am I stuck or high-risk? → Claude Opus</code>
+  </div>
+</div>
+</body>
+</html>
