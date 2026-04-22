@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dashboard Manifest",
+  "type": "object",
+  "required": ["version", "defaultLayout", "documents"],
+  "properties": {
+    "version": { "type": "string" },
+    "defaultLayout": {
+      "type": "string",
+      "enum": ["single", "compare", "workspace"]
+    },
+    "defaultOpen": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "collections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title"],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "icon": { "type": "string" }
+        }
+      }
+    },
+    "documents": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/document" }
+    },
+    "widgets": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/widget" }
+    }
+  },
+  "$defs": {
+    "layoutHints": {
+      "type": "object",
+      "properties": {
+        "preferredRegion": { "type": "string" },
+        "allowTab": { "type": "boolean" },
+        "allowSplit": { "type": "boolean" },
+        "allowPin": { "type": "boolean" },
+        "defaultMode": { "type": "string" }
+      }
+    },
+    "document": {
+      "type": "object",
+      "required": ["id", "slug", "title", "type", "collection", "path", "status"],
+      "properties": {
+        "id": { "type": "string" },
+        "slug": { "type": "string" },
+        "title": { "type": "string" },
+        "type": { "type": "string" },
+        "collection": { "type": "string" },
+        "path": { "type": "string" },
+        "status": { "type": "string" },
+        "summary": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "related": { "type": "array", "items": { "type": "string" } },
+        "layoutHints": { "$ref": "#/$defs/layoutHints" }
+      }
+    },
+    "widget": {
+      "type": "object",
+      "required": ["id", "type", "title", "component"],
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string" },
+        "title": { "type": "string" },
+        "component": { "type": "string" }
+      }
+    }
+  }
+}
