@@ -1,0 +1,12 @@
+{
+  "name": "status-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "diagram:generate": "node engine/src/cli.js generate",
+    "diagram:validate": "node engine/src/cli.js validate"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1"
+  }
+}
