@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Decision Log — AI Status Site</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
 </head>
 <body data-page="decisions">
 <div id="nav-container"></div>
@@ -81,6 +83,17 @@ fetch('components/nav.html')
       <div class="header">
         <h1>Decision Log</h1>
         <p style="color: var(--text-secondary); font-size: 14px;">Strategic decisions, architecture choices, and governance gates tracking the PATH/HAIL initiative.</p>
+      </div>
+
+      <div style="margin-top: 24px; margin-bottom: 24px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: linear-gradient(160deg, var(--bg2), var(--bg3));">
+        <div style="padding: 16px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+          <div style="font-size: 14px; font-weight: 600; color: var(--text);">Decision Dependencies</div>
+          <button onclick="toggleGraph()" style="padding: 6px 12px; background: rgba(0, 200, 200, 0.1); border: 1px solid rgba(0, 200, 200, 0.2); color: var(--text-secondary); cursor: pointer; border-radius: 4px; font-size: 12px;">Toggle Graph</button>
+        </div>
+        <div id="decision-graph" style="width: 100%; height: 400px; display: none; background: rgba(0,0,0,0.2);"></div>
+        <div id="graph-info" style="padding: 14px 18px; font-size: 12px; color: var(--text-secondary); text-align: center;">
+          Click "Toggle Graph" to visualize decision dependencies
+        </div>
       </div>
 
       <div id="decisions-list" style="margin-top: 24px;"></div>
@@ -242,6 +255,105 @@ fetch('components/nav.html')
       document.getElementById('stat-critical').textContent = critical;
       document.getElementById('stat-active').textContent = active;
       document.getElementById('stat-next-gate').textContent = nextGates || '–';
+    }
+
+    // Decision Graph Visualization
+    let network = null;
+    let graphVisible = false;
+
+    function buildDecisionGraph() {
+      if (!allDecisions.length) return;
+
+      const nodes = new vis.DataSet();
+      const edges = new vis.DataSet();
+
+      // Add nodes for each decision
+      allDecisions.forEach(decision => {
+        const statusColors = {
+          'active': '#00C8C8',
+          'pending': '#F9D030',
+          'emerging': '#5FA8E8',
+          'conditional': '#E8192E'
+        };
+
+        nodes.add({
+          id: decision.id,
+          label: decision.id + '\n' + decision.title.substring(0, 25),
+          title: decision.title,
+          color: statusColors[decision.status] || '#00C8C8',
+          font: { size: 12, multi: true },
+          shape: 'box',
+          margin: { top: 10, right: 10, bottom: 10, left: 10 }
+        });
+      });
+
+      // Add edges based on shared scenarios (infer dependencies)
+      const scenarioMap = {};
+      allDecisions.forEach(d => {
+        (d.related_scenarios || []).forEach(scenario => {
+          if (!scenarioMap[scenario]) scenarioMap[scenario] = [];
+          scenarioMap[scenario].push(d.id);
+        });
+      });
+
+      // Create edges between decisions that share scenarios
+      Object.values(scenarioMap).forEach(decisionIds => {
+        if (decisionIds.length > 1) {
+          for (let i = 0; i < decisionIds.length - 1; i++) {
+            edges.add({
+              from: decisionIds[i],
+              to: decisionIds[i + 1],
+              arrows: 'to',
+              color: { color: 'rgba(0, 200, 200, 0.3)' },
+              font: { size: 10 }
+            });
+          }
+        }
+      });
+
+      // Render graph
+      const container = document.getElementById('decision-graph');
+      const options = {
+        physics: {
+          enabled: true,
+          barnesHut: { gravitationalConstant: -10000, centralGravity: 0.1 }
+        },
+        interaction: { navigationButtons: true, keyboard: true },
+        nodes: { borderWidth: 2, widthConstraint: 120 }
+      };
+
+      network = new vis.Network(container, { nodes, edges }, options);
+
+      // Handle node click
+      network.on('click', (params) => {
+        if (params.nodes.length > 0) {
+          const decision = allDecisions.find(d => d.id === params.nodes[0]);
+          if (decision) {
+            document.getElementById('graph-info').innerHTML =
+              `<strong>${decision.id}: ${decision.title}</strong><br>` +
+              `Status: ${decision.status} | Priority: ${decision.priority}<br>` +
+              `Owner: ${decision.owner}`;
+          }
+        }
+      });
+    }
+
+    function toggleGraph() {
+      const graphEl = document.getElementById('decision-graph');
+      const infoEl = document.getElementById('graph-info');
+
+      if (!graphVisible) {
+        graphEl.style.display = 'block';
+        infoEl.innerHTML = 'Decision dependencies based on shared scenarios. Click nodes for details.';
+        buildDecisionGraph();
+        graphVisible = true;
+      } else {
+        graphEl.style.display = 'none';
+        infoEl.innerHTML = 'Click "Toggle Graph" to visualize decision dependencies';
+        graphVisible = false;
+        if (network) network.destroy();
+        network = null;
+      }
     }
 
     // Add filter event listeners
