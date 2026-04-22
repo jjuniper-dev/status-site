@@ -43,8 +43,11 @@ fetch('components/nav.html')
 
     const page = document.body.dataset.page;
     document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
-  });
+  })
+  .catch(() => {});
 </script>
+
+
 
 
 

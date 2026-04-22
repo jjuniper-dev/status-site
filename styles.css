@@ -916,25 +916,37 @@ body {
 }
 
 .main-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   display: flex;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
   padding: 12px 20px;
-  background: #1f2a30;
+  background: rgba(13, 17, 23, 0.96);
   border-bottom: 1px solid #2f6f73;
+  backdrop-filter: blur(6px);
 }
 
 .main-nav a {
   color: #d0d7da;
   text-decoration: none;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 4px;
 }
 
 .main-nav a:hover {
   color: #ffffff;
+  border-color: #6fc3c8;
 }
 
 .main-nav a.active {
   color: #a6ce39;
-  border-bottom: 2px solid #a6ce39;
+  border-color: #a6ce39;
+  background: rgba(166, 206, 57, 0.12);
 }

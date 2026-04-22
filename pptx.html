@@ -4,8 +4,23 @@
   <meta charset="UTF-8">
   <meta http-equiv="refresh" content="0; url=pptx-builder.html">
   <title>PPTX</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body data-page="pptx">
+<div id="nav-container"></div>
+
+<script>
+fetch('components/nav.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('nav-container').innerHTML = html;
+
+    const page = document.body.dataset.page;
+    document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+  })
+  .catch(() => {});
+</script>
+
   <p>Redirecting to <a href="pptx-builder.html">PPTX Builder</a>...</p>
 </body>
 </html>
