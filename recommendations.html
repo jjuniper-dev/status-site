@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Architecture Recommendations</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="layout">
+  <div class="topnav">
+    <div class="topnav-label">AI Project Dashboard</div>
+    <div class="topnav-links">
+      <a class="topnav-link" href="/status-site/index.html">Dashboard</a>
+      <a class="topnav-link active" href="/status-site/recommendations.html">Recommendations</a>
+      <a class="topnav-link" href="/status-site/decisions.html">Decisions</a>
+      <a class="topnav-link" href="/status-site/scenarios.html">Scenarios</a>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="breadcrumb">Dashboard &gt; Recommendations</div>
+    <div class="section-label">Generated Recommendations</div>
+    <div id="recommendation-list" class="grid-2"></div>
+  </div>
+</div>
+
+<script>
+  const container = document.getElementById('recommendation-list');
+
+  function renderRecommendation(item) {
+    return `
+      <div class="card">
+        <div class="card-title">${item.submission_title || 'Untitled submission'}</div>
+        <div class="card-sub"><strong>Outcome:</strong> ${item.outcome || 'n/a'}</div>
+        <ul class="card-list">
+          <li><strong>Score:</strong> ${item.score ?? 'n/a'}</li>
+          <li><strong>Type:</strong> ${item.recommendation_type || item.outcome || 'n/a'}</li>
+          <li><strong>Rationale:</strong> ${item.rationale || 'No rationale provided.'}</li>
+        </ul>
+      </div>
+    `;
+  }
+
+  fetch('/status-site/data/recommendations.json')
+    .then(response => response.ok ? response.json() : { recommendations: [] })
+    .then(payload => {
+      const recommendations = payload.recommendations || [];
+      if (!recommendations.length) {
+        container.innerHTML = '<div class="card"><div class="card-title">No recommendations yet</div><div class="card-sub">Run phase4 export to populate this view.</div></div>';
+        return;
+      }
+      container.innerHTML = recommendations.map(renderRecommendation).join('');
+    })
+    .catch(() => {
+      container.innerHTML = '<div class="card"><div class="card-title">Data unavailable</div><div class="card-sub">Unable to load recommendations.json.</div></div>';
+    });
+</script>
+</body>
+</html>

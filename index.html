@@ -15,6 +15,8 @@
       <a class="topnav-link active" href="/status-site/index.html">Dashboard</a>
       <a class="topnav-link" href="/status-site/decisions.html">Decisions</a>
       <a class="topnav-link" href="/status-site/scenarios.html">Scenarios</a>
+      <a class="topnav-link" href="/status-site/recommendations.html">Recommendations</a>
+      <a class="topnav-link" href="/status-site/submissions.html">Submissions</a>
       <a class="topnav-link" href="/status-site/intelligence.html">Intelligence</a>
       <a class="topnav-link" href="/status-site/artifacts.html">Artifacts</a>
       <a class="topnav-link" href="/status-site/path-architecture.html">Architecture</a>
@@ -189,6 +191,15 @@
 
     <div class="right-panel">
       <div class="panel-card">
+        <div class="panel-title">Evaluation Summary</div>
+        <ul class="panel-list">
+          <li>Total submissions: <strong id="summary-total-submissions">0</strong></li>
+          <li>High-risk items: <strong id="summary-high-risk">0</strong></li>
+          <li>Recommendation types: <strong id="summary-rec-types">0</strong></li>
+        </ul>
+      </div>
+
+      <div class="panel-card">
         <div class="panel-title">Active Decisions</div>
         <ul class="panel-list">
           <li><strong>DEC-001:</strong> HAIL Production ATO Gap</li>
@@ -222,6 +233,8 @@
         <ul class="panel-list">
           <li><a href="/status-site/decisions.html">→ Decisions Log</a></li>
           <li><a href="/status-site/scenarios.html">→ Scenarios</a></li>
+          <li><a href="/status-site/recommendations.html">→ Recommendations</a></li>
+          <li><a href="/status-site/submissions.html">→ Submissions</a></li>
           <li><a href="/status-site/intelligence.html">→ Intelligence</a></li>
           <li><a href="/status-site/artifacts.html">→ Artifacts</a></li>
         </ul>
@@ -250,6 +263,24 @@
       } else {
         link.classList.remove('active');
       }
+    });
+
+    Promise.all([
+      fetch('/status-site/data/submissions.json').then(r => r.ok ? r.json() : { submissions: [] }),
+      fetch('/status-site/data/recommendations.json').then(r => r.ok ? r.json() : { recommendations: [] }),
+      fetch('/status-site/data/generated-scenarios.json').then(r => r.ok ? r.json() : { scenarios: [] })
+    ]).then(([submissionsPayload, recPayload, scenariosPayload]) => {
+      const submissions = submissionsPayload.submissions || [];
+      const recommendations = recPayload.recommendations || [];
+      const scenarios = scenariosPayload.scenarios || [];
+      const highRiskCount = scenarios.filter(s => (s.risk_level || '').toLowerCase() === 'high').length;
+      const recTypes = new Set(recommendations.map(r => r.recommendation_type || r.outcome || 'unknown'));
+
+      document.getElementById('summary-total-submissions').textContent = String(submissions.length);
+      document.getElementById('summary-high-risk').textContent = String(highRiskCount);
+      document.getElementById('summary-rec-types').textContent = String(recTypes.size);
+    }).catch(() => {
+      // Keep fallback values at zero for static rendering if data is unavailable.
     });
   });
 </script>

@@ -11,7 +11,7 @@ from neo4j_graphrag.retrievers import (
     HybridCypherRetriever, HybridRetriever,
     VectorCypherRetriever, VectorRetriever,
 )
-from config import PipelineConfig
+from .config import PipelineConfig
 
 logger = logging.getLogger(__name__)
 

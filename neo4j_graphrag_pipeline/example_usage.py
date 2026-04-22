@@ -1,7 +1,7 @@
 import asyncio
-from config import load_config
-from graphrag_pipeline import GraphRAGPipeline
-from retrievers import RetrieverStrategy
+from .config import load_config
+from .graphrag_pipeline import GraphRAGPipeline
+from .retrievers import RetrieverStrategy
 
 SAMPLE_TEXT = """
 Artificial intelligence (AI) is transforming the public sector by automating

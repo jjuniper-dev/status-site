@@ -9,7 +9,7 @@ import neo4j
 from neo4j_graphrag.indexes import create_vector_index, create_fulltext_index, upsert_vectors
 from neo4j_graphrag.types import EntityType
 
-from config import PipelineConfig
+from .config import PipelineConfig
 
 logger = logging.getLogger(__name__)
 

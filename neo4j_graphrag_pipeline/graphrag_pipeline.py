@@ -15,10 +15,16 @@ import neo4j
 from neo4j_graphrag.generation import GraphRAG
 from neo4j_graphrag.llm import OpenAILLM
 
-from config import PipelineConfig, load_config
-from index_manager import IndexManager
-from kg_builder import KnowledgeGraphBuilder
-from retrievers import RetrieverFactory, RetrieverStrategy
+try:
+    from .config import PipelineConfig, load_config
+    from .index_manager import IndexManager
+    from .kg_builder import KnowledgeGraphBuilder
+    from .retrievers import RetrieverFactory, RetrieverStrategy
+except ImportError:  # pragma: no cover - script mode fallback
+    from config import PipelineConfig, load_config
+    from index_manager import IndexManager
+    from kg_builder import KnowledgeGraphBuilder
+    from retrievers import RetrieverFactory, RetrieverStrategy
 
 logger = logging.getLogger(__name__)
 
@@ -109,6 +115,9 @@ def cli():
     p_query.add_argument("--show-context", action="store_true")
 
     sub.add_parser("status", help="Show graph stats")
+    sub.add_parser("evaluate-submission", help="Run architecture submission intake + agent screening")
+    sub.add_parser("run-phase3", help="Generate scenarios, rubric evaluations, and recommendations")
+    sub.add_parser("export-dashboard", help="Export graph projection JSON files for static dashboard")
     args = parser.parse_args()
 
     with GraphRAGPipeline() as pipeline:
@@ -137,6 +146,15 @@ def cli():
                 print(f"Nodes: {info['node_count']}  |  Rels: {info['relationship_count']}")
                 for idx in info["indexes"]:
                     print(f"  - {idx['name']} ({idx['type']})")
+            case "evaluate-submission":
+                from run_submission_eval import main as run_eval_main
+                run_eval_main()
+            case "run-phase3":
+                from run_phase3 import main as run_phase3_main
+                run_phase3_main()
+            case "export-dashboard":
+                from phase4_runner import main as run_phase4_main
+                run_phase4_main()
 
 
 if __name__ == "__main__":

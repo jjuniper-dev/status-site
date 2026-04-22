@@ -12,7 +12,7 @@ from neo4j_graphrag.embeddings import OpenAIEmbeddings
 from neo4j_graphrag.experimental.pipeline.kg_builder import SimpleKGPipeline
 from neo4j_graphrag.llm import OpenAILLM
 
-from config import PipelineConfig
+from .config import PipelineConfig
 
 logger = logging.getLogger(__name__)
 

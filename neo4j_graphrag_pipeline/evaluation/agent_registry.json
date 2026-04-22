@@ -1,0 +1,14 @@
+{
+  "agents": [
+    {
+      "id": "azure-mcp",
+      "class_path": "neo4j_graphrag_pipeline.evaluation.agents.azure_mcp_agent.AzureMcpAgent",
+      "enabled": true
+    },
+    {
+      "id": "togaf-core",
+      "class_path": "neo4j_graphrag_pipeline.evaluation.agents.togaf_agent.TogafAgent",
+      "enabled": true
+    }
+  ]
+}
