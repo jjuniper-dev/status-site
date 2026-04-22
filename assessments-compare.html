@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vendor Comparison — AI Assessment</title>
+  <title>Compare Workbench — AI Assessment</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* ── Vendor toggle pills ── */
     .compare-controls {
       display: flex;
       flex-wrap: wrap;
@@ -22,7 +22,7 @@
       text-transform: uppercase;
       color: var(--text-faint);
     }
-    .vendor-toggle {
+    .vendor-toggle, .workbench-chip, .tab-btn {
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -36,8 +36,9 @@
       color: var(--text-dim);
       transition: border-color 0.15s, color 0.15s, background 0.15s;
       user-select: none;
+      text-decoration: none;
     }
-    .vendor-toggle.active {
+    .vendor-toggle.active, .workbench-chip.active, .tab-btn.active {
       border-color: var(--teal);
       color: var(--teal);
       background: rgba(0, 200, 200, 0.08);
@@ -54,12 +55,8 @@
       cursor: pointer;
       transition: border-color 0.15s, color 0.15s;
     }
-    .ctrl-btn:hover {
-      border-color: var(--teal);
-      color: var(--teal);
-    }
+    .ctrl-btn:hover { border-color: var(--teal); color: var(--teal); }
 
-    /* ── Summary score cards ── */
     .compare-summary {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -73,12 +70,8 @@
       text-align: center;
       transition: border-color 0.15s;
     }
-    .summary-card.is-selected {
-      border-color: rgba(0, 200, 200, 0.4);
-    }
-    .summary-card.is-leader {
-      border-color: var(--teal);
-    }
+    .summary-card.is-selected { border-color: rgba(0, 200, 200, 0.4); }
+    .summary-card.is-leader { border-color: var(--teal); }
     .summary-vendor {
       font-family: var(--mono);
       font-size: 11px;
@@ -122,7 +115,6 @@
     }
     .summary-detail-link:hover { opacity: 1; }
 
-    /* ── Score bar ── */
     .score-bar-wrap {
       display: flex;
       align-items: center;
@@ -155,7 +147,6 @@
     .val-mid  { color: var(--gold); }
     .val-high { color: var(--teal); }
 
-    /* ── Comparison table ── */
     .compare-table {
       width: 100%;
       border-collapse: collapse;
@@ -186,9 +177,7 @@
       font-size: 13px;
       vertical-align: middle;
     }
-    .compare-table tr:hover td:not(.dim-label) {
-      background: rgba(255,255,255,0.015);
-    }
+    .compare-table tr:hover td:not(.dim-label) { background: rgba(255,255,255,0.015); }
     .dim-label {
       font-family: var(--mono);
       font-size: 10px;
@@ -205,7 +194,6 @@
     }
     .section-row .dim-label { color: var(--teal); font-size: 11px; }
 
-    /* ── Vendor header cell ── */
     .vhdr { text-align: center; }
     .vhdr-name {
       font-family: var(--mono);
@@ -233,7 +221,6 @@
     }
     .vhdr-link:hover { opacity: 1; }
 
-    /* ── Composite cell ── */
     .comp-big {
       font-family: var(--mono);
       font-size: 28px;
@@ -258,13 +245,11 @@
       margin-left: 5px;
     }
 
-    /* ── Color helpers ── */
     .c-amber { color: var(--gold); }
     .c-red   { color: var(--red); }
     .c-green { color: var(--green); }
     .c-teal  { color: var(--teal); }
 
-    /* ── Positioning / recommendation cells ── */
     .pos-cell {
       font-size: 12px;
       color: var(--text-dim);
@@ -278,9 +263,137 @@
       max-width: 200px;
     }
 
-    /* ── Responsive ── */
+    .workbench-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .workbench-toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .workbench-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .workbench-shell {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+    .workbench-shell.split {
+      grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+    }
+    .workspace-pane {
+      border: 1px solid var(--border);
+      background: linear-gradient(160deg, var(--bg2), var(--bg3));
+      padding: 18px 20px;
+      min-width: 0;
+    }
+    .workspace-pane[hidden] { display: none !important; }
+    .workspace-pane-title {
+      font-family: var(--cond);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .workspace-pane-sub {
+      font-size: 12px;
+      color: var(--text-faint);
+      margin-bottom: 14px;
+    }
+    .document-browser {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .document-link {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .document-link:hover, .document-link.active {
+      border-color: var(--teal);
+      background: rgba(0,200,200,0.06);
+    }
+    .document-link-title {
+      font-family: var(--cond);
+      font-size: 15px;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    .document-link-meta {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-faint);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .document-link-summary {
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.45;
+    }
+    .document-viewer {
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+      min-height: 220px;
+    }
+    .document-viewer-content {
+      color: var(--text-dim);
+      font-size: 13px;
+      line-height: 1.65;
+      white-space: pre-wrap;
+    }
+    .document-viewer-content h1,
+    .document-viewer-content h2,
+    .document-viewer-content h3 {
+      color: var(--text);
+      font-family: var(--cond);
+      margin: 16px 0 8px;
+      line-height: 1.25;
+    }
+    .document-viewer-content p { margin: 0 0 10px; }
+    .document-viewer-content ul { margin: 0 0 10px 18px; }
+    .document-viewer-content code {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--teal);
+    }
+    .notes-box {
+      min-height: 220px;
+      width: 100%;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 13px;
+      line-height: 1.55;
+      padding: 12px;
+      resize: vertical;
+    }
+    .chart-card {
+      border: 1px solid var(--border);
+      background: linear-gradient(160deg, var(--bg2), var(--bg3));
+      padding: 18px 20px;
+      margin-bottom: 24px;
+    }
+
     @media (max-width: 1100px) {
       .compare-summary { grid-template-columns: repeat(3, 1fr); }
+      .workbench-shell.split { grid-template-columns: 1fr; }
     }
     @media (max-width: 760px) {
       .compare-summary { grid-template-columns: 1fr 1fr; }
@@ -305,12 +418,12 @@ fetch('components/nav.html')
 </script>
 
 <div class="layout">
-  <div class="breadcrumb">Assessments &gt; Comparison</div>
+  <div class="breadcrumb">Assessments &gt; Compare Workbench</div>
 
   <div class="header">
     <div class="header-eyebrow">AI Offering Review Layer</div>
-    <div class="header-title">Vendor <span>/</span> Comparison</div>
-    <div class="header-sub">Side-by-side evaluation across governance, architecture, capability, and procurement. All vendors assessed against the HC/PHAC four-layer rubric — v0.1 baseline.</div>
+    <div class="header-title">Compare <span>/</span> Workbench</div>
+    <div class="header-sub">Canonical analyst surface for vendor comparison, rubric interpretation, intelligence browsing, and evidence-driven decision support.</div>
     <div class="badges">
       <div class="badge badge-red">Decision Support</div>
       <div class="badge badge-teal">EA / TPO</div>
@@ -320,31 +433,92 @@ fetch('components/nav.html')
 
   <div class="positioning">
     <div class="positioning-label">Assessment Position</div>
-    <div class="positioning-text">No vendor reaches Green status at this baseline. All five carry gate failures on <em>G2 (data residency / sovereignty)</em> and <em>G3 (ATO / procurement clearance)</em>. Composite scores range from <em>58.5 to 69.0</em> — all Amber band. Vendor selection must be driven by deployment pattern and governance pathway, not capability rank alone.</div>
+    <div class="positioning-text">Vendor selection must be driven by <em>deployment pattern, governance pathway, and enterprise fit</em> — not capability rank alone.</div>
   </div>
 
-  <div class="section-label">Composite Scores</div>
-  <div id="summary-cards" class="compare-summary"></div>
-
-  <div class="section-label">Filter Vendors</div>
-  <div class="compare-controls">
-    <span class="compare-controls-label">Show:</span>
-    <div id="vendor-toggles" style="display:flex;flex-wrap:wrap;gap:6px"></div>
-    <button class="ctrl-btn" id="btn-all">All</button>
-    <button class="ctrl-btn" id="btn-clear">Clear</button>
+  <div class="workbench-toolbar">
+    <div class="workbench-tabs" id="workbench-tabs">
+      <button class="tab-btn active" type="button" data-tab="compare">Compare</button>
+      <button class="tab-btn" type="button" data-tab="rubric">Rubric</button>
+      <button class="tab-btn" type="button" data-tab="intelligence">Intelligence</button>
+      <button class="tab-btn" type="button" data-tab="evidence">Evidence</button>
+      <button class="tab-btn" type="button" data-tab="notes">Notes</button>
+    </div>
+    <div class="workbench-actions">
+      <button class="workbench-chip" id="toggle-split" type="button">Split View</button>
+      <button class="workbench-chip" id="close-pane" type="button">Hide Side Pane</button>
+    </div>
   </div>
 
-  <div class="section-label">Comparison Matrix</div>
-  <div id="comparison-output"></div>
+  <div class="workbench-shell" id="workbench-shell">
+    <div class="workspace-pane" id="primary-pane">
+      <div id="tab-compare" class="tab-panel">
+        <div class="section-label">Composite Scores</div>
+        <div id="summary-cards" class="compare-summary"></div>
+
+        <div class="section-label">Filter Vendors</div>
+        <div class="compare-controls">
+          <span class="compare-controls-label">Show:</span>
+          <div id="vendor-toggles" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+          <button class="ctrl-btn" id="btn-all">All</button>
+          <button class="ctrl-btn" id="btn-clear">Clear</button>
+        </div>
+
+        <div class="section-label">Comparison Matrix</div>
+        <div id="comparison-output"></div>
+
+        <div class="section-label">Radar View</div>
+        <div class="chart-card">
+          <canvas id="radarChart" height="120"></canvas>
+        </div>
+      </div>
+
+      <div id="tab-rubric" class="tab-panel" hidden>
+        <div class="workspace-pane-title">Rubric Interpretation</div>
+        <div class="workspace-pane-sub">High-level reading guide for how this comparison frame should be used.</div>
+        <div class="text-block">
+          <p><strong>Gates first.</strong> A vendor that fails core gates cannot be treated as enterprise-viable even if model capability is high.</p>
+          <p><strong>Composite scores help rank options, not approve them.</strong> Approval still depends on governance pathway, architecture fit, and deployment context.</p>
+          <p><strong>Architecture fit matters.</strong> The best model is the one that can be safely integrated into the control plane and supported operationally.</p>
+          <p><strong>Use this page as decision support.</strong> It should inform ARB, options analysis, and intake reviews rather than replace them.</p>
+        </div>
+      </div>
+
+      <div id="tab-intelligence" class="tab-panel" hidden>
+        <div class="workspace-pane-title">Intelligence Browser</div>
+        <div class="workspace-pane-sub">Browse manifest-backed internal reference documents inside the compare surface.</div>
+        <div id="intelligence-browser" class="document-browser"></div>
+      </div>
+
+      <div id="tab-evidence" class="tab-panel" hidden>
+        <div class="workspace-pane-title">Evidence Shortcuts</div>
+        <div class="workspace-pane-sub">Quick access to vendor evidence, rubric detail, and per-vendor assessment links.</div>
+        <div id="evidence-links" class="document-browser"></div>
+      </div>
+
+      <div id="tab-notes" class="tab-panel" hidden>
+        <div class="workspace-pane-title">Decision Notes</div>
+        <div class="workspace-pane-sub">Lightweight scratch space for meeting notes, ARB prep, or recommendation drafting.</div>
+        <textarea id="notes-box" class="notes-box" placeholder="Capture notes, issues, caveats, and recommended next steps here..."></textarea>
+      </div>
+    </div>
+
+    <aside class="workspace-pane" id="side-pane" hidden>
+      <div class="workspace-pane-title" id="side-pane-title">Document View</div>
+      <div class="workspace-pane-sub" id="side-pane-sub">Open a document from the active tab to view it here.</div>
+      <div class="document-viewer">
+        <div id="document-viewer-content" class="document-viewer-content">No document selected.</div>
+      </div>
+    </aside>
+  </div>
 
   <div class="footer">
     <div class="footer-left">Health Canada · Public Health Agency of Canada<br>AI Offering Assessment Registry — Internal Use</div>
-    <div class="footer-right">Static JSON backed · HC/PHAC visual standard</div>
+    <div class="footer-right">Single compare page · detail drill-through · integrated workbench</div>
   </div>
 </div>
 
 <script>
-/* ── helpers ── */
 function scoreLevel(v) {
   if (v < 2.5) return 'low';
   if (v < 3.5) return 'mid';
@@ -395,12 +569,38 @@ function posVal(d, key) {
   return d.positioning?.[key] || '<span style="color:var(--text-faint)">—</span>';
 }
 
-/* ── state ── */
+function escapeHtml(value = '') {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function markdownToHtml(md = '') {
+  return escapeHtml(md)
+    .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+    .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+    .replace(/^\- (.*$)/gim, '<li>$1</li>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/^(?!<h|<li|<\/p)(.+)$/gim, '<p>$1</p>')
+    .replace(/<p><\/p>/g, '')
+    .replace(/(<li>.*<\/li>)/gims, '<ul>$1</ul>')
+    .replace(/<ul>\s*<ul>/g, '<ul>')
+    .replace(/<\/ul>\s*<\/ul>/g, '</ul>');
+}
+
 let registry = [];
 let allData  = [];
 let selected = new Set();
+let radarChart = null;
+let workbenchDocs = [];
+let activeDocId = null;
+let activeTab = 'compare';
+let splitEnabled = false;
 
-/* ── summary cards ── */
 function buildSummaryCards() {
   const leader = Math.max(...allData.map(d => d.composite));
   document.getElementById('summary-cards').innerHTML = allData.map(d => {
@@ -417,7 +617,6 @@ function buildSummaryCards() {
   }).join('');
 }
 
-/* ── vendor toggles ── */
 function buildToggles() {
   const wrap = document.getElementById('vendor-toggles');
   wrap.innerHTML = registry.map(item => `
@@ -432,17 +631,18 @@ function buildToggles() {
       else                    { selected.add(slug);    lbl.classList.add('active');    }
       buildSummaryCards();
       renderTable();
+      buildEvidenceLinks();
     });
   });
 }
 
-/* ── main render ── */
 function renderTable() {
   const showing = allData.filter(d => selected.has(d.slug));
   const out = document.getElementById('comparison-output');
 
   if (!showing.length) {
     out.innerHTML = '<p style="color:var(--text-faint);font-family:var(--mono);font-size:12px;padding:24px 0">Select at least one vendor above to compare.</p>';
+    renderRadar([]);
     return;
   }
 
@@ -527,20 +727,202 @@ function renderTable() {
       </tbody>
     </table>
   `;
+
+  renderRadar(showing);
 }
 
-/* ── init ── */
+function renderRadar(showing) {
+  const ctx = document.getElementById('radarChart');
+  if (!ctx) return;
+  if (radarChart) radarChart.destroy();
+  if (!showing.length) return;
+
+  radarChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['Governance', 'Architecture', 'Capability', 'Procurement'],
+      datasets: showing.map(d => ({
+        label: d.vendor,
+        data: [d.scores.governance, d.scores.architecture, d.scores.capability, d.scores.procurement],
+        borderWidth: 2
+      }))
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        r: {
+          min: 0,
+          max: 5,
+          ticks: { stepSize: 1, color: '#B0BFCF' },
+          grid: { color: 'rgba(255,255,255,0.10)' },
+          angleLines: { color: 'rgba(255,255,255,0.10)' },
+          pointLabels: { color: '#F0F4FA', font: { family: 'IBM Plex Sans', size: 12 } }
+        }
+      },
+      plugins: {
+        legend: { labels: { color: '#F0F4FA', font: { family: 'IBM Plex Sans', size: 12 } } }
+      }
+    }
+  });
+}
+
+function setActiveTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === tab);
+  });
+  document.querySelectorAll('.tab-panel').forEach(panel => {
+    panel.hidden = panel.id !== `tab-${tab}`;
+  });
+}
+
+function updateSplitState() {
+  const shell = document.getElementById('workbench-shell');
+  const side = document.getElementById('side-pane');
+  const splitBtn = document.getElementById('toggle-split');
+  shell.classList.toggle('split', splitEnabled);
+  side.hidden = !splitEnabled;
+  splitBtn.classList.toggle('active', splitEnabled);
+}
+
+function openDocument(doc) {
+  activeDocId = doc.id;
+  splitEnabled = true;
+  updateSplitState();
+  document.getElementById('side-pane-title').textContent = doc.title;
+  document.getElementById('side-pane-sub').textContent = `${doc.type.toUpperCase()} · ${doc.collection || 'reference'}`;
+  document.getElementById('document-viewer-content').innerHTML = doc.html || '<p>No content available.</p>';
+  document.querySelectorAll('.document-link').forEach(el => el.classList.toggle('active', el.dataset.id === doc.id));
+}
+
+function buildIntelligenceBrowser() {
+  const container = document.getElementById('intelligence-browser');
+  const docs = workbenchDocs.filter(d => ['intelligence', 'engagement', 'decision'].includes(d.type));
+  container.innerHTML = docs.map(doc => `
+    <div class="document-link${activeDocId === doc.id ? ' active' : ''}" data-id="${doc.id}">
+      <div class="document-link-title">${doc.title}</div>
+      <div class="document-link-meta">${doc.collection || 'document'} · ${doc.type}</div>
+      <div class="document-link-summary">${doc.summary || ''}</div>
+    </div>
+  `).join('');
+  container.querySelectorAll('.document-link').forEach(el => {
+    el.addEventListener('click', () => {
+      const doc = workbenchDocs.find(d => d.id === el.dataset.id);
+      if (doc) openDocument(doc);
+    });
+  });
+}
+
+function buildEvidenceLinks() {
+  const container = document.getElementById('evidence-links');
+  const showing = allData.filter(d => selected.has(d.slug));
+  container.innerHTML = showing.map(d => `
+    <div class="document-link" data-id="evidence-${d.slug}">
+      <div class="document-link-title">${d.vendor} Evidence</div>
+      <div class="document-link-meta">Assessment Evidence</div>
+      <div class="document-link-summary">Open the detail assessment for ${d.vendor}, or review its recommendation and positioning in context.</div>
+    </div>
+  `).join('');
+  container.querySelectorAll('.document-link').forEach(el => {
+    el.addEventListener('click', () => {
+      const slug = el.dataset.id.replace('evidence-', '');
+      const d = allData.find(x => x.slug === slug);
+      if (!d) return;
+      openDocument({
+        id: `evidence-${slug}`,
+        title: `${d.vendor} Evidence`,
+        type: 'evidence',
+        collection: 'assessments',
+        html: `
+          <h2>${escapeHtml(d.vendor)}</h2>
+          <p><strong>Composite:</strong> ${d.composite} (${escapeHtml(d.composite_band)})</p>
+          <p><strong>Recommendation:</strong> ${escapeHtml(d.recommendation || '')}</p>
+          <p><strong>Detail page:</strong> <a href="assessment.html?vendor=${d.slug}&version=${d.version}">Open assessment detail</a></p>
+          <h3>Positioning</h3>
+          <ul>
+            <li>Openness: ${posVal(d, 'openness')}</li>
+            <li>Sovereignty: ${posVal(d, 'sovereignty')}</li>
+            <li>Runtime: ${posVal(d, 'runtime')}</li>
+          </ul>
+        `
+      });
+    });
+  });
+}
+
+async function loadWorkbenchDocs() {
+  try {
+    const manifest = await fetch('intelligence/index.json').then(r => r.json());
+    const docs = manifest.documents || [];
+    const selectedDocs = docs.filter(d => [
+      'platform-intelligence',
+      'llm-rubric-v1',
+      'pmra-ai-intake',
+      'copilot-expansion'
+    ].includes(d.id));
+
+    const loaded = await Promise.all(selectedDocs.map(async d => {
+      try {
+        const raw = await fetch(d.path).then(r => r.text());
+        return {
+          ...d,
+          html: markdownToHtml(raw)
+        };
+      } catch {
+        return {
+          ...d,
+          html: `<p>Unable to load ${escapeHtml(d.title)}.</p>`
+        };
+      }
+    }));
+
+    workbenchDocs = loaded;
+    buildIntelligenceBrowser();
+  } catch {
+    workbenchDocs = [];
+    document.getElementById('intelligence-browser').innerHTML = '<div class="document-link-summary">Manifest unavailable.</div>';
+  }
+}
+
+function bindWorkbench() {
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => setActiveTab(btn.dataset.tab));
+  });
+
+  document.getElementById('toggle-split').addEventListener('click', () => {
+    splitEnabled = !splitEnabled;
+    updateSplitState();
+  });
+
+  document.getElementById('close-pane').addEventListener('click', () => {
+    splitEnabled = false;
+    updateSplitState();
+  });
+
+  const notes = document.getElementById('notes-box');
+  try {
+    notes.value = localStorage.getItem('status-site.compare-notes') || '';
+  } catch {}
+  notes.addEventListener('input', () => {
+    try { localStorage.setItem('status-site.compare-notes', notes.value); } catch {}
+  });
+}
+
 document.getElementById('btn-all').addEventListener('click', () => {
   registry.forEach(r => selected.add(r.vendor));
   buildToggles();
   buildSummaryCards();
   renderTable();
+  buildEvidenceLinks();
 });
+
 document.getElementById('btn-clear').addEventListener('click', () => {
   selected.clear();
   buildToggles();
   buildSummaryCards();
   renderTable();
+  buildEvidenceLinks();
 });
 
 async function init() {
@@ -550,7 +932,7 @@ async function init() {
       fetch(`data/assessments/${item.vendor}-${item.version}.json`).then(r => r.json())
     )
   );
-  /* Merge index metadata into detail objects */
+
   registry.forEach((item, i) => {
     allData[i].slug    = item.vendor;
     allData[i].version = item.version;
@@ -558,10 +940,15 @@ async function init() {
     if (!allData[i].recommendation) allData[i].recommendation = item.recommendation;
     if (allData[i].composite === undefined) allData[i].composite = item.composite;
   });
+
   selected = new Set(registry.map(r => r.vendor));
   buildToggles();
   buildSummaryCards();
   renderTable();
+  buildEvidenceLinks();
+  bindWorkbench();
+  updateSplitState();
+  await loadWorkbenchDocs();
 }
 
 init();
