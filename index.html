@@ -242,7 +242,7 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    fetch('/status-site/components/nav.html')
+    fetch('components/nav.html')
       .then(res => res.text())
       .then(html => {
         document.getElementById('nav-container').innerHTML = html;
@@ -254,9 +254,9 @@
     });
 
     Promise.all([
-      fetch('/status-site/data/submissions.json').then(r => r.ok ? r.json() : { submissions: [] }),
-      fetch('/status-site/data/recommendations.json').then(r => r.ok ? r.json() : { recommendations: [] }),
-      fetch('/status-site/data/generated-scenarios.json').then(r => r.ok ? r.json() : { scenarios: [] })
+      fetch('data/submissions.json').then(r => r.ok ? r.json() : { submissions: [] }),
+      fetch('data/recommendations.json').then(r => r.ok ? r.json() : { recommendations: [] }),
+      fetch('data/generated-scenarios.json').then(r => r.ok ? r.json() : { scenarios: [] })
     ]).then(([submissionsPayload, recPayload, scenariosPayload]) => {
       const submissions = submissionsPayload.submissions || [];
       const recommendations = recPayload.recommendations || [];

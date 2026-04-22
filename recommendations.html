@@ -19,7 +19,7 @@
 </div>
 
 <script>
-  fetch('/status-site/components/nav.html')
+  fetch('components/nav.html')
     .then(res => res.text())
     .then(html => {
       document.getElementById('nav-container').innerHTML = html;
@@ -42,7 +42,7 @@
     `;
   }
 
-  fetch('/status-site/data/recommendations.json')
+  fetch('data/recommendations.json')
     .then(response => response.ok ? response.json() : { recommendations: [] })
     .then(payload => {
       const recommendations = payload.recommendations || [];

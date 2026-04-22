@@ -17,7 +17,7 @@
   </div>
 </div>
 <script>
-  fetch('/status-site/components/nav.html')
+  fetch('components/nav.html')
     .then(res => res.text())
     .then(html => {
       document.getElementById('nav-container').innerHTML = html;
@@ -25,7 +25,7 @@
     });
 
   const container = document.getElementById('submissions-list');
-  fetch('/status-site/data/submissions.json')
+  fetch('data/submissions.json')
     .then(r => r.ok ? r.json() : { submissions: [] })
     .then(payload => {
       const submissions = payload.submissions || [];
