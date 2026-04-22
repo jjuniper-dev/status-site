@@ -6,14 +6,22 @@
 <title>Dashboard</title>
 <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-<div class="topnav">
-<div class="topnav-label">AI Project Dashboard</div>
-<div class="topnav-links">
-<a class="topnav-link active" href="/status-site/dashboard.html">Dashboard</a>
-<a class="topnav-link" href="/status-site/intelligence.html">Intelligence</a>
-</div>
-</div>
+<body data-page="dashboard">
+<div id="nav-container"></div>
+
+<script>
+fetch('components/nav.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('nav-container').innerHTML = html;
+
+    const page = document.body.dataset.page;
+    document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+  })
+  .catch(() => {});
+</script>
+
+
 
 <div class="dashboard">
 <div id="nav"></div>

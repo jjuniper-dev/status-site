@@ -7,9 +7,23 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body data-page="assessments-compare">
+<div id="nav-container"></div>
+
+<script>
+fetch('components/nav.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('nav-container').innerHTML = html;
+
+    const page = document.body.dataset.page;
+    document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+  })
+  .catch(() => {});
+</script>
+
 <div class="layout">
-  <div class="topnav"><div class="topnav-label">AI Project Dashboard</div></div>
+  
   <div class="breadcrumb">Assessments &gt; Comparison</div>
   <div class="header"><div class="header-title">Vendor Comparison</div></div>
   <div id="comparison-output"></div>
