@@ -1,4 +1,4 @@
-# AI Project Dashboard
+# AI Workspace Dashboard
 
 GitHub Pages site for tracking enterprise architecture, governance, scenarios, decisions, and artifacts in a reusable dashboard format.
 
