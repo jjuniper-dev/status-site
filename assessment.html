@@ -7,15 +7,23 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body data-page="assessment">
+<div id="nav-container"></div>
+
+<script>
+fetch('components/nav.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('nav-container').innerHTML = html;
+
+    const page = document.body.dataset.page;
+    document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+  })
+  .catch(() => {});
+</script>
+
 <div class="layout">
-  <div class="topnav">
-    <div class="topnav-label">AI Project Dashboard</div>
-    <div class="topnav-links">
-      <a class="topnav-link" href="/status-site/index.html">Dashboard</a>
-      <a class="topnav-link active" href="/status-site/assessments.html">Assessments</a>
-    </div>
-  </div>
+  
 
   <div class="breadcrumb">Assessments &gt; Detail</div>
 
