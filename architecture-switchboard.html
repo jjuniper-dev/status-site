@@ -5,28 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Architecture Switchboard | PATH/HAIL</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
   <style>
-    :root {
-      --teal: #00c8c8;
-      --bg: #07090f;
-      --bg2: #0d1117;
-      --card: #0f1520;
-      --border: rgba(255,255,255,0.10);
-      --text: #f0f4fa;
-      --dim: #b0bfcf;
-      --faint: #6a7d90;
-      --mono: 'IBM Plex Mono', monospace;
-      --sans: 'IBM Plex Sans', sans-serif;
-      --condensed: 'IBM Plex Sans Condensed', sans-serif;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: var(--sans);
-      color: var(--text);
-      background: linear-gradient(180deg,var(--bg),var(--bg2));
-      padding: 24px 32px 40px;
-      min-height: 100vh;
-    }
     .topbar {
       display: flex;
       justify-content: space-between;
@@ -36,7 +16,7 @@
       background: rgba(13,17,23,.95);
       margin-bottom: 18px;
     }
-    .brand { font-family: var(--mono); font-size: 11px; color: var(--faint); text-transform: uppercase; letter-spacing: .08em; }
+    .brand { font-family: var(--mono); font-size: 11px; color: var(--text-faint); text-transform: uppercase; letter-spacing: .08em; }
     .back { color: var(--teal); text-decoration: none; font-family: var(--mono); font-size: 11px; }
     .hero, .panel {
       border: 1px solid var(--border);
@@ -45,14 +25,14 @@
       margin-bottom: 16px;
     }
     .eyebrow { color: var(--teal); font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .12em; margin-bottom: 10px; }
-    h1 { font-family: var(--condensed); font-size: 38px; line-height: 1.05; margin-bottom: 12px; }
-    .lead { color: var(--dim); max-width: 980px; }
-    label { display: block; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--faint); margin-bottom: 8px; }
+    h1 { font-family: var(--cond); font-size: 38px; line-height: 1.05; margin-bottom: 12px; }
+    .lead { color: var(--text-dim); max-width: 980px; }
+    label { display: block; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-faint); margin-bottom: 8px; }
     select {
       width: 100%;
       padding: 10px 12px;
       border: 1px solid var(--border);
-      background: var(--card);
+      background: var(--surface);
       color: var(--text);
       font-size: 14px;
       margin-bottom: 14px;
@@ -68,15 +48,15 @@
       background: rgba(255,255,255,.015);
       padding: 10px;
     }
-    .meta-item .k { font-family: var(--mono); color: var(--faint); font-size: 10px; text-transform: uppercase; margin-bottom: 6px; }
+    .meta-item .k { font-family: var(--mono); color: var(--text-faint); font-size: 10px; text-transform: uppercase; margin-bottom: 6px; }
     .meta-item .v { color: var(--text); font-size: 13px; }
     iframe {
       width: 100%;
       min-height: 70vh;
       border: 1px solid var(--border);
-      background: #fff;
+      background: var(--bg);
     }
-    .note { margin-top: 12px; color: var(--faint); font-family: var(--mono); font-size: 11px; }
+    .note { margin-top: 12px; color: var(--text-faint); font-family: var(--mono); font-size: 11px; }
     @media (max-width: 900px) {
       body { padding: 18px; }
       h1 { font-size: 30px; }
@@ -85,7 +65,7 @@
     }
   </style>
 </head>
-<body data-page="architecture">
+<body data-page="switchboard">
   <div id="nav-container"></div>
 <script>
 fetch('components/nav.html')
