@@ -4,6 +4,10 @@ export class DesignAssessor {
       .map(c => c.trim().replace(/^[-*•]\s*/, ''))
       .filter(c => c.length > 0);
 
+    if (criteria.length === 0) {
+      throw new Error('No valid criteria found. Please enter at least one criterion.');
+    }
+
     const imageProps = await this._analyzeImage(imageDataUrl);
 
     const criterionScores = criteria.map(criterion => {
@@ -26,8 +30,9 @@ export class DesignAssessor {
   }
 
   async _analyzeImage(imageDataUrl) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       const img = new Image();
+      img.onerror = () => reject(new Error('Image could not be decoded. Please try a different file.'));
       img.onload = () => {
         const canvas = document.createElement('canvas');
         canvas.width = Math.min(img.width, 400);
