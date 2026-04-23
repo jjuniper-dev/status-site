@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Design Assessor</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/ml5@0.12.0/dist/ml5.min.js"></script>
+  <style>
+    .assessor-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+    @media (max-width: 1200px) {
+      .assessor-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    .upload-panel, .criteria-panel, .results-panel {
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 24px;
+    }
+    .upload-area {
+      border: 2px dashed #2F6F73;
+      border-radius: 8px;
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      background: #f0f8f9;
+    }
+    .upload-area:hover {
+      background: #e0f4f6;
+      border-color: #1F4F53;
+    }
+    .upload-area.dragover {
+      background: #d0e8eb;
+      border-color: #1F4F53;
+    }
+    .upload-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+    .preview-image {
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: 8px;
+      margin-top: 16px;
+    }
+    textarea, input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 13px;
+      resize: vertical;
+    }
+    textarea {
+      min-height: 120px;
+    }
+    button {
+      padding: 12px 24px;
+      background: #2F6F73;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+      margin-top: 12px;
+      width: 100%;
+    }
+    button:hover {
+      background: #1F4F53;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .label {
+      font-weight: 600;
+      color: #2F6F73;
+      margin-top: 16px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .results-panel {
+      grid-column: 1 / -1;
+      display: none;
+    }
+    .results-panel.show {
+      display: block;
+    }
+    .assessment-result {
+      background: white;
+      border-left: 4px solid #2F6F73;
+      padding: 16px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+    .assessment-score {
+      font-size: 28px;
+      font-weight: bold;
+      color: #2F6F73;
+      margin-bottom: 12px;
+    }
+    .assessment-feedback {
+      color: #333;
+      line-height: 1.6;
+    }
+    .loading {
+      text-align: center;
+      color: #666;
+      padding: 20px;
+    }
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #2F6F73;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 12px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .info-box {
+      background: #f0f8f9;
+      border: 1px solid #a6ce39;
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      color: #333;
+    }
+    .template-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .template-btn {
+      padding: 6px 12px;
+      background: white;
+      border: 1px solid #2F6F73;
+      color: #2F6F73;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+    .template-btn:hover {
+      background: #2F6F73;
+      color: white;
+    }
+  </style>
+</head>
+<body data-page="assessor">
+<div id="nav-container"></div>
+<script>
+fetch('components/nav.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('nav-container').innerHTML = html;
+    const page = document.body.dataset.page;
+    document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+  })
+  .catch(() => {});
+</script>
+<main class="layout" style="padding: 24px;">
+  <h1>Design Assessor</h1>
+  <p>Upload designs and get instant AI feedback against your criteria. Zero external API calls — all analysis runs locally.</p>
+
+  <div class="assessor-container">
+    <!-- Upload Panel -->
+    <div class="upload-panel">
+      <h2>1. Upload Design</h2>
+      <div id="upload-area" class="upload-area">
+        <div class="upload-icon">📸</div>
+        <p><strong>Drag & drop</strong> or click to upload</p>
+        <p style="font-size: 12px; color: #666;">PNG, JPG, GIF, or screenshot</p>
+        <input type="file" id="file-input" style="display: none;" accept="image/*" />
+      </div>
+      <div id="preview-container"></div>
+      <button id="clear-btn" style="display: none;">Clear Upload</button>
+    </div>
+
+    <!-- Criteria Panel -->
+    <div class="criteria-panel">
+      <h2>2. Define Criteria</h2>
+
+      <div class="info-box">
+        <strong>Tip:</strong> Use templates or write custom criteria. Be specific for better feedback.
+      </div>
+
+      <div class="label">Quick Templates</div>
+      <div class="template-buttons">
+        <button class="template-btn" data-template="architecture">Architecture</button>
+        <button class="template-btn" data-template="accessibility">Accessibility</button>
+        <button class="template-btn" data-template="ux">UX/Design</button>
+        <button class="template-btn" data-template="information">Information Design</button>
+      </div>
+
+      <div class="label">Assessment Criteria</div>
+      <textarea id="criteria-input" placeholder="Enter assessment criteria (one per line):&#10;- Is the hierarchy clear?&#10;- Are components properly labeled?&#10;- Does it follow design principles?"></textarea>
+
+      <button id="assess-btn">Assess Design</button>
+    </div>
+  </div>
+
+  <!-- Results Panel -->
+  <div class="results-panel" id="results-panel">
+    <h2>Assessment Results</h2>
+    <div id="results-content"></div>
+  </div>
+</main>
+
+<script>
+  const templates = {
+    architecture: [
+      "Is the overall architecture structure clear and organized?",
+      "Are components and their relationships well-defined?",
+      "Is data flow clearly indicated?",
+      "Are responsibilities of each component evident?",
+      "Does it align with enterprise architecture principles?",
+      "Are there potential scalability or integration issues?"
+    ],
+    accessibility: [
+      "Is text readable and high contrast?",
+      "Are colors used accessibly (not relying on color alone)?",
+      "Is the design keyboard navigable?",
+      "Are icons accompanied by labels?",
+      "Is the layout logical for screen readers?"
+    ],
+    ux: [
+      "Is the visual hierarchy clear?",
+      "Are interactive elements obvious?",
+      "Is whitespace used effectively?",
+      "Does it guide the user's attention appropriately?",
+      "Are margins and padding consistent?"
+    ],
+    information: [
+      "Is information grouped logically?",
+      "Are labels clear and concise?",
+      "Is the visual encoding consistent?",
+      "Does the design minimize cognitive load?",
+      "Are relationships between elements evident?"
+    ]
+  };
+
+  // File upload
+  const uploadArea = document.getElementById('upload-area');
+  const fileInput = document.getElementById('file-input');
+  let uploadedImage = null;
+
+  uploadArea.addEventListener('click', () => fileInput.click());
+  uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('dragover');
+  });
+  uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+  uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+    const files = e.dataTransfer.files;
+    if (files.length > 0) handleFileSelect(files[0]);
+  });
+
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) handleFileSelect(e.target.files[0]);
+  });
+
+  function handleFileSelect(file) {
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      uploadedImage = e.target.result;
+      const preview = document.getElementById('preview-container');
+      preview.innerHTML = `<img src="${uploadedImage}" class="preview-image" />`;
+      document.getElementById('clear-btn').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  document.getElementById('clear-btn').addEventListener('click', () => {
+    uploadedImage = null;
+    fileInput.value = '';
+    document.getElementById('preview-container').innerHTML = '';
+    document.getElementById('clear-btn').style.display = 'none';
+  });
+
+  // Templates
+  document.querySelectorAll('.template-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const templateName = btn.dataset.template;
+      const criteria = templates[templateName];
+      document.getElementById('criteria-input').value = criteria.join('\n');
+    });
+  });
+
+  // Assessment
+  document.getElementById('assess-btn').addEventListener('click', assessDesign);
+
+  async function assessDesign() {
+    if (!uploadedImage) {
+      alert('Please upload a design first');
+      return;
+    }
+
+    const criteria = document.getElementById('criteria-input').value.trim();
+    if (!criteria) {
+      alert('Please enter assessment criteria');
+      return;
+    }
+
+    const resultsPanel = document.getElementById('results-panel');
+    const resultsContent = document.getElementById('results-content');
+
+    resultsContent.innerHTML = `
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Analyzing design...</p>
+        <p style="font-size: 12px; color: #999;">Vision-based analysis (no external APIs)</p>
+      </div>
+    `;
+    resultsPanel.classList.add('show');
+
+    try {
+      // Import and use the design assessor
+      const { DesignAssessor } = await import('./js/design-assessor.js');
+      const assessor = new DesignAssessor();
+      const feedback = await assessor.assessDesign(uploadedImage, criteria);
+
+      resultsContent.innerHTML = `
+        <div class="assessment-result">
+          <div class="assessment-score">${feedback.score}%</div>
+          <div class="assessment-feedback">
+            <h3>Assessment Summary</h3>
+            <p>${feedback.summary}</p>
+
+            <h3 style="margin-top: 20px;">Criterion-by-Criterion Scores</h3>
+            <div style="background: white; padding: 12px; border-radius: 4px; margin-bottom: 16px;">
+              ${feedback.criterionScores.map(c => `
+                <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #eee;">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <strong>${c.criterion}</strong>
+                    <span style="font-size: 18px; font-weight: bold; color: #2F6F73;">${c.score}%</span>
+                  </div>
+                  <p style="margin: 6px 0 0 0; font-size: 13px; color: #666;">${c.feedback}</p>
+                </div>
+              `).join('')}
+            </div>
+
+            <h3>Strengths</h3>
+            <ul>${feedback.strengths.map(s => `<li>${s}</li>`).join('')}</ul>
+
+            <h3 style="margin-top: 20px;">Areas for Improvement</h3>
+            <ul>${feedback.improvements.map(i => `<li>${i}</li>`).join('')}</ul>
+
+            <h3 style="margin-top: 20px;">Recommendations</h3>
+            <ol>${feedback.recommendations.map(r => `<li>${r}</li>`).join('')}</ol>
+          </div>
+        </div>
+      `;
+    } catch (err) {
+      console.error('Assessment error:', err);
+      resultsContent.innerHTML = `
+        <div class="assessment-result" style="border-left-color: #d9534f;">
+          <p style="color: #d9534f;">Error during assessment: ${err.message}</p>
+          <p style="font-size: 12px; color: #999;">Try again or check browser console for details.</p>
+        </div>
+      `;
+    }
+  }
+</script>
+</body>
+</html>
