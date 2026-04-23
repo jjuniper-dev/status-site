@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GraphRAG Knowledge Workbench — AI Governance Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
+  <style>
+    :root {
+      --teal: #00C8C8;
+      --red: #E8192E;
+      --gold: #F9D030;
+      --blue: #5FA8E8;
+      --bg: #07090F;
+      --bg2: #0D1117;
+      --bg3: #131920;
+      --surface: #1A2230;
+      --border: rgba(255, 255, 255, 0.10);
+      --text: #F0F4FA;
+      --text-dim: #B0BFCF;
+      --text-faint: #6A7D90;
+      --mono: 'IBM Plex Mono', monospace;
+      --sans: 'IBM Plex Sans', sans-serif;
+      --cond: 'IBM Plex Sans Condensed', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.55;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 28px 40px 64px;
+    }
+
+    @media (max-width: 768px) {
+      body { padding: 16px 20px 40px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .breadcrumb {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-faint);
+      opacity: 0.6;
+      margin: 16px 0 22px;
+    }
+
+    .header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: start;
+      border-bottom: 2px solid var(--teal);
+      padding-bottom: 24px;
+      margin-bottom: 36px;
+      gap: 24px;
+    }
+
+    .header-eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      color: var(--teal);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .header-title {
+      font-family: var(--cond);
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1;
+      color: #fff;
+    }
+
+    .header-sub {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      padding: 5px 11px;
+      border: 1px solid;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .badge-teal { border-color: var(--teal); color: var(--teal); }
+    .badge-gold { border-color: var(--gold); color: var(--gold); }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-button {
+      padding: 12px 16px;
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 500;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .tab-button:hover {
+      color: var(--text);
+    }
+
+    .tab-button.active {
+      color: var(--teal);
+      border-bottom-color: var(--teal);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin: 26px 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      background: linear-gradient(160deg, var(--bg2), var(--bg3));
+      padding: 18px 20px;
+    }
+
+    .card h2 {
+      font-family: var(--cond);
+      font-size: 22px;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+
+    .card p {
+      color: var(--text-dim);
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .card label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-dim);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    input[type="text"],
+    input[type="file"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 14px;
+      border-radius: 4px;
+    }
+
+    input[type="text"]::placeholder,
+    textarea::placeholder {
+      color: var(--text-faint);
+    }
+
+    textarea {
+      min-height: 120px;
+      font-family: var(--mono);
+      font-size: 12px;
+      resize: vertical;
+    }
+
+    select {
+      cursor: pointer;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    button,
+    .button-link {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      font-family: var(--mono);
+      font-size: 11px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+
+    button:hover,
+    .button-link:hover {
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    button.primary {
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    button.secondary {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .status {
+      font-size: 12px;
+      color: var(--text-faint);
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: rgba(0, 200, 200, 0.05);
+      border-left: 2px solid var(--teal);
+      border-radius: 4px;
+    }
+
+    .status.success {
+      color: #4ade80;
+      border-left-color: #4ade80;
+      background: rgba(74, 222, 128, 0.05);
+    }
+
+    .status.error {
+      color: var(--red);
+      border-left-color: var(--red);
+      background: rgba(232, 25, 46, 0.05);
+    }
+
+    .status.loading {
+      color: var(--gold);
+      border-left-color: var(--gold);
+      background: rgba(249, 208, 48, 0.05);
+    }
+
+    .results-container {
+      margin-top: 16px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .result-item {
+      border: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.2);
+      padding: 12px;
+      margin-bottom: 8px;
+      border-radius: 4px;
+    }
+
+    .result-item strong {
+      color: var(--teal);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .result-item p {
+      color: var(--text-dim);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    #graph-container {
+      width: 100%;
+      height: 600px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.3);
+      margin-bottom: 16px;
+    }
+
+    .vis-network {
+      font-family: var(--sans);
+    }
+
+    .graph-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .stat-box {
+      background: rgba(0, 200, 200, 0.05);
+      border: 1px solid var(--border);
+      padding: 12px;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .stat-box .number {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--teal);
+    }
+
+    .stat-box .label {
+      font-size: 11px;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .ingest-methods {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .method-button {
+      padding: 12px;
+      text-align: center;
+      background: rgba(0, 200, 200, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .method-button:hover {
+      border-color: var(--teal);
+      background: rgba(0, 200, 200, 0.1);
+    }
+
+    .method-button.active {
+      border-color: var(--teal);
+      background: rgba(0, 200, 200, 0.15);
+      color: var(--teal);
+    }
+
+    .hidden { display: none; }
+
+    .note {
+      font-size: 12px;
+      color: var(--text-faint);
+      margin-top: 8px;
+      font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+      .header { grid-template-columns: 1fr; }
+      .header-title { font-size: 28px; }
+      .grid { grid-template-columns: 1fr; }
+      #graph-container { height: 400px; }
+      .graph-stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body data-page="graphrag">
+  <div id="nav-container"></div>
+
+  <script>
+    fetch('components/nav.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('nav-container').innerHTML = html;
+        const page = document.body.dataset.page;
+        document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+      })
+      .catch(() => {});
+  </script>
+
+  <div class="breadcrumb">Platform &gt; GraphRAG Workbench</div>
+
+  <div class="header">
+    <div>
+      <div class="header-eyebrow">Knowledge Graph · Neo4j-Backed Intelligence</div>
+      <div class="header-title">GraphRAG Workbench</div>
+      <div class="header-sub">
+        Ingest documents, query the knowledge graph, and explore relationships. Multi-strategy retrieval with vector embeddings, graph patterns, and LLM synthesis.
+      </div>
+    </div>
+    <div>
+      <div><span class="badge badge-teal">Vector + Graph</span></div>
+      <div><span class="badge badge-gold">Multi-Strategy</span></div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-button active" onclick="switchTab('ingest')">📥 Ingest</button>
+    <button class="tab-button" onclick="switchTab('query')">🔍 Query</button>
+    <button class="tab-button" onclick="switchTab('explorer')">🕸️ Explorer</button>
+    <button class="tab-button" onclick="switchTab('status')">📊 Status</button>
+  </div>
+
+  <!-- ============================================================
+       TAB 1: INGEST
+       ============================================================ -->
+  <div id="ingest" class="tab-content active">
+    <div class="section-label">Document Ingestion</div>
+    <p style="color: var(--text-dim); margin-bottom: 16px;">
+      Upload documents to build the knowledge graph. Supported formats: Plain text, PDF, and directory batch uploads.
+    </p>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Choose Ingestion Method</h2>
+
+        <div class="ingest-methods">
+          <button class="method-button active" onclick="switchIngestMethod('text')">📝 Text</button>
+          <button class="method-button" onclick="switchIngestMethod('pdf')">📄 PDF</button>
+          <button class="method-button" onclick="switchIngestMethod('directory')">📁 Directory</button>
+        </div>
+
+        <!-- Text Ingestion -->
+        <div id="text-method" class="ingest-form">
+          <label>Paste Text Content</label>
+          <textarea id="text-input" placeholder="Paste governance documents, architecture notes, policy text, etc."></textarea>
+          <div class="actions">
+            <button class="primary" onclick="ingestText()">Ingest Text</button>
+          </div>
+          <div class="note">Character limit: 50,000. Large documents are processed asynchronously.</div>
+        </div>
+
+        <!-- PDF Ingestion -->
+        <div id="pdf-method" class="ingest-form hidden">
+          <label>Upload PDF File</label>
+          <input type="file" id="pdf-input" accept=".pdf">
+          <div class="actions">
+            <button class="primary" onclick="ingestPDF()">Upload & Ingest</button>
+          </div>
+          <div class="note">File size: up to 50MB. Processing may take a few seconds.</div>
+        </div>
+
+        <!-- Directory Ingestion -->
+        <div id="directory-method" class="ingest-form hidden">
+          <label>Directory Path (Server-side)</label>
+          <input type="text" id="directory-input" placeholder="/path/to/documents">
+          <label>File Pattern (glob)</label>
+          <input type="text" id="glob-input" value="*.pdf">
+          <div class="actions">
+            <button class="primary" onclick="ingestDirectory()">Ingest Directory</button>
+          </div>
+          <div class="note">Requires server access. Useful for batch processing stored documents.</div>
+        </div>
+
+        <div id="ingest-status" class="status hidden"></div>
+      </div>
+
+      <div class="card">
+        <h2>Ingestion Guide</h2>
+        <p><strong>Best Practices:</strong></p>
+        <ul style="color: var(--text-dim); line-height: 1.8; margin-left: 12px; list-style: none;">
+          <li>✓ Start with core governance docs (5-10 documents)</li>
+          <li>✓ Include architecture diagrams as image + text description</li>
+          <li>✓ Use consistent document structure</li>
+          <li>✓ Tag sensitive sections with classification levels</li>
+          <li>✓ Monitor progress in Status tab</li>
+        </ul>
+        <p style="margin-top: 16px; color: var(--text-faint); font-size: 12px;">
+          Documents are processed asynchronously. Graph is updated in real-time. Queries may improve as more documents are ingested.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       TAB 2: QUERY
+       ============================================================ -->
+  <div id="query" class="tab-content">
+    <div class="section-label">Query the Knowledge Graph</div>
+    <p style="color: var(--text-dim); margin-bottom: 16px;">
+      Ask questions about ingested documents. The system retrieves relevant context and generates answers using LLM synthesis.
+    </p>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Ask a Question</h2>
+        <label>Question</label>
+        <textarea id="query-input" placeholder="e.g., What are the main governance gaps? What platforms are approved? How does HAIL differ from PATH?"></textarea>
+
+        <label>Retrieval Strategy</label>
+        <select id="strategy-input">
+          <option value="vector_cypher" selected>Vector + Graph (Hybrid) - Recommended</option>
+          <option value="vector">Vector Similarity Only</option>
+          <option value="cypher">Graph Patterns Only</option>
+          <option value="hybrid">Vector OR Graph (Union)</option>
+        </select>
+
+        <label>Result Count</label>
+        <select id="topk-input">
+          <option value="3">3 results</option>
+          <option value="5" selected>5 results</option>
+          <option value="10">10 results</option>
+          <option value="20">20 results</option>
+        </select>
+
+        <div class="actions">
+          <button class="primary" onclick="executeQuery()">Execute Query</button>
+          <label style="margin-left: 12px; display: flex; align-items: center; gap: 6px; margin-bottom: 0;">
+            <input type="checkbox" id="show-context" checked>
+            <span style="color: var(--text-dim);">Show retrieved context</span>
+          </label>
+        </div>
+
+        <div id="query-status" class="status hidden"></div>
+      </div>
+
+      <div class="card">
+        <h2>Example Queries</h2>
+        <p style="font-size: 12px; line-height: 1.8; color: var(--text-dim); margin-bottom: 12px;">
+          <strong>Governance:</strong><br>
+          • What governance gaps exist?<br>
+          • What are the control plane requirements?<br>
+          <br>
+          <strong>Architecture:</strong><br>
+          • How should we structure the AI platform?<br>
+          • What's the difference between PATH and HAIL?<br>
+          <br>
+          <strong>Decisions:</strong><br>
+          • Which platforms are approved?<br>
+          • What are the ATO requirements?
+        </p>
+        <div class="note">Questions are answered using LLM synthesis over retrieved context.</div>
+      </div>
+    </div>
+
+    <div class="section-label">Results</div>
+    <div id="results-container" class="results-container"></div>
+  </div>
+
+  <!-- ============================================================
+       TAB 3: EXPLORER
+       ============================================================ -->
+  <div id="explorer" class="tab-content">
+    <div class="section-label">Knowledge Graph Explorer</div>
+    <p style="color: var(--text-dim); margin-bottom: 16px;">
+      Visual representation of the knowledge graph. Nodes represent entities, edges represent relationships extracted from ingested documents.
+    </p>
+
+    <div class="grid" style="grid-template-columns: 1fr;">
+      <div class="card">
+        <h2>Graph Visualization</h2>
+        <div id="graph-container"></div>
+
+        <div class="actions">
+          <button class="secondary" onclick="loadGraphSnapshot()">Refresh Graph</button>
+          <button class="secondary" onclick="resetGraphView()">Reset View</button>
+        </div>
+
+        <div class="section-label">Statistics</div>
+        <div class="graph-stats">
+          <div class="stat-box">
+            <div class="number" id="stat-nodes">0</div>
+            <div class="label">Nodes</div>
+          </div>
+          <div class="stat-box">
+            <div class="number" id="stat-edges">0</div>
+            <div class="label">Relationships</div>
+          </div>
+          <div class="stat-box">
+            <div class="number" id="stat-indexes">0</div>
+            <div class="label">Indexes</div>
+          </div>
+        </div>
+
+        <div id="explorer-status" class="status hidden"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       TAB 4: STATUS
+       ============================================================ -->
+  <div id="status" class="tab-content">
+    <div class="section-label">System Status</div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>GraphRAG API Health</h2>
+        <div id="health-info" class="results-container"></div>
+        <div class="actions">
+          <button class="primary" onclick="checkHealth()">Refresh Health</button>
+          <button class="secondary" onclick="initializeDatabase()">Initialize Database</button>
+        </div>
+        <div id="health-status" class="status hidden"></div>
+      </div>
+
+      <div class="card">
+        <h2>Configuration</h2>
+        <div id="config-info" style="color: var(--text-dim); font-size: 13px; line-height: 1.8;">
+          <p><strong>API Endpoint:</strong><br>
+          <code style="color: var(--teal);">http://localhost:8001/api/graphrag</code></p>
+          <p style="margin-top: 8px;"><strong>Status:</strong><br>
+          <span id="api-status" style="color: var(--gold);">Checking...</span></p>
+          <p style="margin-top: 8px;"><strong>Database:</strong><br>
+          <span id="db-status" style="color: var(--gold);">Checking...</span></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Graph Statistics</div>
+    <div class="grid">
+      <div class="card">
+        <h2>Current Knowledge Graph</h2>
+        <div id="graph-info" class="results-container"></div>
+        <div class="actions">
+          <button class="primary" onclick="loadGraphStats()">Refresh Stats</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       JAVASCRIPT
+       ============================================================ -->
+  <script>
+    const API_BASE = 'http://localhost:8001/api/graphrag';
+    let network = null;
+
+    // ============================================================
+    // TAB SWITCHING
+    // ============================================================
+
+    function switchTab(tabName) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      // Show selected tab
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+
+      // Auto-load on tab switch
+      if (tabName === 'explorer') {
+        setTimeout(() => loadGraphSnapshot(), 100);
+      } else if (tabName === 'status') {
+        setTimeout(() => {
+          checkHealth();
+          loadGraphStats();
+        }, 100);
+      }
+    }
+
+    function switchIngestMethod(method) {
+      // Hide all methods
+      document.querySelectorAll('.ingest-form').forEach(form => {
+        form.classList.add('hidden');
+      });
+      document.querySelectorAll('.method-button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      // Show selected method
+      document.getElementById(method + '-method').classList.remove('hidden');
+      event.target.classList.add('active');
+    }
+
+    // ============================================================
+    // INGESTION
+    // ============================================================
+
+    async function ingestText() {
+      const text = document.getElementById('text-input').value.trim();
+      if (!text) {
+        showStatus('ingest-status', 'error', 'Please enter text content');
+        return;
+      }
+
+      const status = document.getElementById('ingest-status');
+      showStatus('ingest-status', 'loading', 'Ingesting text...');
+
+      try {
+        const response = await fetch(`${API_BASE}/ingest/text?text=${encodeURIComponent(text)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+        showStatus('ingest-status', 'success', '✓ Text ingestion started successfully. Processing asynchronously.');
+        document.getElementById('text-input').value = '';
+      } catch (error) {
+        showStatus('ingest-status', 'error', `Ingestion failed: ${error.message}`);
+      }
+    }
+
+    async function ingestPDF() {
+      const file = document.getElementById('pdf-input').files[0];
+      if (!file) {
+        showStatus('ingest-status', 'error', 'Please select a PDF file');
+        return;
+      }
+
+      showStatus('ingest-status', 'loading', 'Uploading PDF...');
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const response = await fetch(`${API_BASE}/ingest/pdf`, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+        showStatus('ingest-status', 'success', `✓ PDF uploaded: ${file.name}. Processing asynchronously.`);
+        document.getElementById('pdf-input').value = '';
+      } catch (error) {
+        showStatus('ingest-status', 'error', `PDF upload failed: ${error.message}`);
+      }
+    }
+
+    async function ingestDirectory() {
+      const directory = document.getElementById('directory-input').value.trim();
+      const glob = document.getElementById('glob-input').value.trim() || '*.pdf';
+
+      if (!directory) {
+        showStatus('ingest-status', 'error', 'Please enter a directory path');
+        return;
+      }
+
+      showStatus('ingest-status', 'loading', 'Starting directory ingestion...');
+
+      try {
+        const response = await fetch(
+          `${API_BASE}/ingest/directory?directory=${encodeURIComponent(directory)}&glob_pattern=${encodeURIComponent(glob)}`,
+          { method: 'POST' }
+        );
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+        showStatus('ingest-status', 'success', `✓ Directory ingestion started: ${directory}`);
+        document.getElementById('directory-input').value = '';
+      } catch (error) {
+        showStatus('ingest-status', 'error', `Directory ingestion failed: ${error.message}`);
+      }
+    }
+
+    // ============================================================
+    // QUERYING
+    // ============================================================
+
+    async function executeQuery() {
+      const question = document.getElementById('query-input').value.trim();
+      if (!question) {
+        showStatus('query-status', 'error', 'Please enter a question');
+        return;
+      }
+
+      const strategy = document.getElementById('strategy-input').value;
+      const topK = parseInt(document.getElementById('topk-input').value);
+      const showContext = document.getElementById('show-context').checked;
+
+      showStatus('query-status', 'loading', 'Querying knowledge graph...');
+      document.getElementById('results-container').innerHTML = '<p style="color: var(--text-faint);">Processing...</p>';
+
+      try {
+        const response = await fetch(`${API_BASE}/query`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            question: question,
+            strategy: strategy,
+            top_k: topK,
+            return_context: showContext
+          })
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+        showStatus('query-status', 'success', '✓ Query complete');
+
+        // Display answer
+        let html = `
+          <div class="result-item">
+            <strong style="color: var(--text); font-size: 14px;">Answer</strong>
+            <p>${data.answer}</p>
+          </div>
+        `;
+
+        // Display context if available
+        if (showContext && data.context) {
+          html += `
+            <div style="margin-top: 12px;">
+              <strong style="color: var(--text-dim); font-size: 12px;">Retrieved Context:</strong>
+              <p style="color: var(--text-faint); font-size: 11px; margin-top: 4px;">
+                ${JSON.stringify(data.context, null, 2)}
+              </p>
+            </div>
+          `;
+        }
+
+        document.getElementById('results-container').innerHTML = html;
+      } catch (error) {
+        showStatus('query-status', 'error', `Query failed: ${error.message}`);
+        document.getElementById('results-container').innerHTML = '<p style="color: var(--text-faint);">Query failed. See status message above.</p>';
+      }
+    }
+
+    // ============================================================
+    // GRAPH EXPLORER
+    // ============================================================
+
+    async function loadGraphSnapshot() {
+      const status = document.getElementById('explorer-status');
+      showStatus('explorer-status', 'loading', 'Loading graph snapshot...');
+
+      try {
+        const response = await fetch(`${API_BASE}/status`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+
+        // Create simple graph visualization with synthetic data
+        const nodes = new vis.DataSet([
+          { id: 1, label: 'Knowledge\nGraph', color: '#00C8C8', font: { size: 16, color: '#fff', bold: { size: 16 } }, title: 'Central knowledge repository' },
+          { id: 2, label: 'Documents', color: '#5FA8E8', font: { color: '#fff' }, title: `${data.node_count || 0} nodes ingested` },
+          { id: 3, label: 'Entities', color: '#F9D030', font: { color: '#000' }, title: 'Extracted entities' },
+          { id: 4, label: 'Relationships', color: '#4ade80', font: { color: '#000' }, title: `${data.relationship_count || 0} connections` }
+        ]);
+
+        const edges = new vis.DataSet([
+          { from: 1, to: 2, label: 'contains', arrows: 'to' },
+          { from: 1, to: 3, label: 'extracts', arrows: 'to' },
+          { from: 1, to: 4, label: 'defines', arrows: 'to' },
+          { from: 2, to: 3, label: 'yields', arrows: 'to' }
+        ]);
+
+        const container = document.getElementById('graph-container');
+        const graphData = { nodes: nodes, edges: edges };
+        const options = {
+          physics: { enabled: true, barnesHut: { gravitationalConstant: -15000 } },
+          interaction: { navigationButtons: true, keyboard: true },
+          nodes: { borderWidth: 2, widthConstraint: 150 }
+        };
+
+        network = new vis.Network(container, graphData, options);
+
+        // Update stats
+        document.getElementById('stat-nodes').textContent = data.node_count || 0;
+        document.getElementById('stat-edges').textContent = data.relationship_count || 0;
+        document.getElementById('stat-indexes').textContent = (data.indexes && data.indexes.length) || 0;
+
+        showStatus('explorer-status', 'success', '✓ Graph loaded');
+      } catch (error) {
+        showStatus('explorer-status', 'error', `Failed to load graph: ${error.message}`);
+      }
+    }
+
+    function resetGraphView() {
+      if (network) {
+        network.fit();
+      }
+    }
+
+    // ============================================================
+    // STATUS & HEALTH
+    // ============================================================
+
+    async function checkHealth() {
+      try {
+        const response = await fetch(`${API_BASE}/health`);
+        const data = await response.json();
+
+        const apiStatus = data.neo4j_connected ? '✓ Connected' : '⚠ Disconnected';
+        const statusClass = data.neo4j_connected ? 'success' : 'error';
+
+        document.getElementById('api-status').textContent = apiStatus;
+        document.getElementById('api-status').style.color = data.neo4j_connected ? '#4ade80' : '#E8192E';
+        document.getElementById('db-status').textContent = data.neo4j_connected ? '✓ Neo4j Connected' : '⚠ Neo4j Unreachable';
+        document.getElementById('db-status').style.color = data.neo4j_connected ? '#4ade80' : '#E8192E';
+
+        const html = `
+          <div class="result-item">
+            <strong>Service Status</strong>
+            <p>API: ${apiStatus}</p>
+            <p>Nodes in graph: ${data.nodes || 0}</p>
+          </div>
+        `;
+        document.getElementById('health-info').innerHTML = html;
+        showStatus('health-status', 'success', '✓ Health check complete');
+      } catch (error) {
+        document.getElementById('api-status').textContent = '⚠ Unreachable';
+        document.getElementById('api-status').style.color = '#E8192E';
+        document.getElementById('db-status').textContent = '⚠ Unreachable';
+        document.getElementById('db-status').style.color = '#E8192E';
+        showStatus('health-status', 'error', `Health check failed: ${error.message}`);
+      }
+    }
+
+    async function loadGraphStats() {
+      try {
+        const response = await fetch(`${API_BASE}/status`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+        const indexesHtml = data.indexes && data.indexes.length
+          ? data.indexes.map(idx => `<p style="margin-bottom: 4px;">• ${idx.name} (${idx.type})</p>`).join('')
+          : '<p style="color: var(--text-faint);">No indexes yet. Run initialization.</p>';
+
+        const html = `
+          <div class="result-item">
+            <strong>Graph Metrics</strong>
+            <p>Nodes: <strong style="color: var(--teal);">${data.node_count || 0}</strong></p>
+            <p>Relationships: <strong style="color: var(--teal);">${data.relationship_count || 0}</strong></p>
+          </div>
+          <div class="result-item" style="margin-top: 8px;">
+            <strong>Indexes</strong>
+            ${indexesHtml}
+          </div>
+        `;
+        document.getElementById('graph-info').innerHTML = html;
+      } catch (error) {
+        document.getElementById('graph-info').innerHTML = `<p style="color: var(--red);">Failed to load stats: ${error.message}</p>`;
+      }
+    }
+
+    async function initializeDatabase() {
+      showStatus('health-status', 'loading', 'Initializing database...');
+
+      try {
+        const response = await fetch(`${API_BASE}/setup`, { method: 'POST' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+        showStatus('health-status', 'success', '✓ Database initialized');
+        await loadGraphStats();
+      } catch (error) {
+        showStatus('health-status', 'error', `Initialization failed: ${error.message}`);
+      }
+    }
+
+    // ============================================================
+    // UTILITIES
+    // ============================================================
+
+    function showStatus(elementId, type, message) {
+      const element = document.getElementById(elementId);
+      element.className = `status ${type}`;
+      element.textContent = message;
+      element.classList.remove('hidden');
+    }
+
+    // Initialize on load
+    window.addEventListener('load', () => {
+      checkHealth();
+    });
+  </script>
+</body>
+</html>

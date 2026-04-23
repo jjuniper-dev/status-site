@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scenario Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="scenario-dashboard">
+<div id="nav-container"></div>
+<script>
+fetch('components/nav.html').then(r=>r.text()).then(html=>{
+  document.getElementById('nav-container').innerHTML=html;
+});
+</script>
+
+<div class="layout">
+  <div class="header">
+    <div class="header-eyebrow">Scenario Intelligence</div>
+    <div class="header-title">Scenario Dashboard</div>
+    <div class="header-sub">Event → Impact → Condition → Infrastructure reasoning surface.</div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Scenario Controls</div>
+      <select id="event-type"><option>Heatwave</option><option>Flood</option></select>
+      <input id="severity" type="range" min="1" max="10" value="7">
+    </div>
+
+    <div class="card">
+      <div class="card-title">Decision Output</div>
+      <div id="decision-output">Run a scenario</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Subgraph Inspector</div>
+    <div id="cy" style="height:400px"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+<script>
+const LANE_ORDER = ['event','impact','condition','hospital','location','unit','route'];
+const DECISION_PATH = ['e','i','c','h'];
+
+function computePositions(nodes){
+  const lanes = {};
+  nodes.forEach(n=>{
+    const t=(n.type||'unknown').toLowerCase();
+    if(!lanes[t]) lanes[t]=[];
+    lanes[t].push(n);
+  });
+
+  const laneWidth=220, rowHeight=110;
+  const out=[];
+
+  LANE_ORDER.forEach((t,i)=>{
+    (lanes[t]||[]).forEach((n,r)=>{
+      out.push({...n, position:{
+        x:100+i*laneWidth,
+        y:120+r*rowHeight
+      }});
+    });
+  });
+
+  return out;
+}
+
+function color(type){
+  switch(type){
+    case 'event':return '#E8192E';
+    case 'impact':return '#F9D030';
+    case 'condition':return '#A6CE39';
+    case 'hospital':return '#2F6F73';
+    case 'location':return '#5E9EA3';
+    case 'unit':return '#355C7D';
+    default:return '#00C8C8';
+  }
+}
+
+function renderDecisionExplanation(){
+  document.getElementById('decision-output').innerHTML = `
+    <strong>Escalate response posture</strong><br/>
+    Confidence: 87%<br/><br/>
+    Decision influenced by:<br/>
+    - Heatwave severity<br/>
+    - Air quality degradation<br/>
+    - Respiratory pressure<br/>
+    - Hospital load
+  `;
+}
+
+function highlightDecisionTrace(cy){
+  cy.elements().addClass('is-dim');
+
+  DECISION_PATH.forEach(id=>{
+    cy.getElementById(id).removeClass('is-dim').addClass('is-focus');
+  });
+
+  for(let i=0;i<DECISION_PATH.length-1;i++){
+    const src = DECISION_PATH[i];
+    const tgt = DECISION_PATH[i+1];
+    cy.edges().forEach(edge=>{
+      if(edge.data('source')===src && edge.data('target')===tgt){
+        edge.removeClass('is-dim').addClass('is-focus');
+      }
+    });
+  }
+}
+
+function clearTrace(cy){
+  cy.elements().removeClass('is-dim');
+  cy.elements().removeClass('is-focus');
+}
+
+function renderGraph(){
+  const nodes=[
+    {id:'e',label:'Heatwave',type:'event'},
+    {id:'i',label:'Air Quality',type:'impact'},
+    {id:'c',label:'Asthma',type:'condition'},
+    {id:'h',label:'Hospital',type:'hospital'},
+    {id:'l',label:'Ottawa',type:'location'}
+  ];
+
+  const edges=[
+    {source:'e',target:'i',label:'TRIGGERS'},
+    {source:'i',target:'c',label:'RISK'},
+    {source:'c',target:'h',label:'STRAINS'},
+    {source:'h',target:'l',label:'LOCATED_IN'}
+  ];
+
+  const positioned=computePositions(nodes);
+
+  const cy=cytoscape({
+    container:document.getElementById('cy'),
+    elements:[
+      ...positioned.map(n=>({
+        data:{...n},
+        position:n.position,
+        locked:true
+      })),
+      ...edges.map((e,i)=>({
+        data:{id:'e'+i,...e}
+      }))
+    ],
+    style:[
+      {
+        selector:'node',
+        style:{
+          'background-color':ele=>color(ele.data('type')),
+          'label':'data(label)',
+          'color':'#fff',
+          'text-wrap':'wrap',
+          'text-max-width':110,
+          'font-size':11,
+          'border-width':2,
+          'border-color':'#ffffff'
+        }
+      },
+      {
+        selector:'edge',
+        style:{
+          'curve-style':'taxi',
+          'taxi-direction':'rightward',
+          'target-arrow-shape':'triangle',
+          'label':'data(label)',
+          'font-size':9,
+          'line-color':'#8AA5AD',
+          'target-arrow-color':'#8AA5AD'
+        }
+      },
+      {
+        selector:'.is-dim',
+        style:{
+          'opacity':0.18
+        }
+      },
+      {
+        selector:'.is-focus',
+        style:{
+          'opacity':1,
+          'border-color':'#00C8C8',
+          'border-width':4,
+          'line-color':'#00C8C8',
+          'target-arrow-color':'#00C8C8',
+          'z-index':999
+        }
+      }
+    ],
+    layout:{name:'preset'}
+  });
+
+  renderDecisionExplanation();
+  highlightDecisionTrace(cy);
+
+  cy.on('tap','node',e=>{
+    clearTrace(cy);
+    const n=e.target.data();
+    document.getElementById('decision-output').innerHTML=
+      `<strong>${n.label}</strong><br/>Type: ${n.type}`;
+    e.target.addClass('is-focus');
+  });
+
+  cy.on('tap', evt => {
+    if(evt.target === cy){
+      renderDecisionExplanation();
+      highlightDecisionTrace(cy);
+    }
+  });
+}
+
+renderGraph();
+</script>
+</body>
+</html>

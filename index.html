@@ -210,6 +210,16 @@ fetch('components/nav.html')
         </ul>
       </div>
 
+      <div class="panel-card" style="background: linear-gradient(160deg, #0d1520 0%, #0a0f1a 100%); border: 1px solid rgba(0, 200, 200, 0.2);">
+        <div class="panel-title">💡 Ask GraphRAG</div>
+        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+          <input type="text" id="dash-query" placeholder="e.g., What are the governance gaps?" style="flex: 1; padding: 8px 10px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #F0F4FA; font-size: 12px; border-radius: 4px;">
+          <button onclick="dashboardQuery()" style="padding: 8px 14px; background: rgba(0, 200, 200, 0.1); border: 1px solid rgba(0, 200, 200, 0.3); color: #00C8C8; cursor: pointer; font-size: 12px; border-radius: 4px; font-weight: 500;">Ask</button>
+        </div>
+        <div id="dash-result" style="font-size: 12px; color: #B0BFCF; line-height: 1.5; max-height: 120px; overflow-y: auto;"></div>
+        <div style="font-size: 11px; color: #6A7D90; margin-top: 8px;">Requires GraphRAG API running on localhost:8001</div>
+      </div>
+
       <div class="panel-card">
         <div class="panel-title">Next Steps</div>
         <ul class="panel-list">
@@ -243,6 +253,47 @@ fetch('components/nav.html')
     </div>
   </div>
 </div>
+
+<script>
+async function dashboardQuery() {
+  const question = document.getElementById('dash-query').value.trim();
+  if (!question) return;
+
+  const resultEl = document.getElementById('dash-result');
+  resultEl.textContent = '⏳ Querying...';
+
+  try {
+    const response = await fetch('http://localhost:8001/api/graphrag/query', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        question: question,
+        strategy: 'vector_cypher',
+        top_k: 3,
+        return_context: false
+      })
+    });
+
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+    const data = await response.json();
+    resultEl.textContent = data.answer || '(No answer found)';
+  } catch (error) {
+    resultEl.textContent = `⚠️ ${error.message}. Is GraphRAG API running?`;
+    resultEl.style.color = '#E8192E';
+  }
+}
+
+// Allow Enter key to submit
+document.addEventListener('DOMContentLoaded', () => {
+  const input = document.getElementById('dash-query');
+  if (input) {
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') dashboardQuery();
+    });
+  }
+});
+</script>
 
 </body>
 </html>

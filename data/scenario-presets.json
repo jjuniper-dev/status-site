@@ -1,0 +1,32 @@
+{
+  "version": "0.1.0",
+  "presets": [
+    {
+      "id": "ottawa-heatwave",
+      "label": "Ottawa Heatwave",
+      "eventType": "Heatwave",
+      "location": "Ottawa",
+      "severity": 8,
+      "capacityThreshold": 0.85,
+      "roadSensitivity": "medium"
+    },
+    {
+      "id": "ottawa-flood",
+      "label": "Ottawa Flood",
+      "eventType": "Flood",
+      "location": "Ottawa",
+      "severity": 7,
+      "capacityThreshold": 0.8,
+      "roadSensitivity": "high"
+    },
+    {
+      "id": "gatineau-smoke",
+      "label": "Gatineau Wildfire Smoke",
+      "eventType": "Wildfire Smoke",
+      "location": "Gatineau",
+      "severity": 6,
+      "capacityThreshold": 0.85,
+      "roadSensitivity": "low"
+    }
+  ]
+}
