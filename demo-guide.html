@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo Guide — AI Governance Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .demo-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    @media(max-width:768px) {
+      .demo-container {
+        padding: 1rem;
+      }
+      .demo-title {
+        font-size: 1.6rem;
+      }
+      .demo-flow {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .demo-hero {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 2rem 0;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .demo-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    .demo-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-dim);
+      max-width: 800px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .demo-badges {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+
+    .badge {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      background: var(--surface);
+      color: var(--text-dim);
+    }
+
+    .badge.executive {
+      background: rgba(124,255,178,0.1);
+      color: var(--green);
+    }
+
+    .badge.technical {
+      background: rgba(95,168,232,0.1);
+      color: var(--blue-light);
+    }
+
+    .narrative-section {
+      margin-bottom: 3rem;
+    }
+
+    .narrative-header {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .narrative-header .icon {
+      width: 40px;
+      height: 40px;
+      background: var(--surface);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    .narrative-text {
+      color: var(--text-dim);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .demo-flow {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .demo-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      background: var(--surface);
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .demo-card:hover {
+      border-color: var(--teal);
+      box-shadow: 0 4px 12px rgba(0,200,200,0.12);
+      transform: translateY(-2px);
+    }
+
+    .demo-card.step-1 { border-left: 4px solid var(--red); }
+    .demo-card.step-2 { border-left: 4px solid var(--teal); }
+    .demo-card.step-3 { border-left: 4px solid var(--blue-light); }
+    .demo-card.step-4 { border-left: 4px solid var(--gold); }
+    .demo-card.step-5 { border-left: 4px solid var(--green); }
+    .demo-card.step-6 { border-left: 4px solid var(--teal); }
+
+    .card-step {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-faint);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    .card-description {
+      font-size: 0.95rem;
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--text-faint);
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .card-link {
+      color: var(--teal);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .card-link:hover {
+      text-decoration: underline;
+    }
+
+    .audience-toggle {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      justify-content: center;
+    }
+
+    .toggle-btn {
+      padding: 0.75rem 1.5rem;
+      border: 2px solid var(--border);
+      background: var(--bg2);
+      color: var(--text);
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .toggle-btn.active {
+      border-color: var(--teal);
+      background: rgba(0,200,200,0.1);
+      color: var(--teal);
+    }
+
+    .demo-tips {
+      background: var(--surface);
+      border-left: 4px solid var(--teal);
+      padding: 1.5rem;
+      border-radius: 6px;
+      margin-top: 3rem;
+    }
+
+    .demo-tips h3 {
+      margin: 0 0 1rem 0;
+      color: var(--text);
+    }
+
+    .demo-tips ul {
+      margin: 0;
+      padding-left: 1.5rem;
+      color: var(--text-dim);
+      line-height: 1.8;
+    }
+
+    .demo-tips li {
+      margin-bottom: 0.5rem;
+    }
+
+    .timing-badge {
+      display: inline-block;
+      background: rgba(95,168,232,0.15);
+      color: var(--blue-light);
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-left: 0.5rem;
+    }
+
+    .key-questions {
+      background: var(--surface);
+      border-left: 4px solid var(--gold);
+      padding: 1.5rem;
+      border-radius: 6px;
+      margin-top: 2rem;
+    }
+
+    .key-questions h3 {
+      margin: 0 0 1rem 0;
+      color: var(--gold);
+    }
+
+    .key-questions ol {
+      margin: 0;
+      padding-left: 1.5rem;
+      color: var(--text-dim);
+      line-height: 1.8;
+    }
+
+    .key-questions li {
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body data-page="demo-guide">
+<div id="nav-container"></div>
+
+<script>
+fetch('components/nav.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('nav-container').innerHTML = html;
+  })
+  .catch(() => {});
+</script>
+
+<div class="layout">
+  <div class="main-content">
+    <div class="breadcrumb">Platform &gt; Demo</div>
+
+    <div class="demo-container">
+      <div class="demo-hero">
+        <h1 class="demo-title">AI Governance Platform Demo</h1>
+        <p class="demo-subtitle">
+          Living intelligence surface for enterprise architecture decisions, governance gaps, and AI platform architecture. Designed for both executive sponsors and technical decision-makers.
+        </p>
+        <div class="demo-badges">
+          <div class="badge executive">📊 For Executives</div>
+          <div class="badge technical">🏗️ For Technical Teams</div>
+          <div class="badge">⏱️ 5-minute walkthrough</div>
+        </div>
+      </div>
+
+      <div class="audience-toggle">
+        <button class="toggle-btn active" onclick="filterByAudience('all')">Show All</button>
+        <button class="toggle-btn" onclick="filterByAudience('executive')">Executive View</button>
+        <button class="toggle-btn" onclick="filterByAudience('technical')">Technical View</button>
+      </div>
+
+      <div class="narrative-section">
+        <div class="narrative-header">
+          <div class="icon">📖</div>
+          <div>
+            <div>Demo Narrative Arc</div>
+            <div style="font-size: 0.85rem; font-weight: normal; color: #999;">5-minute guided walkthrough</div>
+          </div>
+        </div>
+        <p class="narrative-text">
+          This demo tells a story about enterprise AI governance:
+          <strong>What decisions have we made? What gaps do we face? How do we assess platform options?</strong>
+        </p>
+        <p class="narrative-text">
+          We start with <strong>Governance & Control Plane</strong> (what we're building), move through <strong>Critical Decisions</strong> (what we've chosen and why),
+          examine <strong>Architecture</strong> (how it fits together), compare <strong>Platform Assessments</strong> (which options work),
+          review <strong>Intelligence</strong> (our EA interpretation), and finish with <strong>Operational Readiness</strong> (settings and extensibility).
+        </p>
+      </div>
+
+      <div class="narrative-section">
+        <div class="narrative-header">
+          <div class="icon">🚀</div>
+          Demo Flow
+        </div>
+        <div class="demo-flow">
+          <div class="demo-card step-1" data-audience="technical">
+            <div class="card-step">Step 1 · 1 min</div>
+            <div class="card-title">Control Plane Architecture</div>
+            <div class="card-description">
+              How governance and controls work. Shows PATH as the control plane with token metering, audit layers, GREP-ExP pattern, and promotion gates.
+            </div>
+            <div class="card-meta">
+              <span>🏗️ Technical focus</span>
+              <a href="control-plane.html" class="card-link">→ Open</a>
+            </div>
+          </div>
+
+          <div class="demo-card step-2" data-audience="executive">
+            <div class="card-step">Step 2 · 1 min</div>
+            <div class="card-title">Critical Decisions</div>
+            <div class="card-description">
+              What decisions shape the platform? HAIL production move, PATH/HAIL convergence, shadow AI mitigation, and governance gaps.
+            </div>
+            <div class="card-meta">
+              <span>📊 Governance focus</span>
+              <a href="decisions.html" class="card-link">→ Open</a>
+            </div>
+          </div>
+
+          <div class="demo-card step-3" data-audience="technical">
+            <div class="card-step">Step 3 · 1 min</div>
+            <div class="card-title">Architecture & Diagramming</div>
+            <div class="card-description">
+              Visual representation of PATH reference architecture, showing control gateway, classification bands, execution patterns, and runtime enforcement.
+            </div>
+            <div class="card-meta">
+              <span>🏗️ Architecture</span>
+              <a href="path-architecture.html" class="card-link">→ Open</a>
+            </div>
+          </div>
+
+          <div class="demo-card step-4" data-audience="executive">
+            <div class="card-step">Step 4 · 1 min</div>
+            <div class="card-title">Platform Assessment Comparison</div>
+            <div class="card-description">
+              How do we evaluate vendor platforms? Compare Anthropic, OpenAI, Gemini, Cohere, GC LLM against governance, architecture, capability, and procurement criteria.
+            </div>
+            <div class="card-meta">
+              <span>📊 Decision support</span>
+              <a href="assessments-compare.html" class="card-link">→ Open</a>
+            </div>
+          </div>
+
+          <div class="demo-card step-5" data-audience="all">
+            <div class="card-step">Step 5 · 1 min</div>
+            <div class="card-title">AI Governance Intelligence</div>
+            <div class="card-description">
+              Long-form EA analysis: operational signals, governance gaps, capability assessment, open questions, and a living update log.
+            </div>
+            <div class="card-meta">
+              <span>📖 Synthesis</span>
+              <a href="intelligence.html" class="card-link">→ Open</a>
+            </div>
+          </div>
+
+          <div class="demo-card step-6" data-audience="technical">
+            <div class="card-step">Step 6 · 1 min</div>
+            <div class="card-title">Operational Readiness</div>
+            <div class="card-description">
+              Settings, extensibility, and platform capabilities. Encrypted API key management, MCP configuration, custom skills, data export/import.
+            </div>
+            <div class="card-meta">
+              <span>⚙️ Operations</span>
+              <a href="settings.html" class="card-link">→ Open</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="key-questions">
+        <h3>📋 Key Questions This Demo Answers</h3>
+        <ol>
+          <li><strong>What is PATH?</strong> Enterprise AI control plane for HC/PHAC governance. See: Control Plane page.</li>
+          <li><strong>What are the critical blockers?</strong> HAIL ATO gap, PATH/HAIL convergence undefined, shadow AI risk. See: Decisions & Intelligence pages.</li>
+          <li><strong>Which platforms should we consider?</strong> Comparison shows Anthropic/OpenAI/Gemini as viable, GC-LLM as supplementary. See: Assessments page.</li>
+          <li><strong>What's the governance model?</strong> Control gateway, classification bands, runtime enforcement. See: Control Plane & Architecture pages.</li>
+          <li><strong>What's next?</strong> ATO conversation, convergence architecture, shadow AI controls. See: Intelligence & Decisions pages.</li>
+        </ol>
+      </div>
+
+      <div class="demo-tips">
+        <h3>💡 Demo Tips</h3>
+        <ul>
+          <li><strong>Start with a high-level question:</strong> "What does AI governance look like at scale?" Point to Control Plane.</li>
+          <li><strong>Then dive into decisions:</strong> "What's blocking production move?" Opens Decisions page. Follow the links to Intelligence for context.</li>
+          <li><strong>Show the assessment workbench:</strong> Vendor comparison is visually impressive. Demonstrates decision-support capability.</li>
+          <li><strong>Emphasize living document model:</strong> Intelligence page updates in real-time; no reboots or batch processes.</li>
+          <li><strong>Close with operational readiness:</strong> Settings page shows governance isn't just policy—it's technical infrastructure too.</li>
+          <li><strong>Time box it:</strong> 5 minutes total = 50 seconds per page. Don't drill too deep; stay at 10,000-foot view.</li>
+        </ul>
+      </div>
+
+      <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; color: var(--text-faint); font-size: 0.9rem;">
+        <p>Built with <strong>decisions.json</strong>, <strong>scenarios.json</strong>, <strong>artifacts-index.json</strong>, and real assessment data.</p>
+        <p>Last updated: April 22, 2026</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function filterByAudience(audience) {
+  const cards = document.querySelectorAll('.demo-card');
+  const buttons = document.querySelectorAll('.toggle-btn');
+
+  buttons.forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+
+  cards.forEach(card => {
+    const cardAudience = card.dataset.audience || 'all';
+    if (audience === 'all' || cardAudience === 'all' || cardAudience === audience) {
+      card.style.display = 'block';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+</script>
+
+</body>
+</html>
