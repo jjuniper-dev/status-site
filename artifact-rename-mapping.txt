@@ -1,0 +1,6 @@
+artifact-0c5aeb5a-5ee3-4dbd-97d5-20e64d9d3fa9.html -> artifact-agentic-screening-pattern.html
+artifact-579cf831-016b-4f3a-aeb6-3154a3d41cc2.html -> artifact-emerging-capabilities.html
+artifact-6808a533-6f95-493d-bfcc-0cfd050b9fab.html -> artifact-path-architecture-ref.html
+artifact-7d543cfc-31d0-48d3-a769-3a523f40ee1c.html -> artifact-responsible-ai-compliance.html
+artifact-e66035fd-08fb-48dc-ad3d-638cdc88d5d7.html -> artifact-hype-cycle-agentic-ai.html
+artifact-img-1554.html -> artifact-responsible-ai-compliance-2.html

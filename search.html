@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Search — AI Governance Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    :root {
+      --teal: #00C8C8;
+      --bg: #07090F;
+      --bg2: #0D1117;
+      --bg3: #131920;
+      --border: rgba(255, 255, 255, 0.10);
+      --text: #F0F4FA;
+      --text-dim: #B0BFCF;
+      --text-faint: #6A7D90;
+      --mono: 'IBM Plex Mono', monospace;
+      --sans: 'IBM Plex Sans', sans-serif;
+      --cond: 'IBM Plex Sans Condensed', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.55;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 28px 40px 64px;
+    }
+
+    .search-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .search-title {
+      font-family: var(--cond);
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+
+    .search-subtitle {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-bottom: 24px;
+    }
+
+    .search-box-container {
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 14px 18px;
+      font-size: 16px;
+      background: linear-gradient(160deg, var(--bg2), var(--bg3));
+      border: 2px solid var(--border);
+      color: var(--text);
+      border-radius: 8px;
+      font-family: var(--sans);
+      transition: border-color 0.2s ease;
+    }
+
+    .search-box:focus {
+      outline: none;
+      border-color: var(--teal);
+      box-shadow: 0 0 12px rgba(0, 200, 200, 0.1);
+    }
+
+    .search-box::placeholder {
+      color: var(--text-faint);
+    }
+
+    .filters {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .filter-btn {
+      padding: 6px 12px;
+      background: rgba(0, 200, 200, 0.05);
+      border: 1px solid rgba(0, 200, 200, 0.2);
+      color: var(--text-dim);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .filter-btn.active {
+      background: rgba(0, 200, 200, 0.2);
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    .results-container {
+      margin-top: 32px;
+    }
+
+    .results-header {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 16px;
+    }
+
+    .search-result {
+      border: 1px solid var(--border);
+      background: linear-gradient(160deg, var(--bg2), var(--bg3));
+      padding: 18px 20px;
+      margin-bottom: 12px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .search-result:hover {
+      border-color: var(--teal);
+      box-shadow: 0 4px 12px rgba(0, 200, 200, 0.1);
+    }
+
+    .result-title {
+      font-family: var(--cond);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--teal);
+      margin-bottom: 4px;
+    }
+
+    .result-source {
+      font-size: 12px;
+      color: var(--text-faint);
+      font-family: var(--mono);
+      margin-bottom: 8px;
+    }
+
+    .result-snippet {
+      color: var(--text-dim);
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .result-link {
+      display: inline-block;
+      padding: 6px 12px;
+      background: rgba(0, 200, 200, 0.05);
+      border: 1px solid rgba(0, 200, 200, 0.2);
+      color: var(--teal);
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 11px;
+      font-family: var(--mono);
+      transition: all 0.2s ease;
+    }
+
+    .result-link:hover {
+      background: rgba(0, 200, 200, 0.15);
+      border-color: var(--teal);
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-faint);
+    }
+
+    .match-highlight {
+      background: rgba(0, 200, 200, 0.2);
+      color: var(--teal);
+      padding: 2px 4px;
+      border-radius: 2px;
+    }
+
+    .breadcrumb {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-faint);
+      opacity: 0.6;
+      margin: 0 0 22px 0;
+    }
+
+    @media (max-width: 768px) {
+      body { padding: 16px 20px 40px; }
+      .search-title { font-size: 32px; }
+      .search-box-container { padding: 0 10px; }
+    }
+  </style>
+</head>
+<body data-page="search">
+  <div id="nav-container"></div>
+
+  <script>
+    fetch('components/nav.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('nav-container').innerHTML = html;
+        const page = document.body.dataset.page;
+        document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+      })
+      .catch(() => {});
+  </script>
+
+  <div class="breadcrumb">Platform &gt; Search</div>
+
+  <div class="search-header">
+    <div class="search-title">🔍 Global Search</div>
+    <div class="search-subtitle">Search across all platform data: decisions, scenarios, assessments, artifacts, and intelligence</div>
+  </div>
+
+  <div class="search-box-container">
+    <input
+      type="text"
+      id="search-input"
+      class="search-box"
+      placeholder="Search decisions, scenarios, assessments, artifacts, intelligence..."
+      autofocus
+    >
+  </div>
+
+  <div style="text-align: center; margin-bottom: 24px;">
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterByType('')">All</button>
+      <button class="filter-btn" onclick="filterByType('decision')">Decisions</button>
+      <button class="filter-btn" onclick="filterByType('scenario')">Scenarios</button>
+      <button class="filter-btn" onclick="filterByType('assessment')">Assessments</button>
+      <button class="filter-btn" onclick="filterByType('artifact')">Artifacts</button>
+      <button class="filter-btn" onclick="filterByType('intelligence')">Intelligence</button>
+    </div>
+  </div>
+
+  <div class="results-container">
+    <div class="results-header" id="results-header" style="display: none;"></div>
+    <div id="results"></div>
+  </div>
+
+  <script>
+    const searchData = {
+      decisions: [],
+      scenarios: [],
+      assessments: [],
+      artifacts: [],
+      intelligence: []
+    };
+
+    let currentFilter = '';
+    let allResults = [];
+
+    // Load all data files
+    async function loadData() {
+      try {
+        // Load decisions
+        const decisions = await fetch('data/decisions.json').then(r => r.json());
+        searchData.decisions = decisions.map(d => ({
+          type: 'decision',
+          title: d.decision,
+          content: `${d.decision} - ${d.rationale || ''}`,
+          snippet: d.rationale?.substring(0, 150) || '',
+          link: 'decisions.html',
+          id: d.id
+        }));
+
+        // Load scenarios
+        const scenarios = await fetch('data/scenarios.json').then(r => r.json());
+        searchData.scenarios = scenarios.map(s => ({
+          type: 'scenario',
+          title: s.scenario_name,
+          content: `${s.scenario_name} - ${s.description || ''} - ${s.probability || ''}`,
+          snippet: s.description?.substring(0, 150) || '',
+          link: 'scenarios.html',
+          id: s.id
+        }));
+
+        // Load assessment registry
+        const assessmentRegistry = await fetch('data/assessment-registry.json').then(r => r.json());
+        searchData.assessments = assessmentRegistry.map(a => ({
+          type: 'assessment',
+          title: a.platform,
+          content: `${a.platform} - ${a.description || ''} - ${a.governance_readiness || ''}`,
+          snippet: a.description?.substring(0, 150) || '',
+          link: 'assessments-compare.html',
+          id: a.platform
+        }));
+
+        // Load artifacts
+        const artifacts = await fetch('data/artifacts-index.json').then(r => r.json());
+        searchData.artifacts = artifacts.map(a => ({
+          type: 'artifact',
+          title: a.title,
+          content: `${a.title} - ${a.summary || ''}`,
+          snippet: a.summary?.substring(0, 150) || '',
+          link: a.detail_page,
+          id: a.id
+        }));
+
+        console.log('Loaded:', searchData);
+      } catch (e) {
+        console.error('Error loading data:', e);
+      }
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function highlightMatches(text, query) {
+      if (!query) return escapeHtml(text);
+      const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+      return escapeHtml(text).replace(regex, '<span class="match-highlight">$1</span>');
+    }
+
+    function search() {
+      const query = document.getElementById('search-input').value.toLowerCase().trim();
+
+      if (!query) {
+        document.getElementById('results').innerHTML = '';
+        document.getElementById('results-header').style.display = 'none';
+        return;
+      }
+
+      allResults = [];
+
+      // Search across all data types
+      for (const [type, items] of Object.entries(searchData)) {
+        items.forEach(item => {
+          const score = calculateRelevance(item.content, query);
+          if (score > 0) {
+            allResults.push({
+              ...item,
+              score: score
+            });
+          }
+        });
+      }
+
+      // Sort by relevance
+      allResults.sort((a, b) => b.score - a.score);
+
+      displayResults(currentFilter);
+    }
+
+    function calculateRelevance(text, query) {
+      const lower = text.toLowerCase();
+      let score = 0;
+
+      // Exact match is highest score
+      if (lower.includes(query)) score += 100;
+
+      // Word matches
+      const words = query.split(/\s+/);
+      words.forEach(word => {
+        if (lower.includes(word)) score += 10;
+        // Partial word match
+        if (word.length > 3) {
+          const regex = new RegExp(word, 'i');
+          const matches = (lower.match(regex) || []).length;
+          score += matches * 5;
+        }
+      });
+
+      return score;
+    }
+
+    function displayResults(filter) {
+      const resultsEl = document.getElementById('results');
+      const headerEl = document.getElementById('results-header');
+
+      const filtered = filter
+        ? allResults.filter(r => r.type === filter)
+        : allResults;
+
+      if (filtered.length === 0) {
+        resultsEl.innerHTML = '<div class="no-results">No results found. Try different search terms.</div>';
+        headerEl.style.display = 'none';
+        return;
+      }
+
+      headerEl.textContent = `${filtered.length} result${filtered.length !== 1 ? 's' : ''} found`;
+      headerEl.style.display = 'block';
+
+      resultsEl.innerHTML = filtered.map(result => `
+        <div class="search-result">
+          <div class="result-source">${result.type.toUpperCase()}</div>
+          <div class="result-title">${highlightMatches(result.title, document.getElementById('search-input').value)}</div>
+          <div class="result-snippet">${highlightMatches(result.snippet, document.getElementById('search-input').value)}</div>
+          <a href="${result.link}" class="result-link">→ View ${result.type}</a>
+        </div>
+      `).join('');
+    }
+
+    function filterByType(type) {
+      currentFilter = type;
+
+      // Update filter button states
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+
+      displayResults(type);
+    }
+
+    // Initialize
+    loadData();
+
+    // Search on input
+    document.getElementById('search-input').addEventListener('input', search);
+    document.getElementById('search-input').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') search();
+    });
+
+    // Focus search on page load
+    window.addEventListener('load', () => {
+      document.getElementById('search-input').focus();
+    });
+  </script>
+</body>
+</html>
