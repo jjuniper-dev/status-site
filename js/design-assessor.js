@@ -1,254 +1,114 @@
 export class DesignAssessor {
-  constructor() {
-    this.modelsLoaded = false;
-    this.classifier = null;
-  }
+  async assessDesign(imageDataUrl, criteriaText) {
+    const criteria = criteriaText.split('\n')
+      .map(c => c.trim().replace(/^[-*•]\s*/, ''))
+      .filter(c => c.length > 0);
 
-  async loadModels() {
-    if (this.modelsLoaded) return;
-
-    try {
-      // Using ml5.js for fast inference
-      // Initialize text classification model
-      this.classifier = await ml5.textClassification('https://storage.googleapis.com/tfjs-models/tfjs-seq2seq/translation_en_es/model.json', {
-        maxLength: 512
-      });
-      this.modelsLoaded = true;
-    } catch (err) {
-      console.warn('ML5 model failed, using fallback analysis:', err);
-      // Fallback: use pattern-based analysis
-      this.classifier = null;
+    if (criteria.length === 0) {
+      throw new Error('No valid criteria found. Please enter at least one criterion.');
     }
-  }
 
-  async assessDesign(imageData, criteria) {
-    await this.loadModels();
+    const imageProps = await this._analyzeImage(imageDataUrl);
 
-    const criteriaList = criteria
-      .split('\n')
-      .filter(c => c.trim())
-      .map(c => c.replace(/^[-•]\s*/, '').trim());
+    const criterionScores = criteria.map(criterion => {
+      const score = this._scoreCriterion(criterion, imageProps);
+      return { criterion, score, feedback: this._feedback(score, imageProps) };
+    });
 
-    // Analyze image with vision-based insights
-    const imageAnalysis = await this.analyzeImageContent(imageData);
-
-    // Score criteria against image analysis
-    const scores = criteriaList.map(criterion => ({
-      criterion,
-      score: this.scoreCriterion(criterion, imageAnalysis),
-      feedback: this.generateCriterionFeedback(criterion, imageAnalysis)
-    }));
-
-    const overallScore = Math.round(scores.reduce((sum, s) => sum + s.score, 0) / scores.length);
+    const avgScore = Math.round(
+      criterionScores.reduce((sum, c) => sum + c.score, 0) / criterionScores.length
+    );
 
     return {
-      score: overallScore,
-      summary: this.generateSummary(overallScore, imageAnalysis),
-      criterionScores: scores,
-      strengths: this.extractStrengths(scores, imageAnalysis),
-      improvements: this.extractImprovements(scores, imageAnalysis),
-      recommendations: this.generateRecommendations(scores, imageAnalysis)
+      score: avgScore,
+      summary: this._summary(avgScore, imageProps),
+      criterionScores,
+      strengths: criterionScores.filter(c => c.score >= 75).map(c => c.criterion),
+      improvements: criterionScores.filter(c => c.score < 65).map(c => c.criterion),
+      recommendations: this._recommendations(criterionScores)
     };
   }
 
-  async analyzeImageContent(imageData) {
-    // Extract visual features from image
-    const canvas = document.createElement('canvas');
-    const img = new Image();
-
-    return new Promise((resolve) => {
+  async _analyzeImage(imageDataUrl) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onerror = () => reject(new Error('Image could not be decoded. Please try a different file.'));
       img.onload = () => {
-        canvas.width = img.width;
-        canvas.height = img.height;
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.min(img.width, 400);
+        canvas.height = Math.min(img.height, 400);
         const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const analysis = {
-          width: canvas.width,
-          height: canvas.height,
-          hasText: this.detectText(canvas),
-          colorDiversity: this.analyzeColors(imageData),
-          density: this.analyzeDensity(imageData),
-          hasStructure: this.detectStructure(imageData),
-          hasImages: this.detectImages(canvas),
-          contrast: this.analyzeContrast(imageData),
-          whitespace: this.analyzeWhitespace(imageData)
-        };
-        resolve(analysis);
+        const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const n = data.length / 4;
+        const colorBuckets = new Set();
+        let lumSum = 0, lumSqSum = 0;
+
+        for (let i = 0; i < data.length; i += 4) {
+          const lum = (0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]) / 255;
+          lumSum += lum;
+          lumSqSum += lum * lum;
+          colorBuckets.add(
+            `${Math.floor(data[i] / 32)},${Math.floor(data[i + 1] / 32)},${Math.floor(data[i + 2] / 32)}`
+          );
+        }
+
+        const avgLum = lumSum / n;
+        const contrast = Math.sqrt(Math.max(0, lumSqSum / n - avgLum * avgLum));
+
+        resolve({
+          brightness: avgLum,
+          contrast,
+          colorVariety: Math.min(colorBuckets.size / 100, 1),
+          aspectRatio: img.width / img.height
+        });
       };
-      img.src = imageData;
+      img.src = imageDataUrl;
     });
   }
 
-  detectText(canvas) {
-    // Simple heuristic: check for filled pixel areas that suggest text
-    const ctx = canvas.getContext('2d');
-    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-    let darkPixels = 0;
-    for (let i = 0; i < data.length; i += 4) {
-      const brightness = (data[i] + data[i+1] + data[i+2]) / 3;
-      if (brightness < 128) darkPixels++;
-    }
-    return darkPixels / (data.length / 4) > 0.05;
-  }
+  _scoreCriterion(criterion, props) {
+    const kw = criterion.toLowerCase();
+    let score;
 
-  analyzeColors(imageData) {
-    const data = imageData.data;
-    const colors = new Set();
-    for (let i = 0; i < data.length; i += 16) { // Sample every 4th pixel
-      const r = Math.round(data[i] / 51) * 51;
-      const g = Math.round(data[i+1] / 51) * 51;
-      const b = Math.round(data[i+2] / 51) * 51;
-      colors.add(`${r},${g},${b}`);
-    }
-    return Math.min(colors.size, 10) / 10; // Normalize to 0-1
-  }
-
-  analyzeDensity(imageData) {
-    const data = imageData.data;
-    let nonWhitePixels = 0;
-    for (let i = 0; i < data.length; i += 4) {
-      const r = data[i], g = data[i+1], b = data[i+2];
-      if (!(r > 240 && g > 240 && b > 240)) nonWhitePixels++;
-    }
-    return Math.min(nonWhitePixels / (data.length / 4), 1);
-  }
-
-  detectStructure(imageData) {
-    const data = imageData.data;
-    const width = 256; // Assume standard width
-    const gridSize = 32;
-    const regions = {};
-
-    for (let i = 0; i < data.length; i += 4) {
-      const x = Math.floor((i / 4) % width / gridSize);
-      const y = Math.floor((i / 4) / width / gridSize);
-      const key = `${x},${y}`;
-      const brightness = (data[i] + data[i+1] + data[i+2]) / 3;
-      regions[key] = (regions[key] || 0) + (brightness < 200 ? 1 : 0);
-    }
-
-    const filledRegions = Object.values(regions).filter(v => v > 0).length;
-    return filledRegions / Object.keys(regions).length > 0.2;
-  }
-
-  detectImages(canvas) {
-    // Simple heuristic: varied color patterns suggest images
-    const ctx = canvas.getContext('2d');
-    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-    return this.analyzeColors({ data }) > 0.5;
-  }
-
-  analyzeContrast(imageData) {
-    const data = imageData.data;
-    let minBrightness = 255, maxBrightness = 0;
-    for (let i = 0; i < data.length; i += 4) {
-      const brightness = (data[i] + data[i+1] + data[i+2]) / 3;
-      minBrightness = Math.min(minBrightness, brightness);
-      maxBrightness = Math.max(maxBrightness, brightness);
-    }
-    return (maxBrightness - minBrightness) / 255;
-  }
-
-  analyzeWhitespace(imageData) {
-    const data = imageData.data;
-    let whitePixels = 0;
-    for (let i = 0; i < data.length; i += 4) {
-      const r = data[i], g = data[i+1], b = data[i+2];
-      if (r > 240 && g > 240 && b > 240) whitePixels++;
-    }
-    return whitePixels / (data.length / 4);
-  }
-
-  scoreCriterion(criterion, analysis) {
-    const lower = criterion.toLowerCase();
-
-    // Pattern matching for scoring
-    if (lower.includes('hierarchy') || lower.includes('structure')) {
-      return Math.round(analysis.hasStructure ? 75 : 50);
-    }
-    if (lower.includes('contrast') || lower.includes('accessibility')) {
-      return Math.round(analysis.contrast * 100);
-    }
-    if (lower.includes('whitespace') || lower.includes('spacing')) {
-      return Math.round(analysis.whitespace * 60 + 40);
-    }
-    if (lower.includes('color') || lower.includes('visual')) {
-      return Math.round(analysis.colorDiversity * 100);
-    }
-    if (lower.includes('label') || lower.includes('text')) {
-      return analysis.hasText ? 80 : 50;
-    }
-    if (lower.includes('component') || lower.includes('relationship')) {
-      return analysis.hasStructure ? 75 : 55;
-    }
-    if (lower.includes('readable') || lower.includes('legible')) {
-      return Math.round((analysis.contrast + 0.5) * 100);
-    }
-
-    // Default score based on overall density
-    return Math.round(Math.min(analysis.density * 100, 100));
-  }
-
-  generateCriterionFeedback(criterion, analysis) {
-    const score = this.scoreCriterion(criterion, analysis);
-    if (score >= 80) return "Meets expectations";
-    if (score >= 60) return "Generally good with minor gaps";
-    if (score >= 40) return "Needs some attention";
-    return "Needs significant improvement";
-  }
-
-  generateSummary(score, analysis) {
-    const density = (analysis.density * 100).toFixed(0);
-    const contrast = (analysis.contrast * 100).toFixed(0);
-
-    if (score >= 80) {
-      return `Strong design with clear organization. Good visual hierarchy and contrast (${contrast}%). Content density is appropriate (${density}%).`;
-    } else if (score >= 60) {
-      return `Solid foundational design. Some areas could benefit from improved visual hierarchy or spacing. Contrast is ${contrast}% and density is ${density}%.`;
+    if (kw.match(/contrast|readab|legib/)) {
+      score = props.contrast > 0.28 ? 87 : props.contrast > 0.18 ? 70 : 48;
+    } else if (kw.match(/access|wcag/)) {
+      score = props.contrast > 0.30 ? 82 : props.contrast > 0.20 ? 64 : 44;
+    } else if (kw.match(/colour|color/)) {
+      score = props.colorVariety < 0.25 ? 84 : props.colorVariety < 0.55 ? 74 : 58;
+    } else if (kw.match(/whitespace|spacing|padding|margin/)) {
+      score = props.brightness > 0.55 ? 80 : props.brightness > 0.35 ? 68 : 58;
+    } else if (kw.match(/hierarch|structur|organ/)) {
+      score = props.contrast > 0.22 ? 76 : 63;
+    } else if (kw.match(/align|consist|grid/)) {
+      score = 70 + Math.round(props.contrast * 30);
     } else {
-      return `Design has potential but needs refinement. Consider reviewing layout, contrast (${contrast}%), and whitespace allocation (${analysis.whitespace * 100}%).`;
-    }
-  }
-
-  extractStrengths(scores, analysis) {
-    const strengths = [];
-
-    if (analysis.hasStructure) strengths.push("Clear hierarchical organization");
-    if (analysis.contrast > 0.5) strengths.push("Good contrast and readability");
-    if (analysis.whitespace > 0.4) strengths.push("Effective use of whitespace");
-    if (analysis.colorDiversity > 0.5) strengths.push("Diverse and intentional color palette");
-
-    const highScores = scores.filter(s => s.score >= 75);
-    if (highScores.length > 0) {
-      strengths.push(`Strong performance in ${highScores[0].criterion}`);
+      score = 65 + Math.round(props.contrast * 35);
     }
 
-    return strengths.length > 0 ? strengths : ["Design demonstrates foundational principles"];
+    return Math.max(30, Math.min(98, score));
   }
 
-  extractImprovements(scores, analysis) {
-    const improvements = [];
-
-    const lowScores = scores.filter(s => s.score < 60);
-    lowScores.forEach(s => {
-      improvements.push(`Review: ${s.criterion}`);
-    });
-
-    if (analysis.contrast < 0.4) improvements.push("Increase contrast for accessibility");
-    if (analysis.whitespace < 0.2) improvements.push("Add more whitespace/breathing room");
-
-    return improvements.slice(0, 3);
+  _feedback(score, props) {
+    const contrastLabel = props.contrast > 0.25 ? 'high' : props.contrast > 0.15 ? 'moderate' : 'low';
+    if (score >= 80) return `Criterion well met. Image shows ${contrastLabel} tonal contrast.`;
+    if (score >= 65) return `Criterion partially met. Some refinement may help.`;
+    return `Criterion needs attention. ${contrastLabel.charAt(0).toUpperCase() + contrastLabel.slice(1)} contrast detected — review element visibility.`;
   }
 
-  generateRecommendations(scores, analysis) {
-    return [
-      "Validate design with accessibility checklist (WCAG 2.1)",
-      "Test with actual users to validate information architecture",
-      "Consider creating a design system for consistency",
-      "Review typography hierarchy and sizing",
-      "Audit color usage for colorblind-friendly palette"
-    ];
+  _summary(score, props) {
+    const c = props.contrast > 0.25 ? 'high' : props.contrast > 0.15 ? 'moderate' : 'low';
+    const b = props.brightness > 0.6 ? 'light' : 'dark';
+    if (score >= 80) return `Design scores ${score}%. ${b.charAt(0).toUpperCase() + b.slice(1)} background with ${c} contrast — most criteria are met.`;
+    if (score >= 65) return `Design scores ${score}%. ${b.charAt(0).toUpperCase() + b.slice(1)} background with ${c} contrast — some criteria need attention.`;
+    return `Design scores ${score}%. ${c.charAt(0).toUpperCase() + c.slice(1)} contrast detected — several criteria require revision before this design is ready.`;
+  }
+
+  _recommendations(criterionScores) {
+    const weak = criterionScores.filter(c => c.score < 70);
+    if (weak.length === 0) return ['Maintain quality standards across future iterations.'];
+    return weak.slice(0, 3).map(c => `Review: "${c.criterion.slice(0, 70)}"`);
   }
 }

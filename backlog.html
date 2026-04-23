@@ -14,17 +14,17 @@
     }
 
     .epic-card {
-      border: 1px solid #e0e0e0;
+      border: 1px solid var(--border);
       border-radius: 8px;
       margin-bottom: 2rem;
       overflow: hidden;
-      background: #fff;
+      background: var(--surface);
     }
 
     .epic-header {
-      background: #f8f8f8;
+      background: var(--bg3);
       padding: 1.5rem;
-      border-bottom: 2px solid #e0e0e0;
+      border-bottom: 2px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
@@ -34,12 +34,12 @@
       font-size: 1.3rem;
       font-weight: 600;
       margin: 0 0 0.5rem 0;
-      color: #222;
+      color: var(--text);
     }
 
     .epic-description {
       font-size: 0.95rem;
-      color: #666;
+      color: var(--text-dim);
       margin: 0;
     }
 
@@ -57,7 +57,7 @@
 
     .epic-stat-label {
       font-size: 0.75rem;
-      color: #999;
+      color: var(--text-faint);
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 0.25rem;
@@ -66,7 +66,7 @@
     .epic-stat-value {
       font-size: 1.5rem;
       font-weight: 600;
-      color: #222;
+      color: var(--text);
       font-family: 'IBM Plex Mono', monospace;
     }
 
@@ -81,18 +81,18 @@
     }
 
     .status-badge.pending {
-      background: #fff3cd;
-      color: #856404;
+      background: rgba(249, 208, 48, 0.15);
+      color: var(--gold);
     }
 
     .status-badge.in-progress {
-      background: #cce5ff;
-      color: #004085;
+      background: rgba(95, 168, 232, 0.15);
+      color: var(--blue-light);
     }
 
     .status-badge.done {
-      background: #d4edda;
-      color: #155724;
+      background: rgba(0, 200, 200, 0.15);
+      color: var(--teal);
     }
 
     .priority-badge {
@@ -105,23 +105,23 @@
     }
 
     .priority-badge.critical {
-      background: #f8d7da;
-      color: #721c24;
+      background: rgba(232, 25, 46, 0.15);
+      color: var(--red);
     }
 
     .priority-badge.high {
-      background: #ffeaa7;
-      color: #d63031;
+      background: rgba(249, 208, 48, 0.15);
+      color: var(--gold);
     }
 
     .priority-badge.medium {
-      background: #b3e5fc;
-      color: #01579b;
+      background: rgba(95, 168, 232, 0.15);
+      color: var(--blue-light);
     }
 
     .priority-badge.low {
-      background: #e8f5e9;
-      color: #1b5e20;
+      background: rgba(124, 255, 178, 0.15);
+      color: var(--green);
     }
 
     .epic-body {
@@ -135,23 +135,23 @@
     }
 
     .task-item {
-      border: 1px solid #f0f0f0;
+      border: 1px solid var(--border);
       border-radius: 6px;
       padding: 1rem;
       margin-bottom: 1rem;
-      background: #fafafa;
+      background: var(--bg2);
       transition: all 0.2s ease;
     }
 
     .task-item:hover {
-      background: #fff;
-      border-color: #ddd;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      background: var(--surface);
+      border-color: var(--border-bright);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
     .task-item.done {
-      opacity: 0.7;
-      background: #f5f5f5;
+      opacity: 0.6;
+      background: var(--bg);
     }
 
     .task-header {
@@ -164,7 +164,7 @@
     .task-title {
       font-size: 1rem;
       font-weight: 600;
-      color: #222;
+      color: var(--text);
       margin: 0;
     }
 
@@ -175,25 +175,25 @@
     }
 
     .task-hours {
-      background: #f0f0f0;
+      background: var(--bg3);
       padding: 0.4rem 0.8rem;
       border-radius: 4px;
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.9rem;
       font-weight: 500;
-      color: #333;
+      color: var(--text);
     }
 
     .task-description {
       font-size: 0.9rem;
-      color: #666;
+      color: var(--text-dim);
       margin: 0.5rem 0;
     }
 
     .subtasks {
       margin-top: 0.75rem;
       font-size: 0.85rem;
-      color: #777;
+      color: var(--text-dim);
     }
 
     .subtask-list {
@@ -208,7 +208,7 @@
 
     .subtask-list li:before {
       content: "→ ";
-      color: #aaa;
+      color: var(--text-faint);
       margin-right: 0.5rem;
     }
 
@@ -222,7 +222,7 @@
     .progress-bar {
       width: 100%;
       height: 8px;
-      background: #e0e0e0;
+      background: var(--bg);
       border-radius: 4px;
       margin-top: 1rem;
       overflow: hidden;
@@ -230,17 +230,17 @@
 
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #4CAF50, #8BC34A);
+      background: linear-gradient(90deg, var(--teal), var(--green));
       width: 0%;
       transition: width 0.3s ease;
     }
 
     .epic-footer {
-      border-top: 1px solid #f0f0f0;
+      border-top: 1px solid var(--border);
       padding: 1rem 1.5rem;
-      background: #fafafa;
+      background: var(--bg3);
       font-size: 0.85rem;
-      color: #999;
+      color: var(--text-faint);
       display: flex;
       justify-content: space-between;
     }
@@ -262,15 +262,16 @@
     .filter-label {
       font-size: 0.9rem;
       font-weight: 500;
-      color: #666;
+      color: var(--text-dim);
     }
 
     .filter-select {
       padding: 0.5rem 0.8rem;
-      border: 1px solid #ddd;
+      border: 1px solid var(--border);
       border-radius: 4px;
       font-size: 0.9rem;
-      background: white;
+      background: var(--bg2);
+      color: var(--text);
       cursor: pointer;
     }
   </style>

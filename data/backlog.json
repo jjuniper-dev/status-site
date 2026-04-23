@@ -2,145 +2,251 @@
   "epics": [
     {
       "id": "EPIC-001",
-      "title": "Standards Hardcoding: TOGAF, WCAG, Microsoft",
-      "description": "Integrate TOGAF domains, WCAG compliance levels, and Microsoft well-architected principles across all platform data, schemas, and UI. Team no longer needs to manually reference or track these standards.",
-      "status": "pending",
-      "priority": "high",
-      "totalHours": 25,
-      "owner": "EA Team",
-      "startDate": null,
-      "completionDate": null,
+      "title": "HAIL Production ATO",
+      "description": "Initiate and complete the Authority to Operate (ATO) process for HAIL to unblock production deployment for FY26-27.",
+      "status": "in-progress",
+      "priority": "critical",
+      "totalHours": 120,
+      "owner": "CDO / CIO Office",
       "phases": [
         {
-          "id": "TASK-001",
-          "title": "Phase 1: Data Foundation",
-          "description": "Create /data/standards.json with comprehensive TOGAF domains, WCAG levels, Microsoft pillars definitions",
-          "status": "pending",
-          "hours": 10,
-          "dependencies": [],
+          "title": "Draft HAIL-to-Production ADR",
+          "description": "Document the architecture decision record for moving HAIL to production, including risk assessment and mitigations.",
+          "hours": 16,
+          "status": "done",
           "subtasks": [
-            "Research and document TOGAF framework (domains, maturity levels, building blocks)",
-            "Document WCAG guidelines (levels A, AA, AAA, success criteria)",
-            "Document Microsoft well-architected pillars and design principles",
-            "Create JSON schema and validate structure"
+            "Identify ATO requirements from CIO security team",
+            "Draft ADR using standard HC/PHAC template",
+            "Internal EA review"
           ]
         },
         {
-          "id": "TASK-002",
-          "title": "Phase 2: Schema Extensions",
-          "description": "Extend /schemas/ to enforce standard fields in decisions, artifacts, assessments",
-          "status": "pending",
-          "hours": 5,
-          "dependencies": ["TASK-001"],
+          "title": "CIO Briefing Package",
+          "description": "Prepare executive briefing material summarising HAIL's current state, ATO path, and governance gaps.",
+          "hours": 20,
+          "status": "in-progress",
           "subtasks": [
-            "Extend decision.schema.json with togaf_domain, wcag_level, microsoft_principles",
-            "Extend artifact.schema.json with standard classification fields",
-            "Extend assessment.schema.json with maturity and pillar scores",
-            "Validate existing data against new schemas"
+            "Summarise HAIL operational signals",
+            "Map to protected B classification bands",
+            "Risk register snapshot"
           ]
         },
         {
-          "id": "TASK-003",
-          "title": "Phase 3: Data Migration",
-          "description": "Populate decisions.json, artifacts-index.json, and assessments with standard mappings",
+          "title": "Security Assessment (SA&A)",
+          "description": "Formal Security Assessment and Authorisation engagement with CIO security office.",
+          "hours": 40,
           "status": "pending",
+          "subtasks": [
+            "Submit SA&A intake form",
+            "Threat and risk assessment (TRA)",
+            "Statement of sensitivity review"
+          ]
+        },
+        {
+          "title": "ATO Sign-off",
+          "description": "Obtain written ATO from CIO authorising production operation of HAIL.",
           "hours": 8,
-          "dependencies": ["TASK-002"],
-          "subtasks": [
-            "Update /data/decisions.json with standard fields (20-30 decisions)",
-            "Update /data/artifacts-index.json with standard classifications",
-            "Update /data/assessments/ files with TOGAF maturity, WCAG readiness, Microsoft pillar scores",
-            "Validate all migrated data against schemas"
-          ]
+          "status": "pending"
         },
         {
-          "id": "TASK-004",
-          "title": "Phase 4: UI Filtering & Badges",
-          "description": "Add standard-based filtering and visual badges to decisions.html and artifacts.html",
+          "title": "Production Cutover Plan",
+          "description": "Define runbook for promoting HAIL from runtime-only to full production, including rollback procedures.",
+          "hours": 36,
           "status": "pending",
-          "hours": 5,
-          "dependencies": ["TASK-003"],
           "subtasks": [
-            "Create /js/standards-registry.js (singleton loader for standards.json)",
-            "Create /js/standards-filter.js (reusable filter logic)",
-            "Update decisions.html with filter panel and badge rendering",
-            "Update artifacts.html with filter panel and badge rendering",
-            "Add CSS styling for badges (colors, hover effects)"
-          ]
-        },
-        {
-          "id": "TASK-005",
-          "title": "Phase 5: Testing & QA",
-          "description": "Validate filtering, badge rendering, data integrity across platform",
-          "status": "pending",
-          "hours": 2,
-          "dependencies": ["TASK-004"],
-          "subtasks": [
-            "Test filtering on decisions.html (TOGAF domain, WCAG level, Microsoft pillar)",
-            "Test filtering on artifacts.html",
-            "Verify badge rendering and styling",
-            "Check data consistency across all pages"
+            "Define promotion gates",
+            "Runbook draft",
+            "Stakeholder sign-off"
           ]
         }
       ]
     },
     {
       "id": "EPIC-002",
-      "title": "Service Health Monitoring",
-      "description": "Add real-time service health monitoring to settings.html with animated ping indicators for dashboard, backend APIs, Neo4j, GitHub, and LLM inference.",
-      "status": "pending",
-      "priority": "medium",
-      "totalHours": 10,
-      "owner": "DevOps / Platform",
-      "startDate": null,
-      "completionDate": null,
+      "title": "PATH / HAIL Convergence Architecture",
+      "description": "Define and validate the architectural convergence between PATH (control plane) and HAIL (runtime), resolving the undefined interface gap.",
+      "status": "in-progress",
+      "priority": "high",
+      "totalHours": 96,
+      "owner": "Enterprise Architecture",
       "phases": [
         {
-          "id": "TASK-006",
-          "title": "Phase 1: Service Health Data Structure",
-          "description": "Create /data/services.json and health check logic",
-          "status": "pending",
-          "hours": 3,
-          "dependencies": [],
+          "title": "Interface Contract Design",
+          "description": "Document the API and event contracts between PATH gateway and HAIL execution layer.",
+          "hours": 24,
+          "status": "done",
           "subtasks": [
-            "Define service check endpoints (dashboard, APIs, Neo4j, GitHub, LLM)",
-            "Create /data/services.json with service definitions",
-            "Implement health check utility /js/health-checker.js",
-            "Set up uptime tracking (last 7 days, percentage)"
+            "Enumerate HAIL-exposed interfaces",
+            "Map PATH policy enforcement points",
+            "Draft OpenAPI contract spec"
           ]
         },
         {
-          "id": "TASK-007",
-          "title": "Phase 2: Settings Page UI",
-          "description": "Build service health monitoring panel on settings.html",
+          "title": "GREP-ExP Pattern Validation",
+          "description": "Validate the Govern → Route → Execute → Promote pattern across PATH and HAIL boundaries.",
+          "hours": 20,
+          "status": "in-progress"
+        },
+        {
+          "title": "ARB Submission — Convergence ADR",
+          "description": "Submit convergence architecture decision record to Architecture Review Board.",
+          "hours": 16,
           "status": "pending",
-          "hours": 4,
-          "dependencies": ["TASK-006"],
           "subtasks": [
-            "Design service card layout with animated ping indicator",
-            "Add status indicators (up, down, degraded)",
-            "Display uptime percentage and last check time",
-            "Add refresh button for manual health checks",
-            "Wire to health-checker.js"
+            "Draft ADR",
+            "Peer review (EA + TPO)",
+            "ARB submission and scheduling"
           ]
         },
         {
-          "id": "TASK-008",
-          "title": "Phase 3: Real-Time Updates",
-          "description": "Implement periodic health checks and real-time status updates",
-          "status": "pending",
-          "hours": 3,
-          "dependencies": ["TASK-007"],
+          "title": "Reference Architecture Update",
+          "description": "Update the PATH reference architecture page and diagrams to reflect convergence state.",
+          "hours": 20,
+          "status": "pending"
+        },
+        {
+          "title": "Integration Smoke Test",
+          "description": "Run end-to-end token flow test from PATH gateway through HAIL execution layer.",
+          "hours": 16,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-003",
+      "title": "Shadow AI Exposure Controls",
+      "description": "Quantify and mitigate unsanctioned AI tool usage (CANChat, Copilot, public ChatGPT) across HC/PHAC, reducing Protected B data handling risk.",
+      "status": "in-progress",
+      "priority": "high",
+      "totalHours": 72,
+      "owner": "CIO / Privacy Office",
+      "phases": [
+        {
+          "title": "Shadow AI Inventory",
+          "description": "Enumerate known shadow AI touchpoints and estimate user populations.",
+          "hours": 16,
+          "status": "done",
           "subtasks": [
-            "Implement auto-refresh interval (30s default, configurable)",
-            "Add animation for ping indicators (pulsing dot, color change)",
-            "Store uptime history in browser localStorage",
-            "Display uptime graph/trend (optional)",
-            "Add visual alerts for service degradation"
+            "CANChat user count estimation",
+            "Copilot licence audit",
+            "Public ChatGPT usage signals"
+          ]
+        },
+        {
+          "title": "Data Handling Risk Assessment",
+          "description": "Assess risk of Protected B data being transmitted to non-approved AI services.",
+          "hours": 24,
+          "status": "in-progress",
+          "subtasks": [
+            "Classify data types in known workflows",
+            "Map to AI tool data retention policies",
+            "Draft risk register entries"
+          ]
+        },
+        {
+          "title": "Acceptable Use Policy Update",
+          "description": "Draft AI acceptable use policy addendum covering shadow AI, approved platforms, and classification constraints.",
+          "hours": 16,
+          "status": "pending"
+        },
+        {
+          "title": "Automated Detection Capability",
+          "description": "Evaluate tooling options for detecting unsanctioned AI tool traffic at the network perimeter.",
+          "hours": 16,
+          "status": "pending",
+          "subtasks": [
+            "Review DLP capabilities",
+            "Proxy / SWG inspection options",
+            "Proof of concept for one tool"
           ]
         }
       ]
+    },
+    {
+      "id": "EPIC-004",
+      "title": "Governance Intelligence Platform",
+      "description": "Mature the EA intelligence page into a sustainable living-document platform with structured update workflows, versioning, and local LLM review.",
+      "status": "in-progress",
+      "priority": "medium",
+      "totalHours": 80,
+      "owner": "Enterprise Architecture",
+      "phases": [
+        {
+          "title": "Intelligence Editor — Core",
+          "description": "Markdown editor with live preview, draft persistence, and GitHub publish flow.",
+          "hours": 24,
+          "status": "done"
+        },
+        {
+          "title": "Local LLM Analyzer",
+          "description": "Browser-based DistilBERT/DistilBART inference for privacy-compliant content review.",
+          "hours": 20,
+          "status": "done",
+          "subtasks": [
+            "Transformers.js integration",
+            "Model download and cache",
+            "Relevance and insight prompts"
+          ]
+        },
+        {
+          "title": "File Import Feature",
+          "description": "Allow users to import .txt, .md, and image files into the editor for LLM-assisted analysis.",
+          "hours": 12,
+          "status": "done"
+        },
+        {
+          "title": "Compliance Validation",
+          "description": "Formally validate local LLM workflow for Protected B data handling with Privacy Office.",
+          "hours": 16,
+          "status": "pending",
+          "subtasks": [
+            "Privacy impact assessment (PIA)",
+            "Privacy Office review",
+            "Documentation for audit trail"
+          ]
+        },
+        {
+          "title": "Expanded Model Coverage",
+          "description": "Evaluate larger local models (Llama 3, Mistral 7B) for improved analysis quality where compute allows.",
+          "hours": 8,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-005",
+      "title": "Vendor Assessment Workbench",
+      "description": "Build out the platform assessment comparison tooling to support procurement decisions with structured rubric scoring.",
+      "status": "in-progress",
+      "priority": "medium",
+      "totalHours": 60,
+      "owner": "Enterprise Architecture / TPO",
+      "phases": [
+        {
+          "title": "Four-Layer Rubric Implementation",
+          "description": "Implement the HC/PHAC governance, architecture, capability, and procurement scoring rubric.",
+          "hours": 16,
+          "status": "done"
+        },
+        {
+          "title": "Vendor Data — Initial Set",
+          "description": "Populate assessment JSON for Anthropic, OpenAI, Gemini, Cohere, and GC LLM.",
+          "hours": 20,
+          "status": "done"
+        },
+        {
+          "title": "Compare Workbench UI",
+          "description": "Side-by-side vendor comparison interface with filtering and radar chart visualisation.",
+          "hours": 16,
+          "status": "done"
+        },
+        {
+          "title": "Assessment Refresh — Q2 2026",
+          "description": "Update all vendor assessments to reflect Q2 2026 capability and governance changes.",
+          "hours": 8,
+          "status": "pending"
+        }
+      ]
     }
-  ],
-  "completedEpics": []
+  ]
 }

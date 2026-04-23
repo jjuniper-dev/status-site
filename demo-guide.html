@@ -29,19 +29,19 @@
       text-align: center;
       margin-bottom: 3rem;
       padding: 2rem 0;
-      border-bottom: 2px solid #e0e0e0;
+      border-bottom: 2px solid var(--border);
     }
 
     .demo-title {
       font-size: 2.2rem;
       font-weight: 700;
       margin-bottom: 0.75rem;
-      color: #222;
+      color: var(--text);
     }
 
     .demo-subtitle {
       font-size: 1.1rem;
-      color: #666;
+      color: var(--text-dim);
       max-width: 800px;
       margin: 0 auto 1.5rem;
     }
@@ -59,18 +59,18 @@
       border-radius: 6px;
       font-size: 0.85rem;
       font-weight: 500;
-      background: #f0f0f0;
-      color: #333;
+      background: var(--surface);
+      color: var(--text-dim);
     }
 
     .badge.executive {
-      background: #e8f5e9;
-      color: #1b5e20;
+      background: rgba(124,255,178,0.1);
+      color: var(--green);
     }
 
     .badge.technical {
-      background: #e3f2fd;
-      color: #0d47a1;
+      background: rgba(95,168,232,0.1);
+      color: var(--blue-light);
     }
 
     .narrative-section {
@@ -81,7 +81,7 @@
       font-size: 1.4rem;
       font-weight: 600;
       margin-bottom: 1rem;
-      color: #222;
+      color: var(--text);
       display: flex;
       align-items: center;
       gap: 1rem;
@@ -90,7 +90,7 @@
     .narrative-header .icon {
       width: 40px;
       height: 40px;
-      background: #f0f0f0;
+      background: var(--surface);
       border-radius: 6px;
       display: flex;
       align-items: center;
@@ -99,7 +99,7 @@
     }
 
     .narrative-text {
-      color: #666;
+      color: var(--text-dim);
       line-height: 1.6;
       margin-bottom: 1.5rem;
     }
@@ -112,10 +112,10 @@
     }
 
     .demo-card {
-      border: 1px solid #e0e0e0;
+      border: 1px solid var(--border);
       border-radius: 8px;
       padding: 1.5rem;
-      background: #fff;
+      background: var(--surface);
       transition: all 0.2s ease;
       cursor: pointer;
       position: relative;
@@ -123,23 +123,23 @@
     }
 
     .demo-card:hover {
-      border-color: #00c8c8;
-      box-shadow: 0 4px 12px rgba(0,200,200,0.1);
+      border-color: var(--teal);
+      box-shadow: 0 4px 12px rgba(0,200,200,0.12);
       transform: translateY(-2px);
     }
 
-    .demo-card.step-1 { border-left: 4px solid #ff6b6b; }
-    .demo-card.step-2 { border-left: 4px solid #4ecdc4; }
-    .demo-card.step-3 { border-left: 4px solid #45b7d1; }
-    .demo-card.step-4 { border-left: 4px solid #f7b731; }
-    .demo-card.step-5 { border-left: 4px solid #5f27cd; }
-    .demo-card.step-6 { border-left: 4px solid #00d2d3; }
+    .demo-card.step-1 { border-left: 4px solid var(--red); }
+    .demo-card.step-2 { border-left: 4px solid var(--teal); }
+    .demo-card.step-3 { border-left: 4px solid var(--blue-light); }
+    .demo-card.step-4 { border-left: 4px solid var(--gold); }
+    .demo-card.step-5 { border-left: 4px solid var(--green); }
+    .demo-card.step-6 { border-left: 4px solid var(--teal); }
 
     .card-step {
       font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      color: #999;
+      color: var(--text-faint);
       font-weight: 600;
       margin-bottom: 0.5rem;
     }
@@ -148,12 +148,12 @@
       font-size: 1.2rem;
       font-weight: 600;
       margin-bottom: 0.75rem;
-      color: #222;
+      color: var(--text);
     }
 
     .card-description {
       font-size: 0.95rem;
-      color: #666;
+      color: var(--text-dim);
       margin-bottom: 1rem;
       line-height: 1.5;
     }
@@ -163,13 +163,13 @@
       justify-content: space-between;
       align-items: center;
       font-size: 0.85rem;
-      color: #999;
+      color: var(--text-faint);
       padding-top: 1rem;
-      border-top: 1px solid #f0f0f0;
+      border-top: 1px solid var(--border);
     }
 
     .card-link {
-      color: #00c8c8;
+      color: var(--teal);
       text-decoration: none;
       font-weight: 500;
     }
@@ -187,8 +187,9 @@
 
     .toggle-btn {
       padding: 0.75rem 1.5rem;
-      border: 2px solid #ddd;
-      background: white;
+      border: 2px solid var(--border);
+      background: var(--bg2);
+      color: var(--text);
       border-radius: 6px;
       cursor: pointer;
       font-weight: 500;
@@ -196,14 +197,14 @@
     }
 
     .toggle-btn.active {
-      border-color: #00c8c8;
-      background: #f0fffe;
-      color: #00c8c8;
+      border-color: var(--teal);
+      background: rgba(0,200,200,0.1);
+      color: var(--teal);
     }
 
     .demo-tips {
-      background: #f9f9f9;
-      border-left: 4px solid #00c8c8;
+      background: var(--surface);
+      border-left: 4px solid var(--teal);
       padding: 1.5rem;
       border-radius: 6px;
       margin-top: 3rem;
@@ -211,13 +212,13 @@
 
     .demo-tips h3 {
       margin: 0 0 1rem 0;
-      color: #222;
+      color: var(--text);
     }
 
     .demo-tips ul {
       margin: 0;
       padding-left: 1.5rem;
-      color: #666;
+      color: var(--text-dim);
       line-height: 1.8;
     }
 
@@ -227,8 +228,8 @@
 
     .timing-badge {
       display: inline-block;
-      background: #e3f2fd;
-      color: #1565c0;
+      background: rgba(95,168,232,0.15);
+      color: var(--blue-light);
       padding: 0.4rem 0.8rem;
       border-radius: 4px;
       font-size: 0.8rem;
@@ -237,8 +238,8 @@
     }
 
     .key-questions {
-      background: #fff3e0;
-      border-left: 4px solid #ff9800;
+      background: var(--surface);
+      border-left: 4px solid var(--gold);
       padding: 1.5rem;
       border-radius: 6px;
       margin-top: 2rem;
@@ -246,13 +247,13 @@
 
     .key-questions h3 {
       margin: 0 0 1rem 0;
-      color: #e65100;
+      color: var(--gold);
     }
 
     .key-questions ol {
       margin: 0;
       padding-left: 1.5rem;
-      color: #666;
+      color: var(--text-dim);
       line-height: 1.8;
     }
 
@@ -418,7 +419,7 @@ fetch('components/nav.html')
         </ul>
       </div>
 
-      <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e0e0e0; text-align: center; color: #999; font-size: 0.9rem;">
+      <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; color: var(--text-faint); font-size: 0.9rem;">
         <p>Built with <strong>decisions.json</strong>, <strong>scenarios.json</strong>, <strong>artifacts-index.json</strong>, and real assessment data.</p>
         <p>Last updated: April 22, 2026</p>
       </div>

@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Design Assessor</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/ml5@0.12.0/dist/ml5.min.js"></script>
   <style>
@@ -19,27 +20,27 @@
       }
     }
     .upload-panel, .criteria-panel, .results-panel {
-      background: #f9f9f9;
-      border: 1px solid #ddd;
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 8px;
       padding: 24px;
     }
     .upload-area {
-      border: 2px dashed #2F6F73;
+      border: 2px dashed var(--teal);
       border-radius: 8px;
       padding: 40px;
       text-align: center;
       cursor: pointer;
       transition: all 0.3s;
-      background: #f0f8f9;
+      background: var(--bg3);
     }
     .upload-area:hover {
-      background: #e0f4f6;
-      border-color: #1F4F53;
+      background: var(--surface);
+      border-color: var(--teal);
     }
     .upload-area.dragover {
-      background: #d0e8eb;
-      border-color: #1F4F53;
+      background: rgba(0,200,200,0.1);
+      border-color: var(--teal);
     }
     .upload-icon {
       font-size: 48px;
@@ -51,40 +52,44 @@
       border-radius: 8px;
       margin-top: 16px;
     }
-    textarea, input {
+    textarea, input[type="text"], input[type="file"] {
       width: 100%;
       padding: 12px;
-      border: 1px solid #ddd;
+      border: 1px solid var(--border);
       border-radius: 4px;
-      font-family: monospace;
+      font-family: var(--mono);
       font-size: 13px;
       resize: vertical;
+      background: var(--bg2);
+      color: var(--text);
     }
     textarea {
       min-height: 120px;
     }
     button {
       padding: 12px 24px;
-      background: #2F6F73;
-      color: white;
+      background: var(--teal);
+      color: var(--bg);
       border: none;
       border-radius: 4px;
       cursor: pointer;
       font-size: 14px;
-      transition: background 0.2s;
+      font-weight: 600;
+      transition: opacity 0.2s;
       margin-top: 12px;
       width: 100%;
     }
     button:hover {
-      background: #1F4F53;
+      opacity: 0.85;
     }
     button:disabled {
-      background: #ccc;
+      background: var(--bg3);
+      color: var(--text-faint);
       cursor: not-allowed;
     }
     .label {
       font-weight: 600;
-      color: #2F6F73;
+      color: var(--teal);
       margin-top: 16px;
       margin-bottom: 8px;
       font-size: 14px;
@@ -97,8 +102,8 @@
       display: block;
     }
     .assessment-result {
-      background: white;
-      border-left: 4px solid #2F6F73;
+      background: var(--bg3);
+      border-left: 4px solid var(--teal);
       padding: 16px;
       border-radius: 4px;
       margin-bottom: 12px;
@@ -106,21 +111,21 @@
     .assessment-score {
       font-size: 28px;
       font-weight: bold;
-      color: #2F6F73;
+      color: var(--teal);
       margin-bottom: 12px;
     }
     .assessment-feedback {
-      color: #333;
+      color: var(--text);
       line-height: 1.6;
     }
     .loading {
       text-align: center;
-      color: #666;
+      color: var(--text-dim);
       padding: 20px;
     }
     .spinner {
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #2F6F73;
+      border: 3px solid var(--border);
+      border-top: 3px solid var(--teal);
       border-radius: 50%;
       width: 30px;
       height: 30px;
@@ -132,13 +137,13 @@
       100% { transform: rotate(360deg); }
     }
     .info-box {
-      background: #f0f8f9;
-      border: 1px solid #a6ce39;
+      background: var(--bg3);
+      border: 1px solid var(--green);
       padding: 12px;
       border-radius: 4px;
       margin-bottom: 16px;
       font-size: 13px;
-      color: #333;
+      color: var(--text);
     }
     .template-buttons {
       display: flex;
@@ -148,17 +153,17 @@
     }
     .template-btn {
       padding: 6px 12px;
-      background: white;
-      border: 1px solid #2F6F73;
-      color: #2F6F73;
+      background: transparent;
+      border: 1px solid var(--teal);
+      color: var(--teal);
       border-radius: 4px;
       cursor: pointer;
       font-size: 12px;
       transition: all 0.2s;
     }
     .template-btn:hover {
-      background: #2F6F73;
-      color: white;
+      background: var(--teal);
+      color: var(--bg);
     }
   </style>
 </head>
