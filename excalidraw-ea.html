@@ -378,8 +378,12 @@ fetch('components/nav.html')
         return;
       }
       console.warn('Modular renderer not available:', err);
-      // Fallback to inline
+      // Fallback to inline - sync UI with state
       currentRenderer = 'inline';
+      const toggle = document.getElementById('renderer-toggle');
+      if (toggle) {
+        toggle.value = 'inline';
+      }
       renderWithInlineRenderer(canvas, gen);
       updateRendererStatus('Modular renderer failed, using inline');
     });
