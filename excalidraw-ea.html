@@ -122,6 +122,7 @@ fetch('components/nav.html')
   let currentData = null;
   let schema = null;
   let currentRenderer = 'inline'; // 'inline' or 'modular'
+  let renderGeneration = 0; // Guard against stale async callbacks
 
   // Schema-to-Excalidraw converter (embedded to avoid module issues)
   function schemaToExcalidraw(schema) {
@@ -331,14 +332,18 @@ fetch('components/nav.html')
     container.innerHTML = '';
     container.appendChild(canvas);
 
+    // Increment generation to guard against stale async callbacks
+    renderGeneration++;
+    const currentGen = renderGeneration;
+
     if (currentRenderer === 'modular') {
-      renderWithModularRenderer(canvas);
+      renderWithModularRenderer(canvas, currentGen);
     } else {
-      renderWithInlineRenderer(canvas);
+      renderWithInlineRenderer(canvas, currentGen);
     }
   }
 
-  function renderWithInlineRenderer(canvas) {
+  function renderWithInlineRenderer(canvas, gen) {
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = schema.canvas.background;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -357,17 +362,25 @@ fetch('components/nav.html')
     updateRendererStatus('Inline renderer (monolithic)');
   }
 
-  function renderWithModularRenderer(canvas) {
+  function renderWithModularRenderer(canvas, gen) {
     // Dynamically import modular renderer
     import('./js/renderers/canvas-renderer.js').then(({ CanvasRenderer }) => {
+      // Guard against stale callback: only render if this is still the current generation
+      if (gen !== renderGeneration || currentRenderer !== 'modular') {
+        return;
+      }
       const renderer = new CanvasRenderer(canvas, schema);
       renderer.render(currentData.elements);
       updateRendererStatus('Modular renderer (C4 Phase 1)');
     }).catch(err => {
+      // Guard against stale callback
+      if (gen !== renderGeneration) {
+        return;
+      }
       console.warn('Modular renderer not available:', err);
       // Fallback to inline
       currentRenderer = 'inline';
-      renderWithInlineRenderer(canvas);
+      renderWithInlineRenderer(canvas, gen);
       updateRendererStatus('Modular renderer failed, using inline');
     });
   }
