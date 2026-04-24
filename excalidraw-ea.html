@@ -95,6 +95,14 @@ fetch('components/nav.html')
   </div>
 
   <div class="diagram-controls">
+    <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+      <label for="renderer-toggle" style="font-weight: 600; margin: 0;">Renderer:</label>
+      <select id="renderer-toggle" style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; cursor: pointer;">
+        <option value="inline">Inline (Current)</option>
+        <option value="modular">Modular (C4 Phase 1)</option>
+      </select>
+      <span id="renderer-status" style="font-size: 12px; color: #666;"></span>
+    </div>
     <button id="download-btn">📥 Download JSON</button>
     <button id="export-png-btn">🖼️ Export as PNG</button>
     <button id="reset-btn">↻ Reset to Original</button>
@@ -113,6 +121,8 @@ fetch('components/nav.html')
   let originalData = null;
   let currentData = null;
   let schema = null;
+  let currentRenderer = 'inline'; // 'inline' or 'modular'
+  let renderGeneration = 0; // Guard against stale async callbacks
 
   // Schema-to-Excalidraw converter (embedded to avoid module issues)
   function schemaToExcalidraw(schema) {
@@ -319,11 +329,26 @@ fetch('components/nav.html')
     canvas.style.border = '1px solid #ddd';
     canvas.style.borderRadius = '4px';
 
+    container.innerHTML = '';
+    container.appendChild(canvas);
+
+    // Increment generation to guard against stale async callbacks
+    renderGeneration++;
+    const currentGen = renderGeneration;
+
+    if (currentRenderer === 'modular') {
+      renderWithModularRenderer(canvas, currentGen);
+    } else {
+      renderWithInlineRenderer(canvas, currentGen);
+    }
+  }
+
+  function renderWithInlineRenderer(canvas, gen) {
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = schema.canvas.background;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw all elements
+    // Draw all elements using inline functions
     currentData.elements.forEach(elem => {
       if (elem.type === 'rectangle') {
         drawRectangle(ctx, elem);
@@ -334,8 +359,41 @@ fetch('components/nav.html')
       }
     });
 
-    container.innerHTML = '';
-    container.appendChild(canvas);
+    updateRendererStatus('Inline renderer (monolithic)');
+  }
+
+  function renderWithModularRenderer(canvas, gen) {
+    // Dynamically import modular renderer
+    import('./js/renderers/canvas-renderer.js').then(({ CanvasRenderer }) => {
+      // Guard against stale callback: only render if this is still the current generation
+      if (gen !== renderGeneration || currentRenderer !== 'modular') {
+        return;
+      }
+      const renderer = new CanvasRenderer(canvas, schema);
+      renderer.render(currentData.elements);
+      updateRendererStatus('Modular renderer (C4 Phase 1)');
+    }).catch(err => {
+      // Guard against stale callback
+      if (gen !== renderGeneration) {
+        return;
+      }
+      console.warn('Modular renderer not available:', err);
+      // Fallback to inline - sync UI with state
+      currentRenderer = 'inline';
+      const toggle = document.getElementById('renderer-toggle');
+      if (toggle) {
+        toggle.value = 'inline';
+      }
+      renderWithInlineRenderer(canvas, gen);
+      updateRendererStatus('Modular renderer failed, using inline');
+    });
+  }
+
+  function updateRendererStatus(text) {
+    const statusEl = document.getElementById('renderer-status');
+    if (statusEl) {
+      statusEl.textContent = text;
+    }
   }
 
   function drawRectangle(ctx, elem) {
@@ -498,6 +556,15 @@ fetch('components/nav.html')
         renderDiagram();
       }
     };
+
+    // Renderer toggle
+    const rendererToggle = document.getElementById('renderer-toggle');
+    if (rendererToggle) {
+      rendererToggle.onchange = (e) => {
+        currentRenderer = e.target.value;
+        renderDiagram();
+      };
+    }
   }
 
   initDiagram();
