@@ -30,6 +30,63 @@
       display: block;
       max-width: 100%;
     }
+    .expand-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      padding: 6px 12px;
+      background: #2F6F73;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      z-index: 10;
+      transition: opacity 0.2s;
+    }
+    .expand-btn:hover {
+      opacity: 0.85;
+    }
+    .fullscreen-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      overflow: auto;
+      padding: 20px;
+    }
+    .fullscreen-modal.show {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .fullscreen-modal canvas {
+      max-width: 95vw;
+      max-height: 90vh;
+      border: 1px solid #ddd;
+      background: white;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    .fullscreen-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 8px 16px;
+      background: #2F6F73;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .fullscreen-close:hover {
+      background: #1F4F53;
+    }
     .diagram-controls {
       margin: 20px 0;
       display: flex;
@@ -110,10 +167,17 @@ fetch('components/nav.html')
 
   <div class="editor-container">
     <div class="editor-frame">
+      <button class="expand-btn" id="expand-btn" title="View fullscreen">⛶ Fullscreen</button>
       <div id="canvas-view" class="canvas-view">
         <div class="loading">Loading diagram...</div>
       </div>
     </div>
+  </div>
+
+  <!-- Fullscreen Modal -->
+  <div id="fullscreen-modal" class="fullscreen-modal">
+    <button class="fullscreen-close" id="fullscreen-close">✕ Close</button>
+    <div id="fullscreen-content"></div>
   </div>
 </main>
 
@@ -563,6 +627,60 @@ fetch('components/nav.html')
       rendererToggle.onchange = (e) => {
         currentRenderer = e.target.value;
         renderDiagram();
+      };
+    }
+
+    // Fullscreen expand
+    const expandBtn = document.getElementById('expand-btn');
+    const fullscreenModal = document.getElementById('fullscreen-modal');
+    const fullscreenClose = document.getElementById('fullscreen-close');
+    const fullscreenContent = document.getElementById('fullscreen-content');
+
+    if (expandBtn) {
+      expandBtn.onclick = () => {
+        const canvas = document.querySelector('#canvas-view canvas');
+        if (canvas) {
+          // Clone canvas to fullscreen
+          const fsCanvas = canvas.cloneNode(true);
+          fsCanvas.style.maxWidth = '95vw';
+          fsCanvas.style.maxHeight = '90vh';
+          fsCanvas.style.border = '1px solid #ddd';
+          fsCanvas.style.background = 'white';
+          fsCanvas.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.3)';
+
+          fullscreenContent.innerHTML = '';
+          fullscreenContent.appendChild(fsCanvas);
+          fullscreenModal.classList.add('show');
+          document.body.style.overflow = 'hidden';
+        }
+      };
+    }
+
+    if (fullscreenClose) {
+      fullscreenClose.onclick = () => {
+        fullscreenModal.classList.remove('show');
+        document.body.style.overflow = 'auto';
+        fullscreenContent.innerHTML = '';
+      };
+    }
+
+    // Close fullscreen on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && fullscreenModal.classList.contains('show')) {
+        fullscreenModal.classList.remove('show');
+        document.body.style.overflow = 'auto';
+        fullscreenContent.innerHTML = '';
+      }
+    });
+
+    // Close fullscreen on background click
+    if (fullscreenModal) {
+      fullscreenModal.onclick = (e) => {
+        if (e.target === fullscreenModal) {
+          fullscreenModal.classList.remove('show');
+          document.body.style.overflow = 'auto';
+          fullscreenContent.innerHTML = '';
+        }
       };
     }
   }
