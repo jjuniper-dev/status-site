@@ -3,9 +3,76 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Diagram Lab</title>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Sans+Condensed:wght@700&display=swap" rel="stylesheet">
+  <title>AI Platform Layering Diagram</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .editor-container {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 250px);
+      margin-top: 20px;
+      gap: 12px;
+    }
+    .editor-frame {
+      flex: 1;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+    .canvas-view {
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background: #f9f9f9;
+    }
+    canvas {
+      display: block;
+      max-width: 100%;
+    }
+    .diagram-controls {
+      margin: 20px 0;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .diagram-controls button {
+      padding: 10px 16px;
+      background: #2F6F73;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .diagram-controls button:hover {
+      background: #1F4F53;
+    }
+    .diagram-controls button:active {
+      transform: scale(0.98);
+    }
+    .info-panel {
+      background: #f0f8f9;
+      padding: 12px 16px;
+      border-left: 4px solid #2F6F73;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .info-panel strong {
+      color: #2F6F73;
+    }
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #666;
+      font-size: 16px;
+    }
+  </style>
 </head>
 <body data-page="diagram-lab">
 <div id="nav-container"></div>
@@ -20,8 +87,420 @@ fetch('components/nav.html')
   .catch(() => {});
 </script>
 <main class="layout" style="padding: 24px;">
-  <h1>Diagram Lab</h1>
-  <p>Excalidraw workspace placeholder page.</p>
+  <h1>AI Platform Layering & Deployment Reality</h1>
+  <p>HC/PHAC Enterprise Architecture Interpretation</p>
+
+  <div class="info-panel">
+    <strong>Interactive Diagram:</strong> View and edit the architecture diagram. Download as JSON to use in Excalidraw, or export as PNG for sharing.
+  </div>
+
+  <div class="diagram-controls">
+    <button id="download-btn">📥 Download JSON</button>
+    <button id="export-png-btn">🖼️ Export as PNG</button>
+    <button id="reset-btn">↻ Reset to Original</button>
+  </div>
+
+  <div class="editor-container">
+    <div class="editor-frame">
+      <div id="canvas-view" class="canvas-view">
+        <div class="loading">Loading diagram...</div>
+      </div>
+    </div>
+  </div>
 </main>
+
+<script>
+  let originalData = null;
+  let currentData = null;
+  let schema = null;
+
+  // Schema-to-Excalidraw converter (embedded to avoid module issues)
+  function schemaToExcalidraw(schema) {
+    const elements = [];
+    let elementId = 0;
+    const theme = schema.theme;
+    const padding = 10;
+
+    function createRect(x, y, w, h, label, style = {}, options = {}) {
+      const id = String(elementId++);
+      return {
+        id,
+        type: 'rectangle',
+        x,
+        y,
+        width: w,
+        height: h,
+        strokeColor: style.stroke || theme.line_color,
+        backgroundColor: style.fill || theme.layer_fill,
+        fillStyle: 'solid',
+        strokeWidth: style.stroke_width || theme.stroke_width,
+        strokeStyle: style.stroke_style === 'dashed' ? 'dashed' : 'solid',
+        roughness: 0,
+        opacity: 100,
+        text: label,
+        fontSize: options.fontSize || 14,
+        fontFamily: 1,
+        textAlign: 'center',
+        verticalAlign: 'middle',
+        ...(style.text_color && { color: style.text_color }),
+        ...options
+      };
+    }
+
+    function createText(x, y, text, fontSize = 12, color = theme.text_color) {
+      const id = String(elementId++);
+      return {
+        id,
+        type: 'text',
+        x,
+        y,
+        width: 500,
+        height: 30,
+        text,
+        fontSize,
+        fontFamily: 1,
+        textAlign: 'left',
+        color,
+        opacity: 100
+      };
+    }
+
+    function createArrow(fromX, fromY, toX, toY, style = 'solid', label = '') {
+      const id = String(elementId++);
+      return {
+        id,
+        type: 'arrow',
+        x: fromX,
+        y: fromY,
+        width: toX - fromX,
+        height: toY - fromY,
+        angle: 0,
+        strokeColor: theme.line_color,
+        backgroundColor: 'transparent',
+        fillStyle: 'solid',
+        strokeWidth: theme.stroke_width,
+        strokeStyle: style === 'dotted_arrow' ? 'dotted' : 'solid',
+        roughness: 0,
+        opacity: 100,
+        startArrowType: null,
+        endArrowType: 'arrow',
+        startBinding: null,
+        endBinding: null,
+        text: label,
+        fontSize: 12,
+        fontFamily: 1,
+        textAlign: 'center'
+      };
+    }
+
+    // Header title
+    if (schema.header) {
+      const h = schema.header;
+      elements.push(createText(h.x, h.y, h.title, 24, theme.title_color));
+      elements.push(createText(h.x, h.y + 28, h.subtitle, 14, theme.text_color));
+    }
+
+    // Ownership zones
+    schema.ownership_zones.forEach(zone => {
+      elements.push(createRect(zone.x, zone.y, zone.w, zone.h, '', zone.style, { fontSize: 12, opacity: 30 }));
+      elements.push(createText(zone.x + 10, zone.y + 5, zone.label, 12, theme.text_color));
+    });
+
+    // Layers with components
+    const componentMap = {};
+
+    schema.layers.forEach(layer => {
+      elements.push(createRect(layer.x, layer.y, layer.w, layer.h, '', layer.style, { opacity: 40 }));
+      elements.push(createText(layer.x + 10, layer.y + 5, layer.label, 12, theme.text_color));
+
+      layer.components.forEach(comp => {
+        const compRect = createRect(comp.x, comp.y, comp.w, comp.h, comp.label, comp.style, { fontSize: 13 });
+        elements.push(compRect);
+        componentMap[comp.id] = {
+          x: comp.x + comp.w / 2,
+          y: comp.y + comp.h / 2,
+          element: compRect
+        };
+
+        if (comp.annotation) {
+          const annotY = comp.annotation.position === 'below' ? comp.y + comp.h + 8 : comp.y - 20;
+          elements.push(createText(comp.x, annotY, comp.annotation.text, comp.annotation.font_size || 12, theme.text_color));
+        }
+
+        if (comp.tag) {
+          const tagWidth = 80;
+          const tagHeight = 20;
+          elements.push(createRect(comp.x + comp.w - tagWidth - 5, comp.y - 25, tagWidth, tagHeight, comp.tag.text,
+            { fill: comp.tag.fill, stroke: comp.tag.fill, text_color: comp.tag.text_color },
+            { fontSize: 10 }));
+        }
+      });
+    });
+
+    // Connectors
+    schema.connectors.forEach(conn => {
+      const from = componentMap[conn.from];
+      const to = componentMap[conn.to];
+      if (from && to) {
+        elements.push(createArrow(from.x, from.y, to.x, to.y, conn.style, conn.label || ''));
+      }
+    });
+
+    // Side notes
+    schema.side_notes?.forEach(note => {
+      const noteBox = createRect(note.x, note.y, note.w, note.h, '', note.style);
+      elements.push(noteBox);
+      elements.push(createText(note.x + 10, note.y + 10, note.title, 12, theme.text_color));
+      let bulletY = note.y + 30;
+      note.bullets?.forEach(bullet => {
+        elements.push(createText(note.x + 15, bulletY, `• ${bullet}`, 11, theme.text_color));
+        bulletY += 20;
+      });
+    });
+
+    // Top progression
+    if (schema.top_progression) {
+      const prog = schema.top_progression;
+      elements.push(createText(prog.x, prog.y, prog.label, 12, prog.style.text_color));
+    }
+
+    // Footer
+    if (schema.footer) {
+      const footer = schema.footer;
+      elements.push(createText(footer.x, footer.y, footer.left_text, 10, theme.text_color));
+      elements.push(createText(footer.x + 1000, footer.y, footer.right_text, 10, theme.text_color));
+    }
+
+    return {
+      type: 'excalidraw',
+      version: 2,
+      source: 'schema-to-excalidraw',
+      elements,
+      appState: {
+        gridMode: true,
+        gridSize: schema.global_rules.grid_size,
+        zoom: { value: 1 },
+        scrollX: 0,
+        scrollY: 0,
+        name: schema.title
+      }
+    };
+  }
+
+  async function initDiagram() {
+    try {
+      const response = await fetch('schemas/hcphac-ai-platform-layering.excalidraw.schema.json');
+      schema = await response.json();
+      const excalidrawData = schemaToExcalidraw(schema);
+      originalData = JSON.parse(JSON.stringify(excalidrawData));
+      currentData = JSON.parse(JSON.stringify(excalidrawData));
+
+      renderDiagram();
+      setupControls();
+    } catch (err) {
+      console.error('Failed to load diagram:', err);
+      document.getElementById('canvas-view').innerHTML = `
+        <div style="padding: 20px; color: red; text-align: center;">
+          <strong>Error loading diagram:</strong><br>
+          ${err.message}
+        </div>
+      `;
+    }
+  }
+
+  function renderDiagram() {
+    const container = document.getElementById('canvas-view');
+    const canvas = document.createElement('canvas');
+
+    canvas.width = schema.canvas.width;
+    canvas.height = schema.canvas.height;
+    canvas.style.margin = '20px';
+    canvas.style.backgroundColor = schema.canvas.background;
+    canvas.style.border = '1px solid #ddd';
+    canvas.style.borderRadius = '4px';
+
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = schema.canvas.background;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw all elements
+    currentData.elements.forEach(elem => {
+      if (elem.type === 'rectangle') {
+        drawRectangle(ctx, elem);
+      } else if (elem.type === 'text') {
+        drawText(ctx, elem);
+      } else if (elem.type === 'arrow') {
+        drawArrow(ctx, elem);
+      }
+    });
+
+    container.innerHTML = '';
+    container.appendChild(canvas);
+  }
+
+  function drawRectangle(ctx, elem) {
+    const { x, y, width, height, backgroundColor, strokeColor, strokeWidth, strokeStyle, text, fontSize, color } = elem;
+
+    ctx.fillStyle = backgroundColor || '#ffffff';
+    ctx.strokeStyle = strokeColor || '#000000';
+    ctx.lineWidth = strokeWidth || 2;
+    ctx.fillRect(x, y, width, height);
+
+    // Apply dashed stroke style if specified
+    if (strokeStyle === 'dashed') {
+      ctx.setLineDash([5, 5]);
+    }
+    ctx.strokeRect(x, y, width, height);
+    ctx.setLineDash([]);
+
+    if (text) {
+      ctx.fillStyle = color || '#000000';
+      ctx.font = `${fontSize || 14}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      const maxWidth = width - 10;
+      const words = text.split(' ');
+      let lines = [];
+      let line = '';
+
+      words.forEach(word => {
+        const testLine = line ? line + ' ' + word : word;
+        const metrics = ctx.measureText(testLine);
+        if (metrics.width > maxWidth && line) {
+          lines.push(line);
+          line = word;
+        } else {
+          line = testLine;
+        }
+      });
+      if (line) lines.push(line);
+
+      const lineHeight = fontSize || 14;
+      const totalHeight = lines.length * lineHeight;
+      let textY = y + height / 2 - totalHeight / 2 + lineHeight / 2;
+
+      lines.forEach(l => {
+        ctx.fillText(l, x + width / 2, textY);
+        textY += lineHeight;
+      });
+    }
+  }
+
+  function drawText(ctx, elem) {
+    const { x, y, text, fontSize, color } = elem;
+    if (!text) return;
+    ctx.fillStyle = color || '#000000';
+    ctx.font = `${fontSize || 12}px Arial`;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText(text, x, y);
+  }
+
+  function drawArrow(ctx, elem) {
+    const { x, y, width, height, strokeColor, strokeWidth, strokeStyle, text, fontSize } = elem;
+    const toX = x + width;
+    const toY = y + height;
+
+    ctx.strokeStyle = strokeColor || '#000000';
+    ctx.lineWidth = strokeWidth || 2;
+
+    if (strokeStyle === 'dotted') {
+      ctx.setLineDash([5, 5]);
+    }
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(toX, toY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    const headlen = 15;
+    const angle = Math.atan2(toY - y, toX - x);
+    ctx.fillStyle = strokeColor || '#000000';
+    ctx.beginPath();
+    ctx.moveTo(toX, toY);
+    ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI / 6), toY - headlen * Math.sin(angle - Math.PI / 6));
+    ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6), toY - headlen * Math.sin(angle + Math.PI / 6));
+    ctx.closePath();
+    ctx.fill();
+
+    // Render connector label if present
+    if (text) {
+      const midX = (x + toX) / 2;
+      const midY = (y + toY) / 2;
+      ctx.fillStyle = strokeColor || '#000000';
+      ctx.font = `${fontSize || 11}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+
+      // Offset label slightly perpendicular to the line
+      const perpAngle = angle + Math.PI / 2;
+      const offsetDist = 10;
+      const labelX = midX + offsetDist * Math.cos(perpAngle);
+      const labelY = midY + offsetDist * Math.sin(perpAngle);
+
+      ctx.fillText(text, labelX, labelY);
+    }
+  }
+
+  function setupControls() {
+    document.getElementById('download-btn').onclick = () => {
+      const dataStr = JSON.stringify({
+        type: 'excalidraw',
+        version: 2,
+        source: 'schema-to-excalidraw',
+        elements: currentData.elements,
+        appState: currentData.appState
+      }, null, 2);
+
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ai-platform-layering-${new Date().toISOString().slice(0,10)}.excalidraw.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+
+    document.getElementById('export-png-btn').onclick = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = schema.canvas.width;
+      canvas.height = schema.canvas.height;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = schema.canvas.background;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      currentData.elements.forEach(elem => {
+        if (elem.type === 'rectangle') {
+          drawRectangle(ctx, elem);
+        } else if (elem.type === 'text') {
+          drawText(ctx, elem);
+        } else if (elem.type === 'arrow') {
+          drawArrow(ctx, elem);
+        }
+      });
+
+      canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `ai-platform-layering-${new Date().toISOString().slice(0,10)}.png`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+    };
+
+    document.getElementById('reset-btn').onclick = () => {
+      if (confirm('Reset diagram to original? Unsaved changes will be lost.')) {
+        currentData = JSON.parse(JSON.stringify(originalData));
+        renderDiagram();
+      }
+    };
+  }
+
+  initDiagram();
+</script>
 </body>
 </html>
