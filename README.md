@@ -1,111 +1,115 @@
-# AI Workspace Dashboard
+[![Header](https://capsule-render.vercel.app/api?type=waving&color=0:0a1628,50:0d2137,100:0a1628&height=240&section=header&text=HC/PHAC%20AI%20Project%20Dashboard&fontSize=40&fontColor=e0f2f1&animation=fadeIn&fontAlignY=38&desc=PATH%20%E2%80%A2%20HAIL%20%E2%80%A2%20Architecture%20Governance%20%E2%80%A2%20Decision%20Tracking&descSize=17&descAlignY=58)](https://github.com/jjuniper-dev/status-site)
 
-GitHub Pages site for tracking enterprise architecture, governance, scenarios, decisions, and artifacts in a reusable dashboard format.
+<p align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=18&duration=3000&pause=1000&color=4DB6AC&center=true&vCenter=true&multiline=false&repeat=true&width=650&lines=Enterprise+Architecture+%7C+Digital+Transformation+Branch;PATH+%2B+HAIL+%2B+Purview+%2B+Entra+convergence;ARB+submissions+%7C+AI+governance+%7C+use+case+tracking;HC%2FPHAC+AI+Capabilities+Mapping+v2.x" alt="Typing SVG" />
+</p>
 
-## What this repo is
+<p align="center">
+  <img src="https://img.shields.io/badge/Version-1.1-4DB6AC?style=flat" />
+  <img src="https://img.shields.io/badge/Status-Active%20Refinement-1a3a4a?style=flat" />
+  <img src="https://img.shields.io/badge/Hosted-GitHub%20Pages-4DB6AC?style=flat&logo=github" />
+  <img src="https://img.shields.io/badge/Design-IBM%20Plex%20%7C%20Dark%20Teal-0a1628?style=flat" />
+</p>
 
-This repository is a working dashboard and reference site for:
-- architecture and governance analysis
-- status tracking across major initiatives
-- decision logging and scenario framing
-- artifact indexing and supporting visuals
-- PPTX and settings utilities used alongside the site
+---
 
-It is structured as a reusable status and intelligence surface for architecture, planning, and reporting workflows.
+## 📋 What this is
 
-## Current site structure
+A GitHub Pages dashboard for tracking HC/PHAC AI initiatives — architecture decisions, governance status, use cases, and platform alignment across the PATH/HAIL stack. Built for the EA/TPO team within the Digital Transformation Branch.
 
-Main pages currently linked from the site navigation:
-- `index.html` — Dashboard
-- `decisions.html` — Decision log
-- `scenarios.html` — Scenario navigator
-- `intelligence.html` — Intelligence and analysis
-- `artifacts.html` — Artifact library
-- `path-architecture.html` — Architecture view
-- `control-plane.html` — Control-plane view
-- `pptx-builder.html` — PPTX utility
-- `settings.html` — Local settings / configuration utility
+**Live site:** [jjuniper-dev.github.io/status-site](https://jjuniper-dev.github.io/status-site)
 
-## Data and styling
+---
 
-Shared styling:
-- `styles.css` — unified design system used across the main dashboard pages
+## 🛠️ Stack
 
-Current data files:
-- `data/decisions.json`
-- `data/scenarios.json`
-- `data/artifacts-index.json`
+<p align="left">
+  <img src="https://skillicons.dev/icons?i=html,css,js,github" />
+</p>
 
-Supporting documentation:
-- `ASSESSMENT_AND_1.0_PLAN.md`
-- `CONSOLIDATION_STATUS.md`
-- `CONSOLIDATED_SITE_DESIGN.md`
+Static HTML/CSS/JS — no build step. Served via GitHub Pages.
 
-## Project status
+---
 
-This repo is in **active v1.x refinement**.
+## 📄 Pages
 
-Why this wording:
-- the shared stylesheet is marked **Version 1.0**
-- the consolidation note says **Version 1.0 Complete**
-- the dashboard footer currently shows **Version 1.1**
+| Page | Purpose |
+|------|---------|
+| `index.html` | Dashboard — initiative status overview |
+| `decisions.html` | Architecture Decision Log |
+| `scenarios.html` | Scenario navigator |
+| `intelligence.html` | Analysis and intelligence surface |
+| `artifacts.html` | Artifact library |
+| `path-architecture.html` | PATH platform architecture view |
+| `control-plane.html` | Control-plane view |
+| `pptx-builder.html` | PPTX utility |
+| `settings.html` | Local configuration |
 
-Rather than hard-coding one inconsistent version number in this README, this file reflects the repo’s current state as an actively refined v1.x dashboard.
+---
 
-## README alignment notes
+## 📊 Data Files
 
-This README has been aligned to the repo as it exists now:
-- removed program- and organization-specific identifiers
-- removed the claim that artifact ingestion is powered by a root-level `generate_artifacts.py` GitHub Action pipeline
-- updated the page list to match the current navigation, including `decisions.html`, `scenarios.html`, and `settings.html`
-- updated the project-status section to reflect the repo’s current versioning inconsistency instead of asserting a single stale value
+```
+data/
+├── decisions.json        # ARB decisions and disposition log
+├── scenarios.json        # Platform and governance scenarios
+└── artifacts-index.json  # Artifact library index
+```
 
-## Local setup
+---
 
-Clone the repo and serve it locally with any static file server.
+## 🏛️ Architectural Context
 
-### Python
+<details>
+<summary>Platform framing — click to expand</summary>
+
+**Azure in GC/SSC context:** foundational infrastructure and service layer — not an enterprise AI platform.
+
+| Component | Role |
+|-----------|------|
+| **HAIL** | AI runtime (current) |
+| **PATH** | Target control plane (Protected B) |
+| **Purview** | Emerging data governance layer |
+| **Entra ID** | Identity and access |
+
+Real platform emerges from PATH + HAIL + Purview + Entra convergence. Current fragmentation (Databricks vs. Fabric, multiple teams, no unified execution model) is the key gap.
+
+**Correct ARB framing:** *"Structured decision framework pending platform/governance alignment"* — not "ready for implementation."
+
+</details>
+
+---
+
+## 🚀 Local Setup
 
 ```bash
 git clone https://github.com/jjuniper-dev/status-site.git
 cd status-site
 python -m http.server 8000
+# → http://localhost:8000/
 ```
 
-Then open:
-- `http://localhost:8000/`
+---
 
-## Content update guidance
+## ✏️ Content Updates
 
-### Update page content
-Edit the relevant `.html` file directly.
+| What | Where |
+|------|-------|
+| Page content | Edit `.html` directly |
+| Decisions | `data/decisions.json` |
+| Scenarios | `data/scenarios.json` |
+| Artifacts | `data/artifacts-index.json` + `artifacts/` |
+| Styles | `styles.css` |
 
-### Update decisions or scenarios
-Edit the JSON files under `data/`:
-- `data/decisions.json`
-- `data/scenarios.json`
+---
 
-### Update artifacts
-Maintain artifact entries in:
-- `data/artifacts-index.json`
-- `artifacts/`
+## 📁 Related Repos
 
-### Update styles
-Edit:
-- `styles.css`
+| Repo | Purpose |
+|------|---------|
+| [`jjuniper-dev/personal-cognitive-architecture`](https://github.com/jjuniper-dev/personal-cognitive-architecture) | Ayla / PCA personal AI stack |
+| [`jjuniper-dev/Obsidian`](https://github.com/jjuniper-dev/Obsidian) | Obsidian vault reference |
 
-## Notes
+---
 
-- This repo appears to be intended as a working dashboard and reference surface rather than polished product documentation.
-- Some documentation files describe the site as already consolidated to 1.0, while the live page footer indicates 1.1. Keep that inconsistency in mind when preparing release notes or external-facing outputs.
-- If artifact automation is reintroduced, document the actual workflow file and script path explicitly in this README.
-
-## Related references
-
-- `ASSESSMENT_AND_1.0_PLAN.md` — assessment and release plan
-- `CONSOLIDATION_STATUS.md` — consolidation summary and page inventory
-- `CONSOLIDATED_SITE_DESIGN.md` — design direction and conventions
-
-## License / usage
-
-Working-use repository.
+[![Footer](https://capsule-render.vercel.app/api?type=waving&color=0:0a1628,50:0d2137,100:0a1628&height=120&section=footer)](https://github.com/jjuniper-dev/status-site)
