@@ -1,5 +1,23 @@
 {
   "env": {
     "ANTHROPIC_API_KEY": "$ANTHROPIC_API_KEY_LOCAL"
-  }
+  },
+
+  "permissions": {
+    "allow": [
+      "Bash(git *)",
+      "Edit(intelligence.html)",
+      "Edit(CLAUDE.md)",
+      "Read",
+      "Glob",
+      "Grep"
+    ]
+  },
+
+  "attribution": {
+    "commit": "Intelligence page update via AI analysis\nhttps://claude.ai/code/status-site"
+  },
+
+  "claudeMd": "# Intelligence Page Update Workflow\n\nAgents: Use this workflow when updating the intelligence page.\n\n1. **Open editor**: Click \"Edit\" on intelligence.html\n2. **Draft in markdown**: Write content following the intelligence page style\n3. **Review with AI**: Click \"Review with AI\" to analyze relevance\n4. **Publish**: Click \"Publish\" to commit to intelligence-draft branch\n5. **Update metadata**: Bump version, update date badge, add log entry\n\nSee CLAUDE.md for complete workflow documentation.\n\n## Quick Reference\n\n**Section Format:**\n- Operational Signal (what changed)\n- What Changed (facts/data)\n- Why It Matters (impact)\n- Risk Factors / Trade-offs\n- Next Steps (recommendations)\n\n**Related Signals:**\nReference related sections with cross-links (e.g., \"See 04b · HAIL/PATH Convergence\").\n\n**Quality Standards:**\n- Evidence-based (cite facts, not opinions)\n- Acknowledge uncertainty explicitly\n- Connect to existing sections\n- Include governance/architectural implications\n- Use standard section numbering (01-14)\n- Follow page tone: precise, no jargon without explanation\n\n**After Publishing:**\n- Update date badge (YYYY-MM-DD)\n- Bump version (vX.Y)\n- Add entry to Section 14 (Update Log)"
 }
+
